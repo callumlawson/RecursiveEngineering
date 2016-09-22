@@ -1,6 +1,8 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using Assets.Scrips.Components;
 using Assets.Scrips.MonoBehaviours.Presentation;
+using Assets.Scrips.Networks;
 using Assets.Scrips.Util;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -12,7 +14,8 @@ namespace Assets.Scrips
         [UsedImplicitly] public ComponentRenderer ComponentRenderer;
         [UsedImplicitly] public CameraController CameraController;
 
-        private EngiComponent activeComponent;
+        public EngiComponent ActiveComponent { get; private set; }
+
         private EngiComponent worldComponent;
 
         private const float DoubleClickTimeLimit = 0.20f;
@@ -22,7 +25,7 @@ namespace Assets.Scrips
         {
             StartCoroutine(InputListener());
 
-            worldComponent = new EngiComponent("GlobalComponent", null, 32, 18);
+            worldComponent = new EngiComponent("Sub Pen", null, 32, 18);
 
             SetActiveComponent(worldComponent);
         }
@@ -30,21 +33,31 @@ namespace Assets.Scrips
         [UsedImplicitly]
         public void Update()
         {
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                //TODO: Rotate selected component.     
+            }
+            else if (Input.GetKeyDown(KeyCode.E))
+            {
+                
+            }
         }
 
         private void SingleClick(int button, GridCoordinate currentlySelectedGrid)
         {
             if (button == 0)
             {
-                AddComponentToActiveComponent(new EngiComponent("Box", activeComponent, 10, 10), currentlySelectedGrid);
+                var componentToAdd = new EngiComponent("Box", ActiveComponent, 10, 10);
+                var aDifferentComponentToAdd = new EngiComponent("Tank", ActiveComponent, 6, 7, new List<SubstanceNetworkNode>{new SubstanceNetworkNode()});
+                AddComponentToActiveComponent(componentToAdd, currentlySelectedGrid);
             }
         }
 
         private void DoubleClick(int button, GridCoordinate currentlySelectedGrid)
         {
-            if (button == 1 && activeComponent.ParentComponent != null)
+            if (button == 1 && ActiveComponent.ParentComponent != null)
             {
-                SetActiveComponent(activeComponent.ParentComponent);
+                SetActiveComponent(ActiveComponent.ParentComponent);
             }
 
             if (CurrentlySelectedComponent() != null && button == 0)
@@ -53,40 +66,50 @@ namespace Assets.Scrips
             }
         }
 
+        public List<EngiComponent> CurrentHeirarchy()
+        {
+            var heirarchy = new List<EngiComponent>();
+            var current = ActiveComponent;
+            do
+            {
+                heirarchy.Add(current);
+                current = current.ParentComponent;
+            } while (current != null);
+            return heirarchy;
+        }
+
+        public EngiComponent CurrentlySelectedComponent()
+        {
+            var selectedGrid = ComponentRenderer.CurrentlySelectedGrid();
+            if (!ActiveComponent.GridIsEmpty(selectedGrid))
+            {
+                return ActiveComponent.GetComponent(selectedGrid);
+            }
+            return null;
+        }
+
         private void AddComponentToActiveComponent(EngiComponent componentToAdd, GridCoordinate placeToAdd)
         {
-            if (activeComponent.GridIsInComponent(placeToAdd) && activeComponent.GridIsEmpty(placeToAdd))
+            if (ActiveComponent.GridIsInComponent(placeToAdd) && ActiveComponent.GridIsEmpty(placeToAdd))
             {
-                activeComponent.AddComponent(componentToAdd, placeToAdd);
-                ComponentRenderer.RenderComponent(activeComponent);
+                ActiveComponent.AddComponent(componentToAdd, placeToAdd);
+                ComponentRenderer.RenderComponent(ActiveComponent);
             }
         }
 
         private void SetActiveComponent(EngiComponent component)
         {
             //TODO: Encapsulate active component.
-            activeComponent = component;
+            ActiveComponent = component;
             ComponentRenderer.RenderComponent(component);
-            CameraController.SetPosition(GridCoordinate.GridToPosition(activeComponent.GetCenterGrid()));
-        }
-
-        private EngiComponent CurrentlySelectedComponent()
-        {
-            var selectedGrid = ComponentRenderer.CurrentlySelectedGrid();
-            if (!activeComponent.GridIsEmpty(selectedGrid))
-            {
-                return activeComponent.GetComponent(selectedGrid);
-            }
-            return null;
+            CameraController.SetPosition(GridCoordinate.GridToPosition(ActiveComponent.GetCenterGrid()));
         }
 
         //TODO: Factor into input listener class.
-        // Update is called once per frame
         private IEnumerator InputListener()
         {
             while (enabled)
-            { //Run as long as this is active
-
+            { 
                 if (Input.GetMouseButtonDown(0))
                     yield return ClickEvent(0, ComponentRenderer.CurrentlySelectedGrid());
 
@@ -99,10 +122,9 @@ namespace Assets.Scrips
 
         private IEnumerator ClickEvent(int button, GridCoordinate selectedGrid)
         {
-            //pause a frame so you don't pick up the same mouse down event.
             yield return new WaitForEndOfFrame();
 
-            float count = 0f;
+            var count = 0f;
             while (count < DoubleClickTimeLimit)
             {
                 if (Input.GetMouseButtonDown(button))
@@ -110,12 +132,10 @@ namespace Assets.Scrips
                     DoubleClick(button, selectedGrid);
                     yield break;
                 }
-                count += Time.deltaTime;// increment counter by change in time between frames
-                yield return null; // wait for the next frame
+                count += Time.deltaTime;
+                yield return null;
             }
             SingleClick(button, selectedGrid);
         }
-
-      
     }
 }

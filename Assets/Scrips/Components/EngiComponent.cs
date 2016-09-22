@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Assets.Scrips.Networks;
 using Assets.Scrips.Networks.Graph;
 using Assets.Scrips.Util;
@@ -19,7 +20,7 @@ namespace Assets.Scrips.Components
 
         public EngiComponent() { }
 
-        public EngiComponent(string name, EngiComponent parentComponent, int internalWidth, int interalHeight)
+        public EngiComponent(string name, EngiComponent parentComponent, int internalWidth, int interalHeight, List<SubstanceNetworkNode> possibleNetworkNode = null)
         {
             Name = name;
             ParentComponent = parentComponent;
@@ -62,7 +63,7 @@ namespace Assets.Scrips.Components
             {
                 return InnerComponents[grid.X, grid.Y] == null;
             }
-            throw new ArgumentOutOfRangeException("gridCoord");
+            return true;
         }
     }
 }
