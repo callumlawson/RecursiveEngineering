@@ -1,27 +1,32 @@
 ﻿using System;
 using Assets.Scrips.Networks;
+using Assets.Scrips.Networks.Graph;
 using Assets.Scrips.Util;
+using UnityEngine;
 
 namespace Assets.Scrips.Components
 {
     public class EngiComponent
     {
         public string Name;
-        public int Width;
-        public int Height;
+        public int InternalWidth;
+        public int InteralHeight;
+
+        public EngiComponent ParentComponent;
         public EngiComponent[,] InnerComponents;
 
-        private SubstanceNetwork SubstanceNetwork;
+        private EngiDirectedSparseGraph<SubstanceNetworkNode> SubstanceNetwork;
 
         public EngiComponent() { }
 
-        public EngiComponent(string name, int width, int height)
+        public EngiComponent(string name, EngiComponent parentComponent, int internalWidth, int interalHeight)
         {
-            Width = width;
-            Height = height;
             Name = name;
-            InnerComponents = new EngiComponent[Width, Height];
-            SubstanceNetwork = new SubstanceNetwork();
+            ParentComponent = parentComponent;
+            InternalWidth = internalWidth;
+            InteralHeight = interalHeight;
+            InnerComponents = new EngiComponent[InternalWidth, InteralHeight];
+            SubstanceNetwork = new EngiDirectedSparseGraph<SubstanceNetworkNode>();
         }
 
         public void AddComponent(EngiComponent component, GridCoordinate coord)
@@ -43,7 +48,12 @@ namespace Assets.Scrips.Components
 
         public bool GridIsInComponent(GridCoordinate coord)
         {
-            return coord.X >= 0 && coord.Y >= 0 && coord.X < Width && coord.Y < Height;
+            return coord.X >= 0 && coord.Y >= 0 && coord.X < InternalWidth && coord.Y < InteralHeight;
+        }
+
+        public GridCoordinate GetCenterGrid()
+        {
+            return new GridCoordinate(Mathf.RoundToInt(InternalWidth/2.0f), Mathf.RoundToInt(InteralHeight /2.0f));
         }
 
         public bool GridIsEmpty(GridCoordinate grid)

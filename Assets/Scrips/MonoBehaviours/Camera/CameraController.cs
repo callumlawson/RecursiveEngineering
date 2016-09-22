@@ -1,24 +1,30 @@
-﻿using UnityEngine;
+﻿using JetBrains.Annotations;
+using UnityEngine;
 
-[RequireComponent(typeof (Camera))]
+[RequireComponent(typeof(Camera))]
 public class CameraController : MonoBehaviour {
 
-    public float ScrollSensitivity;
-    public float PanSpeed;
-    public float MaxPanSpeed;
+    [UsedImplicitly] public float ScrollSensitivity;
+    [UsedImplicitly] public float PanSpeed;
+    [UsedImplicitly] public float MaxPanSpeed;
 
     public static Camera ActiveCamera;
-    private Vector3 MouseOrigin;
 
-	// Use this for initialization
+    private Vector3 mouseOrigin;
+
+    public void SetPosition(Vector2 position)
+    {
+        transform.position = new Vector3(position.x, position.y, transform.position.z);
+    }
+
+	[UsedImplicitly]
 	void Start () {
         ActiveCamera = GetComponent<Camera>();
-        MouseOrigin = ActiveCamera.ScreenToWorldPoint(Input.mousePosition);
+        mouseOrigin = ActiveCamera.ScreenToWorldPoint(Input.mousePosition);
 	}
 	
-	// Update is called once per frame
+	[UsedImplicitly]
 	void Update () {
-
         var scroll = Input.GetAxis("Mouse ScrollWheel");
         ActiveCamera.orthographicSize -= scroll * ScrollSensitivity * Time.deltaTime;
         if(ActiveCamera.orthographicSize < 0)
@@ -28,12 +34,12 @@ public class CameraController : MonoBehaviour {
 
 	    if (Input.GetMouseButtonDown(2))
 	    {
-            MouseOrigin = Input.mousePosition;
+            mouseOrigin = Input.mousePosition;
         }
 
 	    if (Input.GetMouseButton(2))
         {
-            var mouseDelta = Camera.main.ScreenToViewportPoint(Input.mousePosition - MouseOrigin);
+            var mouseDelta = Camera.main.ScreenToViewportPoint(Input.mousePosition - mouseOrigin);
             var move = - Vector3.ClampMagnitude(mouseDelta * PanSpeed * Time.deltaTime, MaxPanSpeed);
             transform.Translate(move, Space.World);
         }

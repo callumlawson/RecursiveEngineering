@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Assets.Scrips.Networks.Graph;
 
 namespace Assets.Scrips.Networks
@@ -7,9 +8,10 @@ namespace Assets.Scrips.Networks
     //Networks have a type. 
     //Networks of the same type can be combined.
     //Networks are basically graphs with rules on their connections. 
-    public class SubstanceNetwork
+    public class Network<T> where T : IComparable<T>
     {
-        private EngiDirectedSparseGraph<SubstanceNetworkNode> fluidNetwork;
-        private List<NetworkNode> OurNetworkVerts;
+        private EngiDirectedSparseGraph<T> ThisNetwork;
+
+
     }
 }

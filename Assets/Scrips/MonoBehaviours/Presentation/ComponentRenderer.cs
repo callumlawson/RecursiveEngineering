@@ -1,4 +1,5 @@
-﻿using Assets.Scrips.Components;
+﻿using System;
+using Assets.Scrips.Components;
 using Assets.Scrips.Util;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -10,11 +11,11 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         [UsedImplicitly] public GameObject Tile;
         [UsedImplicitly] public GameObject Selector;
 
-        private GameObject OuterRendererRoot;
-        private GameObject InnerRendererRoot;
+        private GameObject outerRendererRoot;
+        private GameObject innerRendererRoot;
         private GameObject selectedGridIndicator;
 
-        private EngiComponent LastRenderedComponent;
+        private EngiComponent lastRenderedComponent;
 
         [UsedImplicitly]
         public void Start()
@@ -22,21 +23,21 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             selectedGridIndicator = Instantiate(Selector);
             selectedGridIndicator.transform.parent = transform;
 
-            OuterRendererRoot = new GameObject();
-            if (OuterRendererRoot != null)
+            outerRendererRoot = new GameObject();
+            if (outerRendererRoot != null)
             {
-                OuterRendererRoot.name = "OuterComponent";
-                OuterRendererRoot.transform.parent = transform;
+                outerRendererRoot.name = "OuterComponent";
+                outerRendererRoot.transform.parent = transform;
             }
 
-            InnerRendererRoot = new GameObject();
-            if (InnerRendererRoot != null)
+            innerRendererRoot = new GameObject();
+            if (innerRendererRoot != null)
             {
-                InnerRendererRoot.name = "InnerComponent";
-                InnerRendererRoot.transform.parent = transform;
+                innerRendererRoot.name = "InnerComponent";
+                innerRendererRoot.transform.parent = transform;
             }
 
-            LastRenderedComponent = new EngiComponent();
+            lastRenderedComponent = new EngiComponent();
         }
 
         [UsedImplicitly]
@@ -60,12 +61,12 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         {
             RenderOuterComponent(outerComponent);
             RenderInnerComponents(outerComponent);
-            LastRenderedComponent = outerComponent;
+            lastRenderedComponent = outerComponent;
         }
 
         private void RenderInnerComponents(EngiComponent outerComponent)
         {
-            foreach (Transform child in InnerRendererRoot.transform)
+            foreach (Transform child in innerRendererRoot.transform)
             {
                 Destroy(child.gameObject);
             }
@@ -77,11 +78,12 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                     var innerComponent = outerComponent.InnerComponents[x, y];
                     if (innerComponent != null)
                     {
+                        var grid = new GridCoordinate(x, y);
                         var component = outerComponent.InnerComponents[x, y];
                         var componentAsset = Resources.Load<GameObject>(component.Name);
                         var componentGameObject = Instantiate(componentAsset);
-                        componentGameObject.transform.parent = InnerRendererRoot.transform;
-                        componentGameObject.transform.position = GridToPosition(x, y);
+                        componentGameObject.transform.parent = innerRendererRoot.transform;
+                        componentGameObject.transform.position = GridCoordinate.GridToPosition(grid);
 
                     }
                 }
@@ -90,30 +92,26 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
 
         private void RenderOuterComponent(EngiComponent component)
         {
-            if (component.Width == LastRenderedComponent.Width && component.Height == LastRenderedComponent.Height)
+            if (component.InternalWidth == lastRenderedComponent.InternalWidth && component.InteralHeight == lastRenderedComponent.InteralHeight)
             {
                 return;
             }
                 
-            foreach (Transform child in OuterRendererRoot.transform)
+            foreach (Transform child in outerRendererRoot.transform)
             {
                 Destroy(child.gameObject);
             }
 
-            for (var x = 0; x < component.Width; x++)
+            for (var x = 0; x < component.InternalWidth; x++)
             {
-                for (var y = 0; y < component.Height; y++)
+                for (var y = 0; y < component.InteralHeight; y++)
                 {
+                    var grid = new GridCoordinate(x, y);
                     var tile = Instantiate(Tile);
-                    tile.transform.parent = OuterRendererRoot.transform;
-                    tile.transform.position = GridToPosition(x, y);
+                    tile.transform.parent = outerRendererRoot.transform;
+                    tile.transform.position = GridCoordinate.GridToPosition(grid);
                 }
             }
-        }
-
-        private static Vector3 GridToPosition(int x, int y)
-        {
-            return new Vector3(x * LayoutConstants.TileSizeInMeters, y * LayoutConstants.TileSizeInMeters);
         }
     }
 }

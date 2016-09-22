@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using UnityEngine;
 
 namespace Assets.Scrips.Util
 {
@@ -14,6 +11,11 @@ namespace Assets.Scrips.Util
         {
             X = x;
             Y = y;
+        }
+
+        public static Vector3 GridToPosition(GridCoordinate grid)
+        {
+            return new Vector3(grid.X * LayoutConstants.TileSizeInMeters, grid.Y * LayoutConstants.TileSizeInMeters);
         }
     }
 }
