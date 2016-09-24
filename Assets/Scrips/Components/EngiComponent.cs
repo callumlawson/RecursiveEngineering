@@ -13,7 +13,7 @@ namespace Assets.Scrips.Components
 
         public EngiComponent ParentComponent;
 
-        public readonly SubstanceNetwork globalSubstanceNetwork;
+        public readonly SubstanceNetwork substanceNetwork;
 
         public bool WaterContainer;
 
@@ -22,20 +22,20 @@ namespace Assets.Scrips.Components
         }
 
         public EngiComponent(string name, EngiComponent parentComponent, int internalWidth, int interalHeight,
-            bool waterContainer, SubstanceNetwork globalSubstanceNetwork)
+            bool waterContainer, SubstanceNetwork substanceNetwork)
         {
             Name = name;
             ParentComponent = parentComponent;
             InternalWidth = internalWidth;
             InteralHeight = interalHeight;
-            this.globalSubstanceNetwork = globalSubstanceNetwork;
+            this.substanceNetwork = substanceNetwork;
             ComponentGrid = new ComponentGrid(InternalWidth, InteralHeight);
 
             //TODO: Factor out of this class
             WaterContainer = waterContainer;
             if (waterContainer)
             {
-                this.globalSubstanceNetwork.AddNode(new SubstanceNetworkNode());
+                this.substanceNetwork.AddNode(new SubstanceNetworkNode(this));
             }
         }
 
@@ -48,9 +48,9 @@ namespace Assets.Scrips.Components
                 {
                     if (neigbour.WaterContainer)
                     {
-                        globalSubstanceNetwork.AddBidirectionalConnection(
-                            component.globalSubstanceNetwork.InterfaceNode,
-                            neigbour.globalSubstanceNetwork.InterfaceNode
+                        substanceNetwork.AddBidirectionalConnection(
+                            substanceNetwork.GetNodeForComponent(component),
+                            substanceNetwork.GetNodeForComponent(neigbour) 
                         );
                     }
                 }

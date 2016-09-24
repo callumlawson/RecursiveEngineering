@@ -27,7 +27,7 @@ namespace Assets.Scrips.MonoBehaviours.Interface
                 SelectedComponentName.text = string.Format(
                     "Selected Component: {0} Water: {1}",
                     GameRunner.CurrentlySelectedComponent().Name,
-                    GameRunner.CurrentlySelectedComponent().SubstanceNetwork.GetWater()
+                    GameRunner.CurrentlySelectedComponent().substanceNetwork.GetWater()
                 );
             }
             else

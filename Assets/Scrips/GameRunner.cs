@@ -41,6 +41,7 @@ namespace Assets.Scrips
         {
             if (Input.GetKeyDown(KeyCode.T))
             {
+                UnityEngine.Debug.Log("Adding water!");
                 var possibleNode = globalSubstanceNetwork.GetNodeForComponent(CurrentlySelectedComponent());
                 if (possibleNode != null)
                 {
@@ -92,7 +93,7 @@ namespace Assets.Scrips
         {
             if (button == 0)
             {
-                var componentToAdd = new EngiComponent("Box", ActiveComponent, 10, 10, false, globalSubstanceNetwork);
+                //var componentToAdd = new EngiComponent("Box", ActiveComponent, 10, 10, false, globalSubstanceNetwork);
                 var aDifferentComponentToAdd = new EngiComponent("Tank", ActiveComponent, 6, 7, true, globalSubstanceNetwork); 
                 AddComponentToActiveComponent(aDifferentComponentToAdd, currentlySelectedGrid);
             }

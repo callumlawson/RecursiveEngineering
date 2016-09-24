@@ -8,18 +8,16 @@ namespace Assets.Scrips.Networks
     //Networks have a type. 
     //Networks of the same type can be combined.
     //Networks are basically graphs with rules on their connections. 
+    //TODO: Consider using injection.
     public class SubstanceNetwork
     {
         private const string WATER = "water";
 
         private EngiDirectedSparseGraph<SubstanceNetworkNode> Network;
-        public SubstanceNetworkNode InterfaceNode { get; private set; }
 
         public SubstanceNetwork()
         {
             Network = new EngiDirectedSparseGraph<SubstanceNetworkNode>();
-            InterfaceNode = new SubstanceNetworkNode();
-            Network.AddVertex(InterfaceNode);
         }
 
         public float GetWater()
