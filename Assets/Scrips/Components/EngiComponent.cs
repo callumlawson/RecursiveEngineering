@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Assets.Scrips.Networks;
-using Assets.Scrips.Networks.Graph;
+﻿using Assets.Scrips.Networks;
 using Assets.Scrips.Util;
 using UnityEngine;
 
@@ -9,61 +6,72 @@ namespace Assets.Scrips.Components
 {
     public class EngiComponent
     {
-        public string Name;
-        public int InternalWidth;
+        public ComponentGrid ComponentGrid;
         public int InteralHeight;
+        public int InternalWidth;
+        public string Name;
 
         public EngiComponent ParentComponent;
-        public EngiComponent[,] InnerComponents;
 
-        private EngiDirectedSparseGraph<SubstanceNetworkNode> SubstanceNetwork;
+        public readonly SubstanceNetwork globalSubstanceNetwork;
 
-        public EngiComponent() { }
+        public bool WaterContainer;
 
-        public EngiComponent(string name, EngiComponent parentComponent, int internalWidth, int interalHeight, List<SubstanceNetworkNode> possibleNetworkNode = null)
+        public EngiComponent()
+        {
+        }
+
+        public EngiComponent(string name, EngiComponent parentComponent, int internalWidth, int interalHeight,
+            bool waterContainer, SubstanceNetwork globalSubstanceNetwork)
         {
             Name = name;
             ParentComponent = parentComponent;
             InternalWidth = internalWidth;
             InteralHeight = interalHeight;
-            InnerComponents = new EngiComponent[InternalWidth, InteralHeight];
-            SubstanceNetwork = new EngiDirectedSparseGraph<SubstanceNetworkNode>();
+            this.globalSubstanceNetwork = globalSubstanceNetwork;
+            ComponentGrid = new ComponentGrid(InternalWidth, InteralHeight);
+
+            //TODO: Factor out of this class
+            WaterContainer = waterContainer;
+            if (waterContainer)
+            {
+                this.globalSubstanceNetwork.AddNode(new SubstanceNetworkNode());
+            }
         }
 
-        public void AddComponent(EngiComponent component, GridCoordinate coord)
+        public bool AddComponent(EngiComponent component, GridCoordinate grid)
         {
-            if (InnerComponents[coord.X, coord.Y] == null)
+            //TODO: Extract this logic.s
+            if (component.WaterContainer)
             {
-                InnerComponents[coord.X, coord.Y] = component;
+                foreach (var neigbour in ComponentGrid.GetNeigbouringComponents(grid))
+                {
+                    if (neigbour.WaterContainer)
+                    {
+                        globalSubstanceNetwork.AddBidirectionalConnection(
+                            component.globalSubstanceNetwork.InterfaceNode,
+                            neigbour.globalSubstanceNetwork.InterfaceNode
+                        );
+                    }
+                }
             }
+
+            return ComponentGrid.AddComponent(component, grid);
         }
 
         public EngiComponent GetComponent(GridCoordinate grid)
         {
-            if (GridIsInComponent(grid))
-            {
-                return InnerComponents[grid.X, grid.Y];
-            }
-            throw new ArgumentOutOfRangeException("grid");
-        }
-
-        public bool GridIsInComponent(GridCoordinate coord)
-        {
-            return coord.X >= 0 && coord.Y >= 0 && coord.X < InternalWidth && coord.Y < InteralHeight;
+            return ComponentGrid.GetComponent(grid);
         }
 
         public GridCoordinate GetCenterGrid()
         {
-            return new GridCoordinate(Mathf.RoundToInt(InternalWidth/2.0f), Mathf.RoundToInt(InteralHeight /2.0f));
+            return new GridCoordinate(Mathf.RoundToInt(InternalWidth/2.0f), Mathf.RoundToInt(InteralHeight/2.0f));
         }
 
         public bool GridIsEmpty(GridCoordinate grid)
         {
-            if (GridIsInComponent(grid))
-            {
-                return InnerComponents[grid.X, grid.Y] == null;
-            }
-            return true;
+            return ComponentGrid.GridIsEmpty(grid);
         }
     }
 }

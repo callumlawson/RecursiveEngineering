@@ -162,6 +162,13 @@ namespace Assets.Scrips.Networks.Graph
             return adjacencyList[vertex];
         }
 
+        public LinkedList<TVertex> NeighboursInclusive(TVertex vertex)
+        {
+            var result =  new LinkedList<TVertex>(Neighbours(vertex));
+            result.AddFirst(vertex);
+            return result;
+        }
+
         public int Degree(TVertex vertex)
         {
             if (!HasVertex(vertex))

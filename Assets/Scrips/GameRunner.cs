@@ -9,60 +9,51 @@ using UnityEngine;
 
 namespace Assets.Scrips
 {
+    //THINGS I NOW UNDERSTAND!
+    //THERE SHOULD ONLY BE ONE OF EACH NETWORK!.
+    //TODO: Extract input handler from game runner.
     public class GameRunner : MonoBehaviour
     {
         [UsedImplicitly] public ComponentRenderer ComponentRenderer;
         [UsedImplicitly] public CameraController CameraController;
 
-        public EngiComponent ActiveComponent { get; private set; }
-
-        private EngiComponent worldComponent;
+        private EngiComponent ActiveComponent { get; set; }
+        private EngiComponent WorldComponent { get; set; }
 
         private const float DoubleClickTimeLimit = 0.20f;
+
+        //Networks
+        private SubstanceNetwork globalSubstanceNetwork;
 
         [UsedImplicitly]
         public void Start()
         {
+            globalSubstanceNetwork = new SubstanceNetwork();
+            WorldComponent = new EngiComponent("Sub Pen", null, 32, 18, false, globalSubstanceNetwork);
+            SetActiveComponent(WorldComponent);
+
             StartCoroutine(InputListener());
-
-            worldComponent = new EngiComponent("Sub Pen", null, 32, 18);
-
-            SetActiveComponent(worldComponent);
+            StartCoroutine(Ticker());
         }
 
         [UsedImplicitly]
         public void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Q))
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                var possibleNode = globalSubstanceNetwork.GetNodeForComponent(CurrentlySelectedComponent());
+                if (possibleNode != null)
+                {
+                    possibleNode.UpdateSubstance("Water", possibleNode.GetSubstance("Water") + 10);
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.Q))
             {
                 //TODO: Rotate selected component.     
             }
             else if (Input.GetKeyDown(KeyCode.E))
             {
                 
-            }
-        }
-
-        private void SingleClick(int button, GridCoordinate currentlySelectedGrid)
-        {
-            if (button == 0)
-            {
-                var componentToAdd = new EngiComponent("Box", ActiveComponent, 10, 10);
-                var aDifferentComponentToAdd = new EngiComponent("Tank", ActiveComponent, 6, 7, new List<SubstanceNetworkNode>{new SubstanceNetworkNode()});
-                AddComponentToActiveComponent(componentToAdd, currentlySelectedGrid);
-            }
-        }
-
-        private void DoubleClick(int button, GridCoordinate currentlySelectedGrid)
-        {
-            if (button == 1 && ActiveComponent.ParentComponent != null)
-            {
-                SetActiveComponent(ActiveComponent.ParentComponent);
-            }
-
-            if (CurrentlySelectedComponent() != null && button == 0)
-            {
-                SetActiveComponent(CurrentlySelectedComponent());
             }
         }
 
@@ -88,11 +79,42 @@ namespace Assets.Scrips
             return null;
         }
 
+        private IEnumerator Ticker()
+        {
+            while (true)
+            {
+                globalSubstanceNetwork.Tick();
+                yield return new WaitForSeconds(1.0f);
+            }
+        }
+
+        private void SingleClick(int button, GridCoordinate currentlySelectedGrid)
+        {
+            if (button == 0)
+            {
+                var componentToAdd = new EngiComponent("Box", ActiveComponent, 10, 10, false, globalSubstanceNetwork);
+                var aDifferentComponentToAdd = new EngiComponent("Tank", ActiveComponent, 6, 7, true, globalSubstanceNetwork); 
+                AddComponentToActiveComponent(aDifferentComponentToAdd, currentlySelectedGrid);
+            }
+        }
+
+        private void DoubleClick(int button, GridCoordinate currentlySelectedGrid)
+        {
+            if (button == 1 && ActiveComponent.ParentComponent != null)
+            {
+                SetActiveComponent(ActiveComponent.ParentComponent);
+            }
+
+            if (CurrentlySelectedComponent() != null && button == 0)
+            {
+                SetActiveComponent(CurrentlySelectedComponent());
+            }
+        }
+
         private void AddComponentToActiveComponent(EngiComponent componentToAdd, GridCoordinate placeToAdd)
         {
-            if (ActiveComponent.GridIsInComponent(placeToAdd) && ActiveComponent.GridIsEmpty(placeToAdd))
+            if (ActiveComponent.AddComponent(componentToAdd, placeToAdd))
             {
-                ActiveComponent.AddComponent(componentToAdd, placeToAdd);
                 ComponentRenderer.RenderComponent(ActiveComponent);
             }
         }

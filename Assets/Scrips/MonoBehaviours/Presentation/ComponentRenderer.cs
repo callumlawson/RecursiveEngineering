@@ -71,15 +71,15 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 Destroy(child.gameObject);
             }
 
-            for (var x = 0; x < outerComponent.InnerComponents.GetLength(0); x++)
+            for (var x = 0; x < outerComponent.ComponentGrid.Width; x++)
             {
-                for (var y = 0; y < outerComponent.InnerComponents.GetLength(1); y++)
+                for (var y = 0; y < outerComponent.ComponentGrid.Height; y++)
                 {
-                    var innerComponent = outerComponent.InnerComponents[x, y];
+                    var grid = new GridCoordinate(x, y);
+                    var innerComponent = outerComponent.GetComponent(grid);
                     if (innerComponent != null)
                     {
-                        var grid = new GridCoordinate(x, y);
-                        var component = outerComponent.InnerComponents[x, y];
+                        var component = outerComponent.GetComponent(grid);
                         var componentAsset = Resources.Load<GameObject>(component.Name);
                         var componentGameObject = Instantiate(componentAsset);
                         componentGameObject.transform.parent = innerRendererRoot.transform;
