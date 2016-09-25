@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Assets.Scrips.Components;
 using Assets.Scrips.Networks.Graph;
 using Assets.Scrips.Networks.Substance;
@@ -19,22 +20,27 @@ namespace Assets.Scrips.Networks
             Network = new EngiDirectedSparseGraph<SubstanceNetworkNode>();
         }
 
-        public float GetWater(EngiComponent component)
+        public float GetTotalWater(EngiComponent component)
         {
             var result = 0.0f;
-            foreach (var substanceNode in Network.Vertices)
+            foreach (var substanceNode in GetNodesForComonent(component))
             {
-                if (substanceNode.Component == component)
-                {
-                    result += substanceNode.GetSubstance(SubstanceTypes.WATER);
-                }
+                result += substanceNode.GetSubstance(SubstanceTypes.WATER);
             }
             return result;
         }
 
-        public void Tick()
+        public List<SubstanceNetworkNode> GetNodesForComonent(EngiComponent component)
         {
-            Flow();
+            var result = new List<SubstanceNetworkNode>();
+            foreach (var substanceNode in Network.Vertices)
+            {
+                if (substanceNode.Component == component)
+                {
+                    result.Add(substanceNode);
+                }
+            }
+            return result;
         }
 
         public SubstanceNetworkNode GetNodeForComponent(EngiComponent component)
@@ -47,6 +53,11 @@ namespace Assets.Scrips.Networks
                 }
             }
             return null;
+        }
+
+        public void Simulate()
+        {
+            Flow();
         }
 
         public bool AddConnection(SubstanceNetworkNode source, SubstanceNetworkNode destination)
@@ -75,7 +86,7 @@ namespace Assets.Scrips.Networks
             foreach (var graphVertex in Network.Vertices)
             {
                 var neighbours = Network.NeighboursInclusive(graphVertex);
-                var averageValue = neighbours.Sum(vertex => vertex.GetSubstance(SubstanceTypes.WATER)) / neighbours.Count;
+                var averageValue = neighbours.Sum(vertex => vertex.GetSubstance(SubstanceTypes.WATER))/neighbours.Count;
                 foreach (var neighbour in neighbours)
                 {
                     neighbour.UpdateSubstance(SubstanceTypes.WATER, averageValue);
