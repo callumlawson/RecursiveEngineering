@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Assets.Scrips.Components;
 using Assets.Scrips.Networks.Graph;
+using Assets.Scrips.Networks.Substance;
 
 namespace Assets.Scrips.Networks
 {
@@ -11,8 +12,6 @@ namespace Assets.Scrips.Networks
     //TODO: Consider using injection.
     public class SubstanceNetwork
     {
-        private const string WATER = "water";
-
         private EngiDirectedSparseGraph<SubstanceNetworkNode> Network;
 
         public SubstanceNetwork()
@@ -20,12 +19,15 @@ namespace Assets.Scrips.Networks
             Network = new EngiDirectedSparseGraph<SubstanceNetworkNode>();
         }
 
-        public float GetWater()
+        public float GetWater(EngiComponent component)
         {
             var result = 0.0f;
             foreach (var substanceNode in Network.Vertices)
             {
-                result += substanceNode.GetSubstance(WATER);
+                if (substanceNode.Component == component)
+                {
+                    result += substanceNode.GetSubstance(SubstanceTypes.WATER);
+                }
             }
             return result;
         }
@@ -73,10 +75,10 @@ namespace Assets.Scrips.Networks
             foreach (var graphVertex in Network.Vertices)
             {
                 var neighbours = Network.NeighboursInclusive(graphVertex);
-                var averageValue = neighbours.Sum(vertex => vertex.GetSubstance(WATER)) / neighbours.Count;
+                var averageValue = neighbours.Sum(vertex => vertex.GetSubstance(SubstanceTypes.WATER)) / neighbours.Count;
                 foreach (var neighbour in neighbours)
                 {
-                    neighbour.UpdateSubstance(WATER, averageValue);
+                    neighbour.UpdateSubstance(SubstanceTypes.WATER, averageValue);
                 }
             }
         }

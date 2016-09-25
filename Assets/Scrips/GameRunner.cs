@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Assets.Scrips.Components;
 using Assets.Scrips.MonoBehaviours.Presentation;
 using Assets.Scrips.Networks;
+using Assets.Scrips.Networks.Substance;
 using Assets.Scrips.Util;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -23,13 +24,13 @@ namespace Assets.Scrips
         private const float DoubleClickTimeLimit = 0.20f;
 
         //Networks
-        private SubstanceNetwork globalSubstanceNetwork;
+        public SubstanceNetwork GlobalSubstanceNetwork;
 
         [UsedImplicitly]
         public void Start()
         {
-            globalSubstanceNetwork = new SubstanceNetwork();
-            WorldComponent = new EngiComponent("Sub Pen", null, 32, 18, false, globalSubstanceNetwork);
+            GlobalSubstanceNetwork = new SubstanceNetwork();
+            WorldComponent = new EngiComponent("Sub Pen", null, 32, 18, false, GlobalSubstanceNetwork);
             SetActiveComponent(WorldComponent);
 
             StartCoroutine(InputListener());
@@ -41,11 +42,11 @@ namespace Assets.Scrips
         {
             if (Input.GetKeyDown(KeyCode.T))
             {
-                UnityEngine.Debug.Log("Adding water!");
-                var possibleNode = globalSubstanceNetwork.GetNodeForComponent(CurrentlySelectedComponent());
+                var possibleNode = GlobalSubstanceNetwork.GetNodeForComponent(CurrentlySelectedComponent());
                 if (possibleNode != null)
                 {
-                    possibleNode.UpdateSubstance("Water", possibleNode.GetSubstance("Water") + 10);
+                    UnityEngine.Debug.Log("adding water!");
+                    possibleNode.UpdateSubstance(SubstanceTypes.WATER, possibleNode.GetSubstance(SubstanceTypes.WATER) + 10);
                 }
             }
             else if (Input.GetKeyDown(KeyCode.Q))
@@ -84,7 +85,7 @@ namespace Assets.Scrips
         {
             while (true)
             {
-                globalSubstanceNetwork.Tick();
+                GlobalSubstanceNetwork.Tick();
                 yield return new WaitForSeconds(1.0f);
             }
         }
@@ -94,7 +95,7 @@ namespace Assets.Scrips
             if (button == 0)
             {
                 //var componentToAdd = new EngiComponent("Box", ActiveComponent, 10, 10, false, globalSubstanceNetwork);
-                var aDifferentComponentToAdd = new EngiComponent("Tank", ActiveComponent, 6, 7, true, globalSubstanceNetwork); 
+                var aDifferentComponentToAdd = new EngiComponent("Tank", ActiveComponent, 6, 7, true, GlobalSubstanceNetwork); 
                 AddComponentToActiveComponent(aDifferentComponentToAdd, currentlySelectedGrid);
             }
         }
