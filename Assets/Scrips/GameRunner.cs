@@ -85,7 +85,7 @@ namespace Assets.Scrips
         {
             while (true)
             {
-                GlobalSubstanceNetwork.Tick();
+                GlobalSubstanceNetwork.Simulate();
                 yield return new WaitForSeconds(1.0f);
             }
         }
