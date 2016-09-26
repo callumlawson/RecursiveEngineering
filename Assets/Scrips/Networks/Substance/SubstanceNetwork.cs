@@ -20,28 +20,23 @@ namespace Assets.Scrips.Networks
             Network = new EngiDirectedSparseGraph<SubstanceNetworkNode>();
         }
 
-        public float GetTotalWater(EngiComponent component)
+        public float GetWater(EngiComponent component)
         {
-            var result = 0.0f;
-            foreach (var substanceNode in GetNodesForComonent(component))
-            {
-                result += substanceNode.GetSubstance(SubstanceTypes.WATER);
-            }
-            return result;
+            return GetNodeForComponent(component) != null ? GetNodeForComponent(component).GetSubstance(SubstanceTypes.WATER) : 0.0f;
         }
 
-        public List<SubstanceNetworkNode> GetNodesForComonent(EngiComponent component)
-        {
-            var result = new List<SubstanceNetworkNode>();
-            foreach (var substanceNode in Network.Vertices)
-            {
-                if (substanceNode.Component == component)
-                {
-                    result.Add(substanceNode);
-                }
-            }
-            return result;
-        }
+//        public List<SubstanceNetworkNode> GetNodesForComonent(EngiComponent component)
+//        {
+//            var result = new List<SubstanceNetworkNode>();
+//            foreach (var substanceNode in Network.Vertices)
+//            {
+//                if (substanceNode.Component == component)
+//                {
+//                    result.Add(substanceNode);
+//                }
+//            }
+//            return result;
+//        }
 
         public SubstanceNetworkNode GetNodeForComponent(EngiComponent component)
         {

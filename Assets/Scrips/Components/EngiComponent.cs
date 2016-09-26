@@ -6,23 +6,27 @@ namespace Assets.Scrips.Components
 {
     public class EngiComponent
     {
-        public ComponentGrid ComponentGrid;
-        public int InteralHeight;
-        public int InternalWidth;
-        public string Name;
+        public readonly ComponentGrid ComponentGrid;
+        public readonly int InteralHeight;
+        public readonly int InternalWidth;
+        public readonly string Name;
 
-        public EngiComponent ParentComponent;
+        public readonly EngiComponent ParentComponent;
 
-        public readonly SubstanceNetwork substanceNetwork;
-
-        public bool WaterContainer;
+        private readonly SubstanceNetwork substanceNetwork;
+        private readonly bool waterContainer;
 
         public EngiComponent()
         {
         }
 
-        public EngiComponent(string name, EngiComponent parentComponent, int internalWidth, int interalHeight,
-            bool waterContainer, SubstanceNetwork substanceNetwork)
+        public EngiComponent(
+            string name, 
+            EngiComponent parentComponent, 
+            int internalWidth, 
+            int interalHeight,
+            bool waterContainer, 
+            SubstanceNetwork substanceNetwork)
         {
             Name = name;
             ParentComponent = parentComponent;
@@ -32,7 +36,7 @@ namespace Assets.Scrips.Components
             ComponentGrid = new ComponentGrid(InternalWidth, InteralHeight);
 
             //TODO: Factor out of this class
-            WaterContainer = waterContainer;
+            this.waterContainer = waterContainer;
             if (waterContainer)
             {
                 this.substanceNetwork.AddNode(new SubstanceNetworkNode(this));
@@ -42,11 +46,11 @@ namespace Assets.Scrips.Components
         public bool AddComponent(EngiComponent component, GridCoordinate grid)
         {
             //TODO: Extract this logic.s
-            if (component.WaterContainer)
+            if (component.waterContainer)
             {
                 foreach (var neigbour in ComponentGrid.GetNeigbouringComponents(grid))
                 {
-                    if (neigbour.WaterContainer)
+                    if (neigbour.waterContainer)
                     {
                         substanceNetwork.AddBidirectionalConnection(
                             substanceNetwork.GetNodeForComponent(component),
@@ -62,6 +66,11 @@ namespace Assets.Scrips.Components
         public EngiComponent GetComponent(GridCoordinate grid)
         {
             return ComponentGrid.GetComponent(grid);
+        }
+
+        public GridCoordinate GetGridForComponent(EngiComponent component)
+        {
+            return ComponentGrid.GetGridForComponent(component);
         }
 
         public GridCoordinate GetCenterGrid()

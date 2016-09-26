@@ -2,7 +2,7 @@
 
 namespace Assets.Scrips.Util
 {
-    public struct GridCoordinate
+    public class GridCoordinate
     {
         public readonly int X;
         public readonly int Y;

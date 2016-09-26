@@ -16,12 +16,14 @@ namespace Assets.Scrips
     public class GameRunner : MonoBehaviour
     {
         [UsedImplicitly] public ComponentRenderer ComponentRenderer;
+        [UsedImplicitly] public SubstanceRenderer SubstanceRenderer;
         [UsedImplicitly] public CameraController CameraController;
 
         private EngiComponent ActiveComponent { get; set; }
         private EngiComponent WorldComponent { get; set; }
 
         private const float DoubleClickTimeLimit = 0.20f;
+        private const float SimulationTickPeriodInSeconds = 0.1f;
 
         //Networks
         public SubstanceNetwork GlobalSubstanceNetwork;
@@ -40,12 +42,14 @@ namespace Assets.Scrips
         [UsedImplicitly]
         public void Update()
         {
+            ComponentRenderer.Render(ActiveComponent);
+            SubstanceRenderer.Render(ActiveComponent, GlobalSubstanceNetwork);
+
             if (Input.GetKeyDown(KeyCode.T))
             {
                 var possibleNode = GlobalSubstanceNetwork.GetNodeForComponent(CurrentlySelectedComponent());
                 if (possibleNode != null)
                 {
-                    UnityEngine.Debug.Log("adding water!");
                     possibleNode.UpdateSubstance(SubstanceTypes.WATER, possibleNode.GetSubstance(SubstanceTypes.WATER) + 10);
                 }
             }
@@ -86,7 +90,8 @@ namespace Assets.Scrips
             while (true)
             {
                 GlobalSubstanceNetwork.Simulate();
-                yield return new WaitForSeconds(1.0f);
+               
+                yield return new WaitForSeconds(SimulationTickPeriodInSeconds);
             }
         }
 
@@ -117,7 +122,7 @@ namespace Assets.Scrips
         {
             if (ActiveComponent.AddComponent(componentToAdd, placeToAdd))
             {
-                ComponentRenderer.RenderComponent(ActiveComponent);
+                ComponentRenderer.Render(ActiveComponent);
             }
         }
 
@@ -125,7 +130,6 @@ namespace Assets.Scrips
         {
             //TODO: Encapsulate active component.
             ActiveComponent = component;
-            ComponentRenderer.RenderComponent(component);
             CameraController.SetPosition(GridCoordinate.GridToPosition(ActiveComponent.GetCenterGrid()));
         }
 

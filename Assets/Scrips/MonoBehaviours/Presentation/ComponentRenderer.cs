@@ -57,7 +57,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             return new GridCoordinate(gridx, gridy);
         }
 
-        public void RenderComponent(EngiComponent outerComponent)
+        public void Render(EngiComponent outerComponent)
         {
             RenderOuterComponent(outerComponent);
             RenderInnerComponents(outerComponent);

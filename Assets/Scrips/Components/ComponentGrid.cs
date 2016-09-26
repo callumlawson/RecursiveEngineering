@@ -1,28 +1,29 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Assets.Scrips.Util;
 
 namespace Assets.Scrips.Components
 {
-    public class ComponentGrid
+    public class ComponentGrid : IEnumerable<EngiComponent>
     {
         public int Width { get; private set; }
         public int Height { get; private set; }
 
-        private readonly EngiComponent[,] InnerComponents;
+        private readonly EngiComponent[,] innerComponents;
 
         public ComponentGrid(int width, int height)
         {
             Width = width;
             Height = height;
-            InnerComponents = new EngiComponent[width, height];
+            innerComponents = new EngiComponent[width, height];
         }
 
         public bool AddComponent(EngiComponent component, GridCoordinate coord)
         {
-            if (GridIsEmpty(coord))
+            if (GridIsInComponent(coord) && GridIsEmpty(coord))
             {
-                InnerComponents[coord.X, coord.Y] = component;
+                innerComponents[coord.X, coord.Y] = component;
                 return true;
             }
             return false;
@@ -32,16 +33,32 @@ namespace Assets.Scrips.Components
         {
             if (GridIsInComponent(grid))
             {
-                return InnerComponents[grid.X, grid.Y];
+                return innerComponents[grid.X, grid.Y];
             }
             throw new ArgumentOutOfRangeException("grid");
+        }
+
+        public GridCoordinate GetGridForComponent(EngiComponent component)
+        {
+            for (var x = 0; x < Width; x++)
+            {
+                for (var y = 0; y < Height; y++)
+                {
+                    var gridCoordinate = new GridCoordinate(x, y);
+                    if (GetComponent(gridCoordinate) == component)
+                    {
+                        return gridCoordinate;
+                    }
+                }
+            }
+            return null;
         }
 
         public bool GridIsEmpty(GridCoordinate grid)
         {
             if (GridIsInComponent(grid))
             {
-                return InnerComponents[grid.X, grid.Y] == null;
+                return innerComponents[grid.X, grid.Y] == null;
             }
             return true;
         }
@@ -75,8 +92,24 @@ namespace Assets.Scrips.Components
         {
             return coord.X >= 0 &&
                    coord.Y >= 0 &&
-                   coord.X < InnerComponents.GetLength(0) &&
-                   coord.Y < InnerComponents.GetLength(1);
+                   coord.X < innerComponents.GetLength(0) &&
+                   coord.Y < innerComponents.GetLength(1);
+        }
+
+        public IEnumerator<EngiComponent> GetEnumerator()
+        {
+            foreach (var component in innerComponents)
+            {
+                if (component != null)
+                {
+                    yield return component;
+                }
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
