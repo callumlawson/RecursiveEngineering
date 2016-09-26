@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Assets.Scrips.Components;
 using Assets.Scrips.MonoBehaviours.Presentation;
 using Assets.Scrips.Networks;
@@ -19,6 +20,7 @@ namespace Assets.Scrips
         [UsedImplicitly] public SubstanceRenderer SubstanceRenderer;
         [UsedImplicitly] public CameraController CameraController;
 
+        public ComponentLibrary ComponentLibrary { get; private set; }
         private EngiComponent ActiveComponent { get; set; }
         private EngiComponent WorldComponent { get; set; }
 
@@ -32,9 +34,9 @@ namespace Assets.Scrips
         public void Start()
         {
             GlobalSubstanceNetwork = new SubstanceNetwork();
-            WorldComponent = new EngiComponent("Sub Pen", null, 32, 18, false, GlobalSubstanceNetwork);
+            ComponentLibrary = new ComponentLibrary();
+            WorldComponent = new EngiComponent(new ComponentData { Name = "Sub Pen", InternalWidth = 32, InteralHeight = 18, WaterContainer = false }, null, GlobalSubstanceNetwork);
             SetActiveComponent(WorldComponent);
-
             StartCoroutine(InputListener());
             StartCoroutine(Ticker());
         }
@@ -53,13 +55,15 @@ namespace Assets.Scrips
                     possibleNode.UpdateSubstance(SubstanceTypes.WATER, possibleNode.GetSubstance(SubstanceTypes.WATER) + 10);
                 }
             }
-            else if (Input.GetKeyDown(KeyCode.Q))
+
+            if (Input.GetKeyDown(KeyCode.Q))
             {
-                //TODO: Rotate selected component.     
+                ComponentLibrary.DecrementSelectedComponent();
             }
-            else if (Input.GetKeyDown(KeyCode.E))
+
+            if (Input.GetKeyDown(KeyCode.E))
             {
-                
+                ComponentLibrary.IncrementSelectedComponent();
             }
         }
 
@@ -90,7 +94,6 @@ namespace Assets.Scrips
             while (true)
             {
                 GlobalSubstanceNetwork.Simulate();
-               
                 yield return new WaitForSeconds(SimulationTickPeriodInSeconds);
             }
         }
@@ -99,9 +102,8 @@ namespace Assets.Scrips
         {
             if (button == 0)
             {
-                //var componentToAdd = new EngiComponent("Box", ActiveComponent, 10, 10, false, globalSubstanceNetwork);
-                var aDifferentComponentToAdd = new EngiComponent("Tank", ActiveComponent, 6, 7, true, GlobalSubstanceNetwork); 
-                AddComponentToActiveComponent(aDifferentComponentToAdd, currentlySelectedGrid);
+                var componentToAdd = new EngiComponent(ComponentLibrary.GetSelectedComponent(), ActiveComponent, GlobalSubstanceNetwork);
+                AddComponentToActiveComponent(componentToAdd, currentlySelectedGrid);
             }
         }
 
