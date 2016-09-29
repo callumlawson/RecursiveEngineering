@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scrips.Components;
+using Assets.Scrips.Modules;
 using Assets.Scrips.MonoBehaviours.Presentation;
 using Assets.Scrips.Networks;
 using Assets.Scrips.Networks.Substance;
@@ -20,9 +21,9 @@ namespace Assets.Scrips
         [UsedImplicitly] public SubstanceRenderer SubstanceRenderer;
         [UsedImplicitly] public CameraController CameraController;
 
-        public ComponentLibrary ComponentLibrary { get; private set; }
-        private EngiComponent ActiveComponent { get; set; }
-        private EngiComponent WorldComponent { get; set; }
+        public ModuleLibrary ModuleLibrary { get; private set; }
+        private Module ActiveComponent { get; set; }
+        private Module WorldComponent { get; set; }
 
         private const float DoubleClickTimeLimit = 0.20f;
         private const float SimulationTickPeriodInSeconds = 0.1f;
@@ -34,8 +35,12 @@ namespace Assets.Scrips
         public void Start()
         {
             GlobalSubstanceNetwork = new SubstanceNetwork();
-            ComponentLibrary = new ComponentLibrary();
-            WorldComponent = new EngiComponent(new ComponentData { Name = "Sub Pen", InternalWidth = 32, InteralHeight = 18, WaterContainer = false }, null, GlobalSubstanceNetwork);
+            ModuleLibrary = new ModuleLibrary();
+            WorldComponent = new Module( 
+                null,
+                new List<IComponent>{new CoreComponent("Sub Pen", 32 ,18 , ModuleType.Container)} 
+            );
+
             SetActiveComponent(WorldComponent);
             StartCoroutine(InputListener());
             StartCoroutine(Ticker());
@@ -58,33 +63,33 @@ namespace Assets.Scrips
 
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                ComponentLibrary.DecrementSelectedComponent();
+                ModuleLibrary.DecrementSelectedComponent();
             }
 
             if (Input.GetKeyDown(KeyCode.E))
             {
-                ComponentLibrary.IncrementSelectedComponent();
+                ModuleLibrary.IncrementSelectedComponent();
             }
         }
 
-        public List<EngiComponent> CurrentHeirarchy()
+        public List<Module> CurrentHeirarchy()
         {
-            var heirarchy = new List<EngiComponent>();
+            var heirarchy = new List<Module>();
             var current = ActiveComponent;
             do
             {
                 heirarchy.Add(current);
-                current = current.ParentComponent;
+                current = current.ParentModule;
             } while (current != null);
             return heirarchy;
         }
 
-        public EngiComponent CurrentlySelectedComponent()
+        public Module CurrentlySelectedComponent()
         {
             var selectedGrid = ComponentRenderer.CurrentlySelectedGrid();
             if (!ActiveComponent.GridIsEmpty(selectedGrid))
             {
-                return ActiveComponent.GetComponent(selectedGrid);
+                return ActiveComponent.GetModule(selectedGrid);
             }
             return null;
         }
@@ -102,33 +107,34 @@ namespace Assets.Scrips
         {
             if (button == 0)
             {
-                var componentToAdd = new EngiComponent(ComponentLibrary.GetSelectedComponent(), ActiveComponent, GlobalSubstanceNetwork);
+                var componentToAdd = new Module(ActiveComponent, ModuleLibrary.GetSelectedComponent());
                 AddComponentToActiveComponent(componentToAdd, currentlySelectedGrid);
             }
         }
 
         private void DoubleClick(int button, GridCoordinate currentlySelectedGrid)
         {
-            if (button == 1 && ActiveComponent.ParentComponent != null)
+            if (button == 1 && ActiveComponent.ParentModule != null)
             {
-                SetActiveComponent(ActiveComponent.ParentComponent);
+                SetActiveComponent(ActiveComponent.ParentModule);
             }
 
-            if (CurrentlySelectedComponent() != null && button == 0)
+            if (CurrentlySelectedComponent() != null && button == 0 && !CurrentlySelectedComponent().IsTerminalModule)
             {
                 SetActiveComponent(CurrentlySelectedComponent());
             }
         }
 
-        private void AddComponentToActiveComponent(EngiComponent componentToAdd, GridCoordinate placeToAdd)
+        private void AddComponentToActiveComponent(Module componentToAdd, GridCoordinate placeToAdd)
         {
-            if (ActiveComponent.AddComponent(componentToAdd, placeToAdd))
+            if (ActiveComponent.AddModule(componentToAdd, placeToAdd))
             {
+                GlobalSubstanceNetwork.AddComponent(componentToAdd, placeToAdd);
                 ComponentRenderer.Render(ActiveComponent);
             }
         }
 
-        private void SetActiveComponent(EngiComponent component)
+        private void SetActiveComponent(Module component)
         {
             //TODO: Encapsulate active component.
             ActiveComponent = component;

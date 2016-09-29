@@ -1,19 +1,10 @@
-﻿namespace Assets.Scrips.Components
+﻿namespace Assets.Scrips.Modules
 {
-    public enum Direction
+    public enum Edge
     {
         Up,
         Down,
         Left,
         Right
-    }
-
-    public class SubstanceConnection
-    {
-        public Direction Direction;
-
-        public SubstanceConnection()
-        {
-        }
     }
 }

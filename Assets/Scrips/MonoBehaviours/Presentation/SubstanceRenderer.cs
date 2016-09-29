@@ -1,4 +1,4 @@
-﻿using Assets.Scrips.Components;
+﻿using Assets.Scrips.Modules;
 using Assets.Scrips.Networks;
 using Assets.Scrips.Networks.Substance;
 using Assets.Scrips.Util;
@@ -27,7 +27,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             InitSubstanceTiles();
         }
 
-        public void Render(EngiComponent activeComponent, SubstanceNetwork substanceNetwork)
+        public void Render(Module activeComponent, SubstanceNetwork substanceNetwork)
         {
             for (var x = 0; x < LayoutConstants.MaxWidth; x++)
             {
@@ -37,10 +37,10 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 }
             }
 
-            foreach (var innerComponent in activeComponent.ComponentGrid)
+            foreach (var innerComponent in activeComponent.ModuleGrid)
             {
                 var substanceNode = substanceNetwork.GetNodeForComponent(innerComponent);
-                var gridForSubstance = activeComponent.GetGridForComponent(innerComponent);
+                var gridForSubstance = activeComponent.GetGridForModule(innerComponent);
                 if (substanceNode != null)
                 {
                     var water = substanceNode.GetSubstance(SubstanceTypes.WATER);

@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Assets.Scrips.Components;
+using Assets.Scrips.Modules;
 using Assets.Scrips.Networks.Graph;
 using Assets.Scrips.Networks.Substance;
+using Assets.Scrips.Util;
 
 namespace Assets.Scrips.Networks
 {
@@ -20,17 +21,17 @@ namespace Assets.Scrips.Networks
             Network = new EngiDirectedSparseGraph<SubstanceNetworkNode>();
         }
 
-        public float GetWater(EngiComponent component)
+        public float GetWater(Module component)
         {
             return GetNodeForComponent(component) != null ? GetNodeForComponent(component).GetSubstance(SubstanceTypes.WATER) : 0.0f;
         }
 
-//        public List<SubstanceNetworkNode> GetNodesForComonent(EngiComponent component)
+//        public List<SubstanceNetworkNode> GetNodesForComonent(EngiComponent module)
 //        {
 //            var result = new List<SubstanceNetworkNode>();
 //            foreach (var substanceNode in Network.Vertices)
 //            {
-//                if (substanceNode.Component == component)
+//                if (substanceNode.Module == module)
 //                {
 //                    result.Add(substanceNode);
 //                }
@@ -38,11 +39,11 @@ namespace Assets.Scrips.Networks
 //            return result;
 //        }
 
-        public SubstanceNetworkNode GetNodeForComponent(EngiComponent component)
+        public SubstanceNetworkNode GetNodeForComponent(Module module)
         {
             foreach (var vertex in Network.Vertices)
             {
-                if (vertex.Component == component)
+                if (vertex.Module == module)
                 {
                     return vertex;
                 }
@@ -55,20 +56,25 @@ namespace Assets.Scrips.Networks
             Flow();
         }
 
+        public void AddComponent(Module addedModule, GridCoordinate grid)
+        {
+            if (addedModule.GetComponent<CoreComponent>().Type == ModuleType.WaterTank)
+            {
+                AddNode(new SubstanceNetworkNode(addedModule));
+
+                foreach (var neigbour in addedModule.ParentModule.ModuleGrid.GetNeigbouringComponents(grid))
+                {
+                    if (neigbour.GetComponent<CoreComponent>().Type == ModuleType.WaterTank)
+                    {
+                        AddBidirectionalConnection(GetNodeForComponent(addedModule), GetNodeForComponent(neigbour));
+                    }
+                }
+            }
+        }
+
         public bool AddConnection(SubstanceNetworkNode source, SubstanceNetworkNode destination)
         {
             return Network.AddEdge(source, destination);
-        }
-
-        public void AddBidirectionalConnection(SubstanceNetworkNode source, SubstanceNetworkNode destination)
-        {
-            Network.AddEdge(destination, source);
-            Network.AddEdge(source, destination);
-        }
-
-        public void AddNode(SubstanceNetworkNode node)
-        {
-            Network.AddVertex(node);
         }
 
         public string Readable()
@@ -87,6 +93,17 @@ namespace Assets.Scrips.Networks
                     neighbour.UpdateSubstance(SubstanceTypes.WATER, averageValue);
                 }
             }
+        }
+
+        private void AddBidirectionalConnection(SubstanceNetworkNode source, SubstanceNetworkNode destination)
+        {
+            Network.AddEdge(destination, source);
+            Network.AddEdge(source, destination);
+        }
+
+        private void AddNode(SubstanceNetworkNode node)
+        {
+            Network.AddVertex(node);
         }
     }
 }

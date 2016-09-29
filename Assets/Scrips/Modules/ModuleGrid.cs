@@ -3,23 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using Assets.Scrips.Util;
 
-namespace Assets.Scrips.Components
+namespace Assets.Scrips.Modules
 {
-    public class ComponentGrid : IEnumerable<EngiComponent>
+    public class ModuleGrid : IEnumerable<Module>
     {
         public int Width { get; private set; }
         public int Height { get; private set; }
 
-        private readonly EngiComponent[,] innerComponents;
+        private readonly Module[,] innerComponents;
 
-        public ComponentGrid(int width, int height)
+        public ModuleGrid(int width, int height)
         {
             Width = width;
             Height = height;
-            innerComponents = new EngiComponent[width, height];
+            innerComponents = new Module[width, height];
         }
 
-        public bool AddComponent(EngiComponent component, GridCoordinate coord)
+        public bool AddComponent(Module component, GridCoordinate coord)
         {
             if (GridIsInComponent(coord) && GridIsEmpty(coord))
             {
@@ -29,7 +29,7 @@ namespace Assets.Scrips.Components
             return false;
         }
 
-        public EngiComponent GetComponent(GridCoordinate grid)
+        public Module GetComponent(GridCoordinate grid)
         {
             if (GridIsInComponent(grid))
             {
@@ -38,7 +38,7 @@ namespace Assets.Scrips.Components
             throw new ArgumentOutOfRangeException("grid");
         }
 
-        public GridCoordinate GetGridForComponent(EngiComponent component)
+        public GridCoordinate GetGridForComponent(Module component)
         {
             for (var x = 0; x < Width; x++)
             {
@@ -68,9 +68,9 @@ namespace Assets.Scrips.Components
             return !GridIsEmpty(grid);
         }
 
-        public List<EngiComponent> GetNeigbouringComponents(GridCoordinate grid)
+        public List<Module> GetNeigbouringComponents(GridCoordinate grid)
         {
-            var list = new List<EngiComponent>();
+            var list = new List<Module>();
             var neighbourGrids = new List<GridCoordinate>
             {
                 new GridCoordinate(grid.X - 1, grid.Y),
@@ -96,7 +96,7 @@ namespace Assets.Scrips.Components
                    coord.Y < innerComponents.GetLength(1);
         }
 
-        public IEnumerator<EngiComponent> GetEnumerator()
+        public IEnumerator<Module> GetEnumerator()
         {
             foreach (var component in innerComponents)
             {

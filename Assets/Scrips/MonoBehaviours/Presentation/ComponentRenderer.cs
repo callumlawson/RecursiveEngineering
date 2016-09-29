@@ -1,5 +1,5 @@
-﻿using System;
-using Assets.Scrips.Components;
+﻿using Assets.Scrips.Components;
+using Assets.Scrips.Modules;
 using Assets.Scrips.Util;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -15,7 +15,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         private GameObject innerRendererRoot;
         private GameObject selectedGridIndicator;
 
-        private EngiComponent lastRenderedComponent;
+        private Module lastRenderedComponent;
 
         [UsedImplicitly]
         public void Start()
@@ -37,7 +37,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 innerRendererRoot.transform.parent = transform;
             }
 
-            lastRenderedComponent = new EngiComponent();
+            lastRenderedComponent = new Module();
         }
 
         [UsedImplicitly]
@@ -57,30 +57,30 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             return new GridCoordinate(gridx, gridy);
         }
 
-        public void Render(EngiComponent outerComponent)
+        public void Render(Module outerComponent)
         {
             RenderOuterComponent(outerComponent);
             RenderInnerComponents(outerComponent);
             lastRenderedComponent = outerComponent;
         }
 
-        private void RenderInnerComponents(EngiComponent outerComponent)
+        private void RenderInnerComponents(Module outerComponent)
         {
             foreach (Transform child in innerRendererRoot.transform)
             {
                 Destroy(child.gameObject);
             }
 
-            for (var x = 0; x < outerComponent.ComponentGrid.Width; x++)
+            for (var x = 0; x < outerComponent.ModuleGrid.Width; x++)
             {
-                for (var y = 0; y < outerComponent.ComponentGrid.Height; y++)
+                for (var y = 0; y < outerComponent.ModuleGrid.Height; y++)
                 {
                     var grid = new GridCoordinate(x, y);
-                    var innerComponent = outerComponent.GetComponent(grid);
+                    var innerComponent = outerComponent.GetModule(grid);
                     if (innerComponent != null)
                     {
-                        var component = outerComponent.GetComponent(grid);
-                        var componentAsset = Resources.Load<GameObject>(component.Name);
+                        var component = outerComponent.GetModule(grid);
+                        var componentAsset = Resources.Load<GameObject>(component.GetComponent<CoreComponent>().Name);
                         var componentGameObject = Instantiate(componentAsset);
                         componentGameObject.transform.parent = innerRendererRoot.transform;
                         componentGameObject.transform.position = GridCoordinate.GridToPosition(grid);
@@ -90,9 +90,12 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             }
         }
 
-        private void RenderOuterComponent(EngiComponent component)
+        private void RenderOuterComponent(Module component)
         {
-            if (component.InternalWidth == lastRenderedComponent.InternalWidth && component.InteralHeight == lastRenderedComponent.InteralHeight)
+            if (
+                component.GetComponent<CoreComponent>().InternalWidth == lastRenderedComponent.GetComponent<CoreComponent>().InternalWidth && 
+                component.GetComponent<CoreComponent>().InteralHeight == lastRenderedComponent.GetComponent<CoreComponent>().InteralHeight
+                )
             {
                 return;
             }
@@ -102,9 +105,9 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 Destroy(child.gameObject);
             }
 
-            for (var x = 0; x < component.InternalWidth; x++)
+            for (var x = 0; x < component.GetComponent<CoreComponent>().InternalWidth; x++)
             {
-                for (var y = 0; y < component.InteralHeight; y++)
+                for (var y = 0; y < component.GetComponent<CoreComponent>().InteralHeight; y++)
                 {
                     var grid = new GridCoordinate(x, y);
                     var tile = Instantiate(Tile);
