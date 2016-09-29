@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Assets.Scrips.Components;
 using Assets.Scrips.Modules;
@@ -24,21 +25,17 @@ namespace Assets.Scrips.Networks
 
         public float GetWater(Module component)
         {
-            return GetNodeForComponent(component) != null ? GetNodeForComponent(component).GetSubstance(SubstanceTypes.WATER) : 0.0f;
-        }
+            var nodeValue = GetNodeForComponent(component) != null
+                ? GetNodeForComponent(component).GetSubstance(SubstanceTypes.WATER)
+                : 0.0f;
 
-//        public List<SubstanceNetworkNode> GetNodesForComonent(EngiComponent module)
-//        {
-//            var result = new List<SubstanceNetworkNode>();
-//            foreach (var substanceNode in Network.Vertices)
-//            {
-//                if (substanceNode.Module == module)
-//                {
-//                    result.Add(substanceNode);
-//                }
-//            }
-//            return result;
-//        }
+            foreach (var childModule in component)
+            {
+                nodeValue += GetWater(childModule);
+            }
+
+            return nodeValue;
+        }
 
         public SubstanceNetworkNode GetNodeForComponent(Module module)
         {
@@ -62,19 +59,67 @@ namespace Assets.Scrips.Networks
             if (addedModule.GetComponent<SubstanceConnector>() != null)
             {
                 AddNode(new SubstanceNetworkNode(addedModule));
+                ConnectToAdjacentModulesWithinComponent(addedModule, grid);
+                ConnectAlongComponentEdge(addedModule, grid);
+            }
+        }
 
-                foreach (var neigbour in addedModule.ParentModule.ModuleGrid.GetNeigbouringComponents(grid))
+        private void ConnectAlongComponentEdge(Module addedModule, GridCoordinate grid)
+        {
+            foreach (var neigbour in addedModule.ParentModule.ModuleGrid.GetNeigbouringComponents(grid))
+            {
+            }
+        }
+
+        //Generalise to arbitary numbers of levels. Make Neigbouring components include those at higher levels?
+        private void ConnectToAdjacentModulesWithinComponent(Module addedModule, GridCoordinate grid)
+        {
+            foreach (var neigbour in addedModule.ParentModule.ModuleGrid.GetNeigbouringComponents(grid))
+            {
+                var addedModuleGrid = addedModule.GetGridPosition();
+                var neigbourGrid = neigbour.GetGridPosition();
+                var direction = AdjacentDirection(addedModuleGrid, neigbourGrid);
+
+                if (neigbour.GetComponent<SubstanceConnector>() != null &&
+                    HaveFacingConnections(direction, addedModule.GetComponent<SubstanceConnector>().Diretions,
+                        neigbour.GetComponent<SubstanceConnector>().Diretions))
                 {
-                    var addedModuleGrid = addedModule.GetGridPosition();
-                    var neigbourGrid = neigbour.GetGridPosition();
-                    var direction = AdjacentDirection(addedModuleGrid, neigbourGrid);
-
-                    if (neigbour.GetComponent<SubstanceConnector>() != null && HaveFacingConnections(direction,  addedModule.GetComponent<SubstanceConnector>(), neigbour.GetComponent<SubstanceConnector>()))
-                    {
-                        AddBidirectionalConnection(GetNodeForComponent(addedModule), GetNodeForComponent(neigbour));
-                    }
+                    AddBidirectionalConnection(GetNodeForComponent(addedModule), GetNodeForComponent(neigbour));
                 }
             }
+        }
+
+        public bool AddConnection(SubstanceNetworkNode source, SubstanceNetworkNode destination)
+        {
+            return Network.AddEdge(source, destination);
+        }
+
+        public string Readable()
+        {
+            return Network.ToReadable();
+        }
+
+        private Direction EdgeConnection(Module module, GridCoordinate grid, SubstanceConnector connector)
+        {
+            if (grid.X == 0 && connector.Diretions.Contains(Direction.Left))
+            {
+                return Direction.Left;
+            }
+            if (grid.X == module.GetComponent<CoreComponent>().InternalWidth &&
+                connector.Diretions.Contains(Direction.Right))
+            {
+                return Direction.Right;
+            }
+            if (grid.Y == 0 && connector.Diretions.Contains(Direction.Down))
+            {
+                return Direction.Down;
+            }
+            if (grid.Y == module.GetComponent<CoreComponent>().InteralHeight &&
+               connector.Diretions.Contains(Direction.Up))
+            {
+                return Direction.Up;
+            }
+            return Direction.None;
         }
 
         private Direction AdjacentDirection(GridCoordinate sourceGrid, GridCoordinate targetGrid)
@@ -104,33 +149,23 @@ namespace Assets.Scrips.Networks
             return Direction.None;
         }
 
-        private static bool HaveFacingConnections(Direction direction, SubstanceConnector source, SubstanceConnector target)
+        private static bool HaveFacingConnections(Direction direction, List<Direction> sourceDirections, List<Direction> targetDirections)
         {
             switch (direction)
             {
                 case Direction.Left:
-                    return source.Diretions.Contains(Direction.Right) && target.Diretions.Contains(Direction.Left);
+                    return sourceDirections.Contains(Direction.Right) && targetDirections.Contains(Direction.Left);
                 case Direction.Right:
-                    return source.Diretions.Contains(Direction.Left) && target.Diretions.Contains(Direction.Right);
+                    return sourceDirections.Contains(Direction.Left) && targetDirections.Contains(Direction.Right);
                 case Direction.Up:
-                    return source.Diretions.Contains(Direction.Up) && target.Diretions.Contains(Direction.Down);
+                    return sourceDirections.Contains(Direction.Up) && targetDirections.Contains(Direction.Down);
                 case Direction.Down:
-                    return source.Diretions.Contains(Direction.Down) && target.Diretions.Contains(Direction.Up);
+                    return sourceDirections.Contains(Direction.Down) && targetDirections.Contains(Direction.Up);
                 case Direction.None:
                     return false;
                 default:
                     return false;
             }
-        }
-
-        public bool AddConnection(SubstanceNetworkNode source, SubstanceNetworkNode destination)
-        {
-            return Network.AddEdge(source, destination);
-        }
-
-        public string Readable()
-        {
-            return Network.ToReadable();
         }
 
         private void Flow()
