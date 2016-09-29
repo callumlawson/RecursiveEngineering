@@ -7,7 +7,8 @@ namespace Assets.Scrips.Components
         Up,
         Down,
         Left,
-        Right
+        Right,
+        None
     }
 
     public class SubstanceConnector : IComponent

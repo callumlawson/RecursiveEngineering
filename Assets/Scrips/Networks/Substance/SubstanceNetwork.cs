@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Assets.Scrips.Components;
 using Assets.Scrips.Modules;
 using Assets.Scrips.Networks.Graph;
@@ -58,17 +59,67 @@ namespace Assets.Scrips.Networks
 
         public void AddComponent(Module addedModule, GridCoordinate grid)
         {
-            if (addedModule.GetComponent<CoreComponent>().Type == ModuleType.WaterTank)
+            if (addedModule.GetComponent<SubstanceConnector>() != null)
             {
                 AddNode(new SubstanceNetworkNode(addedModule));
 
                 foreach (var neigbour in addedModule.ParentModule.ModuleGrid.GetNeigbouringComponents(grid))
                 {
-                    if (neigbour.GetComponent<CoreComponent>().Type == ModuleType.WaterTank)
+                    var addedModuleGrid = addedModule.GetGridPosition();
+                    var neigbourGrid = neigbour.GetGridPosition();
+                    var direction = AdjacentDirection(addedModuleGrid, neigbourGrid);
+
+                    if (neigbour.GetComponent<SubstanceConnector>() != null && HaveFacingConnections(direction,  addedModule.GetComponent<SubstanceConnector>(), neigbour.GetComponent<SubstanceConnector>()))
                     {
                         AddBidirectionalConnection(GetNodeForComponent(addedModule), GetNodeForComponent(neigbour));
                     }
                 }
+            }
+        }
+
+        private Direction AdjacentDirection(GridCoordinate sourceGrid, GridCoordinate targetGrid)
+        {
+            if (sourceGrid.X == targetGrid.X)
+            {
+                if (sourceGrid.Y - targetGrid.Y > 0)
+                {
+                    return Direction.Down;
+                }
+                if (sourceGrid.Y - targetGrid.Y < 0)
+                {
+                    return Direction.Up;
+                }
+            }
+            if (sourceGrid.Y == targetGrid.Y)
+            {
+                if (sourceGrid.X - targetGrid.X > 0)
+                {
+                    return Direction.Right;
+                }
+                if (sourceGrid.X - targetGrid.X < 0)
+                {
+                    return Direction.Left;
+                }
+            }
+            return Direction.None;
+        }
+
+        private static bool HaveFacingConnections(Direction direction, SubstanceConnector source, SubstanceConnector target)
+        {
+            switch (direction)
+            {
+                case Direction.Left:
+                    return source.Diretions.Contains(Direction.Right) && target.Diretions.Contains(Direction.Left);
+                case Direction.Right:
+                    return source.Diretions.Contains(Direction.Left) && target.Diretions.Contains(Direction.Right);
+                case Direction.Up:
+                    return source.Diretions.Contains(Direction.Up) && target.Diretions.Contains(Direction.Down);
+                case Direction.Down:
+                    return source.Diretions.Contains(Direction.Down) && target.Diretions.Contains(Direction.Up);
+                case Direction.None:
+                    return false;
+                default:
+                    return false;
             }
         }
 

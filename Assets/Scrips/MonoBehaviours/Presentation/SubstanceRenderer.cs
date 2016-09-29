@@ -40,7 +40,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             foreach (var innerComponent in activeComponent.ModuleGrid)
             {
                 var substanceNode = substanceNetwork.GetNodeForComponent(innerComponent);
-                var gridForSubstance = activeComponent.GetGridForModule(innerComponent);
+                var gridForSubstance = activeComponent.GetGridForContainedModule(innerComponent);
                 if (substanceNode != null)
                 {
                     var water = substanceNode.GetSubstance(SubstanceTypes.WATER);

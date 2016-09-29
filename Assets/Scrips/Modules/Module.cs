@@ -50,12 +50,17 @@ namespace Assets.Scrips.Modules
             return null;
         }
 
-        public GridCoordinate GetGridForModule(Module module)
+        public GridCoordinate GetGridPosition()
+        {
+            return ParentModule.GetGridForContainedModule(this);
+        }
+
+        public GridCoordinate GetGridForContainedModule(Module module)
         {
             return ModuleGrid.GetGridForComponent(module);
         }
 
-        public GridCoordinate GetCenterGrid()
+        public GridCoordinate GetCenterGridHAXDONTUSE()
         {
             return new GridCoordinate(Mathf.RoundToInt(GetComponent<CoreComponent>().InternalWidth / 2.0f), Mathf.RoundToInt(GetComponent<CoreComponent>().InteralHeight / 2.0f));
         }
