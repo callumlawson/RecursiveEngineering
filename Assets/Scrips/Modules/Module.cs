@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Assets.Scrips.Components;
 using Assets.Scrips.Util;
 using UnityEngine;
 
 namespace Assets.Scrips.Modules
 {
-    public class Module
+    public class Module : IEnumerable<Module>
     {
         public readonly ModuleGrid ModuleGrid;
         public readonly Module ParentModule;
@@ -68,6 +69,16 @@ namespace Assets.Scrips.Modules
         public bool GridIsEmpty(GridCoordinate grid)
         {
             return ModuleGrid.GridIsEmpty(grid);
+        }
+
+        public IEnumerator<Module> GetEnumerator()
+        {
+            return ModuleGrid.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

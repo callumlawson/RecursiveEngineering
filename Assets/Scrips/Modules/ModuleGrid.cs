@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scrips.Components;
 using Assets.Scrips.Util;
 
 namespace Assets.Scrips.Modules
@@ -63,37 +64,19 @@ namespace Assets.Scrips.Modules
             return true;
         }
 
-        public bool GridIsFull(GridCoordinate grid)
-        {
-            return !GridIsEmpty(grid);
-        }
-
-        public List<Module> GetNeigbouringComponents(GridCoordinate grid)
+        public IEnumerable<Module> GetNeigbouringComponents(GridCoordinate grid)
         {
             var list = new List<Module>();
-            var neighbourGrids = new List<GridCoordinate>
+
+            foreach (Direction direction in Enum.GetValues(typeof(Direction)))
             {
-                new GridCoordinate(grid.X - 1, grid.Y),
-                new GridCoordinate(grid.X + 1, grid.Y),
-                new GridCoordinate(grid.X, grid.Y - 1),
-                new GridCoordinate(grid.X, grid.Y + 1)
-            };
-            foreach (var neighbourGrid in neighbourGrids)
-            {
-                if (GridIsFull(neighbourGrid))
+                var module = GetNeigbouringModule(grid, direction);
+                if (module != null)
                 {
-                    list.Add(GetComponent(neighbourGrid));
+                    list.Add(module);
                 }
             }
             return list;
-        }
-
-        private bool GridIsInComponent(GridCoordinate coord)
-        {
-            return coord.X >= 0 &&
-                   coord.Y >= 0 &&
-                   coord.X < innerComponents.GetLength(0) &&
-                   coord.Y < innerComponents.GetLength(1);
         }
 
         public IEnumerator<Module> GetEnumerator()
@@ -105,6 +88,74 @@ namespace Assets.Scrips.Modules
                     yield return component;
                 }
             }
+        }
+
+        private Module GetNeigbouringModule(GridCoordinate grid, Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Up:
+                    var up = GetGridInDirection(grid, Direction.Up);
+                    if (GridIsInComponent(up) && GridIsFull(up))
+                    {
+                        return GetComponent(up);
+                    }
+                    return null;
+                case Direction.Down:
+                    var down = GetGridInDirection(grid, Direction.Down);
+                    if (GridIsInComponent(down) && GridIsFull(down))
+                    {
+                        return GetComponent(down);
+                    }
+                    return null;
+                case Direction.Left:
+                    var left = GetGridInDirection(grid, Direction.Left);
+                    if (GridIsInComponent(left) && GridIsFull(left))
+                    {
+                        return GetComponent(left);
+                    }
+                    return null;
+                case Direction.Right:
+                    var right = GetGridInDirection(grid, Direction.Right);
+                    if (GridIsInComponent(right) && GridIsFull(right))
+                    {
+                        return GetComponent(right);
+                    }
+                    return null;
+                case Direction.None:
+                    return null;
+                default:
+                    throw new ArgumentOutOfRangeException("direction", direction, null);
+            }
+        }
+
+        private GridCoordinate GetGridInDirection(GridCoordinate grid, Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Up:
+                    return new GridCoordinate(grid.X, grid.Y + 1);
+                case Direction.Down:
+                    return new GridCoordinate(grid.X, grid.Y - 1);
+                case Direction.Left:
+                    return new GridCoordinate(grid.X - 1, grid.Y);
+                case Direction.Right:
+                    return new GridCoordinate(grid.X + 1, grid.Y); ;
+                case Direction.None:
+                    return grid;
+                default:
+                    throw new ArgumentOutOfRangeException("direction", direction, null);
+            }
+        }
+
+        private bool GridIsFull(GridCoordinate grid)
+        {
+            return !GridIsEmpty(grid);
+        }
+
+        private bool GridIsInComponent(GridCoordinate coord)
+        {
+            return coord.X >= 0 && coord.Y >= 0 && coord.X < innerComponents.GetLength(0) && coord.Y < innerComponents.GetLength(1);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
