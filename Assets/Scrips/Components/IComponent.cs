@@ -1,5 +1,8 @@
-﻿namespace Assets.Scrips.Components
+﻿using System;
+
+namespace Assets.Scrips.Components
 {
+    [Serializable]
     public class IComponent
     {
     }

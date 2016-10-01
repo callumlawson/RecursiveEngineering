@@ -1,11 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Assets.Scrips.Components;
 using Assets.Scrips.Util;
-using UnityEngine;
 
 namespace Assets.Scrips.Modules
 {
+    [Serializable]
     public class Module : IEnumerable<Module>
     {
         public readonly ModuleGrid ModuleGrid;
@@ -27,6 +28,11 @@ namespace Assets.Scrips.Modules
         public bool IsTerminalModule
         {
             get { return GetComponent<CoreComponent>().InternalWidth == 0 || GetComponent<CoreComponent>().InteralHeight == 0; }
+        }
+
+        public bool IsTopLevelModule
+        {
+            get { return ParentModule == null; }
         }
 
         public bool AddModule(Module module, GridCoordinate grid)
@@ -53,17 +59,12 @@ namespace Assets.Scrips.Modules
 
         public GridCoordinate GetGridPosition()
         {
-            return ParentModule.GetGridForContainedModule(this);
+            return IsTopLevelModule ? new GridCoordinate(0, 0) : ParentModule.GetGridForContainedModule(this);
         }
 
         public GridCoordinate GetGridForContainedModule(Module module)
         {
             return ModuleGrid.GetGridForComponent(module);
-        }
-
-        public GridCoordinate GetCenterGridHAXDONTUSE()
-        {
-            return new GridCoordinate(Mathf.RoundToInt(GetComponent<CoreComponent>().InternalWidth / 2.0f), Mathf.RoundToInt(GetComponent<CoreComponent>().InteralHeight / 2.0f));
         }
 
         public bool GridIsEmpty(GridCoordinate grid)

@@ -6,6 +6,7 @@ using Assets.Scrips.Util;
 
 namespace Assets.Scrips.Modules
 {
+    [Serializable]
     public class ModuleGrid : IEnumerable<Module>
     {
         public int Width { get; private set; }
@@ -64,7 +65,7 @@ namespace Assets.Scrips.Modules
             return true;
         }
 
-        public IEnumerable<Module> GetNeigbouringComponents(GridCoordinate grid)
+        public IEnumerable<Module> GetNeigbouringModules(GridCoordinate grid)
         {
             var list = new List<Module>();
 
@@ -99,6 +100,10 @@ namespace Assets.Scrips.Modules
                     if (GridIsInComponent(up) && GridIsFull(up))
                     {
                         return GetComponent(up);
+                    }
+                    else
+                    {
+                        
                     }
                     return null;
                 case Direction.Down:

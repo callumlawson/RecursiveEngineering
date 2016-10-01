@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Assets.Scrips.Components
 {
@@ -11,6 +12,7 @@ namespace Assets.Scrips.Components
         None
     }
 
+    [Serializable]
     public class SubstanceConnector : IComponent
     {
         public List<Direction> Diretions;

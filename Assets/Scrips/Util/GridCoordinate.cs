@@ -17,5 +17,15 @@ namespace Assets.Scrips.Util
         {
             return new Vector3(grid.X * LayoutConstants.TileSizeInMeters, grid.Y * LayoutConstants.TileSizeInMeters);
         }
+
+        public static GridCoordinate operator +(GridCoordinate first, GridCoordinate second)
+        {
+            return new GridCoordinate(first.X + second.X, first.Y + second.Y);
+        }
+
+        public override string ToString()
+        {
+            return "X: " + X + " Y: " + Y;
+        }
     }
 }

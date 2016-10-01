@@ -59,22 +59,23 @@ namespace Assets.Scrips.Networks
             if (addedModule.GetComponent<SubstanceConnector>() != null)
             {
                 AddNode(new SubstanceNetworkNode(addedModule));
-                ConnectToAdjacentModulesWithinComponent(addedModule, grid);
-                ConnectAlongComponentEdge(addedModule, grid);
+                ConnectToAdjacentModulesWithinMoudle(addedModule, grid);
+                ConnectToModulesAlongEdge(addedModule, grid);
             }
         }
 
-        private void ConnectAlongComponentEdge(Module addedModule, GridCoordinate grid)
+        private void ConnectToModulesAlongEdge(Module addedModule, GridCoordinate grid)
         {
-            foreach (var neigbour in addedModule.ParentModule.ModuleGrid.GetNeigbouringComponents(grid))
+            foreach (var module in addedModule.ParentModule.ModuleGrid.GetNeigbouringModules(grid))
             {
+
             }
         }
 
         //Generalise to arbitary numbers of levels. Make Neigbouring components include those at higher levels?
-        private void ConnectToAdjacentModulesWithinComponent(Module addedModule, GridCoordinate grid)
+        private void ConnectToAdjacentModulesWithinMoudle(Module addedModule, GridCoordinate grid)
         {
-            foreach (var neigbour in addedModule.ParentModule.ModuleGrid.GetNeigbouringComponents(grid))
+            foreach (var neigbour in addedModule.ParentModule.ModuleGrid.GetNeigbouringModules(grid))
             {
                 var addedModuleGrid = addedModule.GetGridPosition();
                 var neigbourGrid = neigbour.GetGridPosition();

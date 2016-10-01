@@ -138,7 +138,8 @@ namespace Assets.Scrips
         {
             //TODO: Encapsulate active component.
             ActiveComponent = component;
-            CameraController.SetPosition(GridCoordinate.GridToPosition(ActiveComponent.GetCenterGridHAXDONTUSE()));
+            ComponentRenderer.Render(ActiveComponent);
+            CameraController.SetPosition(GridCoordinate.GridToPosition(ComponentRenderer.GetActiveComponentCenter()));
         }
 
         //TODO: Factor into input listener class.

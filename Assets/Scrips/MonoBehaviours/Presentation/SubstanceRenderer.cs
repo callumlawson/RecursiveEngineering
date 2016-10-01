@@ -15,6 +15,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         private SpriteRenderer[,] tileGrid;
 
         // Use this for initialization
+        [UsedImplicitly]
         void Start () {
             tileGrid = new SpriteRenderer[LayoutConstants.MaxWidth, LayoutConstants.MaxHeight];
             substanceRenderRoot = new GameObject();

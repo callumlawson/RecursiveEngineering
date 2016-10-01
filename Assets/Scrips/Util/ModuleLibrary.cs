@@ -8,7 +8,8 @@ namespace Assets.Scrips.Util
     {
         private readonly List<List<IComponent>> componentLibrary = new List<List<IComponent>>
         {
-            new List<IComponent> { new CoreComponent("Box", 5, 5, ModuleType.Container)},
+            new List<IComponent> { new CoreComponent("Box", 7, 7, ModuleType.Container)},
+            new List<IComponent> { new CoreComponent("Engine", 7, 7, ModuleType.Container)},
             new List<IComponent> { new CoreComponent("Tank", 0, 0, ModuleType.WaterTank)},
             new List<IComponent> { new CoreComponent("HorizontalPipe", 0, 0, ModuleType.NotNeeded), new SubstanceConnector(new List<Direction> {Direction.Left, Direction.Right})},
             new List<IComponent> { new CoreComponent("VerticalPipe", 0, 0, ModuleType.NotNeeded), new SubstanceConnector(new List<Direction> {Direction.Up, Direction.Down})},

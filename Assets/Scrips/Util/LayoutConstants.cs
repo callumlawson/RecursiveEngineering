@@ -7,5 +7,6 @@
         public const float TileSizeInMeters = (float)TileSizeInPx/PixelsPerMeter;
         public const int MaxWidth = 50;
         public const int MaxHeight = 40;
+        public const int MediumToLargeRatio = 7;
     }
 }

@@ -1,7 +1,9 @@
-﻿using Assets.Scrips.Modules;
+﻿using System;
+using Assets.Scrips.Modules;
 
 namespace Assets.Scrips.Components
 {
+    [Serializable]
     public class CoreComponent : IComponent
     {
         public string Name { get; set; }
