@@ -22,7 +22,7 @@ namespace Assets.Scrips
 
         public ModuleLibrary ModuleLibrary { get; private set; }
         private Module ActiveComponent { get; set; }
-        private Module WorldComponent { get; set; }
+        //private Module WorldComponent { get; set; }
 
         private const float DoubleClickTimeLimit = 0.20f;
         private const float SimulationTickPeriodInSeconds = 0.1f;
@@ -37,12 +37,13 @@ namespace Assets.Scrips
         {
             GlobalSubstanceNetwork = new SubstanceNetwork();
             ModuleLibrary = new ModuleLibrary();
-            WorldComponent = new Module( 
-                null,
-                new List<IComponent>{new CoreComponent("Sub Pen", 32 ,18 , ModuleType.Container)} 
-            );
+//            WorldComponent = new Module( 
+//                null,
+//                new List<IComponent>{new CoreComponent("Sub Pen", 32 ,18 , ModuleType.Container)} 
+//            );
 
             LoadModule("Start");
+            //SetActiveModule(WorldComponent);
             StartCoroutine(InputListener());
             StartCoroutine(Ticker());
         }
@@ -92,6 +93,7 @@ namespace Assets.Scrips
 
         private void LoadModule(string moduleName)
         {
+            acceptingInput = true;
             var path = string.Format("{0}/{1}.json", Application.streamingAssetsPath, moduleName);
             var module = Module.FromJson(File.ReadAllText(path));
             SetActiveModule(module);
@@ -142,6 +144,11 @@ namespace Assets.Scrips
                 var componentToAdd = new Module(ActiveComponent, ModuleLibrary.GetSelectedComponent());
                 AddComponentToActiveComponent(componentToAdd, currentlySelectedGrid);
             }
+
+            if (button == 1)
+            {
+                ActiveComponent.RemoveModule(currentlySelectedGrid);
+            }
         }
 
         private void DoubleClick(int button, GridCoordinate currentlySelectedGrid)
@@ -179,15 +186,10 @@ namespace Assets.Scrips
         {
             while (enabled)
             {
-                if (!acceptingInput)
-                {
-                    yield return null;
-                }
-
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0) && acceptingInput)
                     yield return ClickEvent(0, ComponentRenderer.CurrentlySelectedGrid());
 
-                if (Input.GetMouseButtonDown(1))
+                if (Input.GetMouseButtonDown(1) && acceptingInput)
                     yield return ClickEvent(1, ComponentRenderer.CurrentlySelectedGrid());
 
                 yield return null;

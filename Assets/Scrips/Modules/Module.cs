@@ -13,7 +13,7 @@ namespace Assets.Scrips.Modules
         public ModuleGrid ModuleGrid;
         [JsonProperty]
         private readonly List<IComponent> components;
-        [JsonProperty]
+        [JsonIgnore]
         public Module ParentModule;
 
         [JsonIgnore]
@@ -44,6 +44,11 @@ namespace Assets.Scrips.Modules
         public bool AddModule(Module module, GridCoordinate grid)
         {
             return ModuleGrid.AddModule(module, grid);
+        }
+
+        public void RemoveModule(GridCoordinate grid)
+        {
+            ModuleGrid.RemoveModule(grid);
         }
 
         public Module GetModule(GridCoordinate grid)
@@ -80,14 +85,25 @@ namespace Assets.Scrips.Modules
 
         public static string ToJson(Module module)
         {
-            var settings = new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.Objects, ReferenceLoopHandling = ReferenceLoopHandling.Serialize };
+            var settings = new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.Objects };
             return JsonConvert.SerializeObject(module, Formatting.Indented, settings);
         }
 
         public static Module FromJson(string json)
         {
-            var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects, ReferenceLoopHandling = ReferenceLoopHandling.Serialize };
-            return JsonConvert.DeserializeObject<Module>(json, settings);
+            var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects };
+            var module = JsonConvert.DeserializeObject<Module>(json, settings);
+            FixupChildParents(module);
+            return module;
+        }
+
+        private static void FixupChildParents(Module module)
+        {
+            foreach (var innerModule in module.GetContainedModules())
+            {
+                innerModule.ParentModule = module;
+                FixupChildParents(innerModule);
+            }
         }
 
         public List<Module> GetContainedModules()

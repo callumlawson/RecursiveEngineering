@@ -30,6 +30,14 @@ namespace Assets.Scrips.Modules
             return false;
         }
 
+        public void RemoveModule(GridCoordinate grid)
+        {
+            if (GridIsInModule(grid))
+            {
+                innerModules[grid.X, grid.Y] = null;
+            }
+        }
+
         public Module GetModule(GridCoordinate grid)
         {
             if (GridIsInModule(grid))
@@ -167,5 +175,6 @@ namespace Assets.Scrips.Modules
         {
             return coord.X >= 0 && coord.Y >= 0 && coord.X < innerModules.GetLength(0) && coord.Y < innerModules.GetLength(1);
         }
+
     }
 }

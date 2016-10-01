@@ -13,6 +13,7 @@ namespace Assets.Scrips.MonoBehaviours.Interface
 
         public static UserTextQuery Instance;
 
+        [UsedImplicitly]
         public void Start()
         {
             Instance = this;
@@ -21,13 +22,19 @@ namespace Assets.Scrips.MonoBehaviours.Interface
 
         public void GetTextResponse(string prompt, UnityAction<string> response)
         {
-            PlaceholderText.text = prompt;
-            TextQueryWindow.SetActive(true);
             InputField.onEndEdit.RemoveAllListeners();
-            InputField.onEndEdit.AddListener(response);
+            PlaceholderText.text = prompt;
+
+            TextQueryWindow.SetActive(true);
+            InputField.ActivateInputField();
             InputField.onEndEdit.AddListener(result =>
-                TextQueryWindow.SetActive(false)
-            );
+            {
+                if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+                {
+                    response(result);
+                    TextQueryWindow.SetActive(false);
+                }
+            });
         }
     }
 }
