@@ -10,6 +10,8 @@ namespace Assets.Scrips.Util
         {
             new List<IComponent> { new CoreComponent("Box", 7, 7, ModuleType.Container)},
             new List<IComponent> { new CoreComponent("Engine", 7, 7, ModuleType.Container)},
+            new List<IComponent> { new CoreComponent("VerticalWall", 0, 0, ModuleType.Container)},
+            new List<IComponent> { new CoreComponent("HorizontalWall", 0, 0, ModuleType.Container)},
             new List<IComponent> { new CoreComponent("Tank", 0, 0, ModuleType.WaterTank)},
             new List<IComponent> { new CoreComponent("HorizontalPipe", 0, 0, ModuleType.NotNeeded), new SubstanceConnector(new List<Direction> {Direction.Left, Direction.Right})},
             new List<IComponent> { new CoreComponent("VerticalPipe", 0, 0, ModuleType.NotNeeded), new SubstanceConnector(new List<Direction> {Direction.Up, Direction.Down})},

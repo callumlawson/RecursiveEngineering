@@ -1,21 +1,37 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Assets.Scrips.Components;
 using Assets.Scrips.Util;
+using Newtonsoft.Json;
 
 namespace Assets.Scrips.Modules
 {
     [Serializable]
-    public class Module : IEnumerable<Module>
+    public class Module
     {
-        public readonly ModuleGrid ModuleGrid;
-        public readonly Module ParentModule;
+        [JsonProperty]
+        public ModuleGrid ModuleGrid;
+        [JsonProperty]
         private readonly List<IComponent> components;
+        [JsonProperty]
+        public Module ParentModule;
 
+        [JsonIgnore]
+        public bool IsTerminalModule
+        {
+            get { return GetComponent<CoreComponent>().InternalWidth == 0 || GetComponent<CoreComponent>().InteralHeight == 0; }
+        }
+
+        [JsonIgnore]
+        public bool IsTopLevelModule
+        {
+            get { return ParentModule == null; }
+        }
+
+        [JsonConstructor]
         public Module()
         {
-            components = new List<IComponent> { new CoreComponent("Dummy", 0 ,0 , ModuleType.Container)};
+            
         }
 
         public Module(Module parentModule, List<IComponent> components)
@@ -25,24 +41,14 @@ namespace Assets.Scrips.Modules
             ModuleGrid = new ModuleGrid(GetComponent<CoreComponent>().InternalWidth, GetComponent<CoreComponent>().InteralHeight);
         }
 
-        public bool IsTerminalModule
-        {
-            get { return GetComponent<CoreComponent>().InternalWidth == 0 || GetComponent<CoreComponent>().InteralHeight == 0; }
-        }
-
-        public bool IsTopLevelModule
-        {
-            get { return ParentModule == null; }
-        }
-
         public bool AddModule(Module module, GridCoordinate grid)
         {
-            return ModuleGrid.AddComponent(module, grid);
+            return ModuleGrid.AddModule(module, grid);
         }
 
         public Module GetModule(GridCoordinate grid)
         {
-            return ModuleGrid.GetComponent(grid);
+            return ModuleGrid.GetModule(grid);
         }
 
         public T GetComponent<T>() where T : IComponent
@@ -64,7 +70,7 @@ namespace Assets.Scrips.Modules
 
         public GridCoordinate GetGridForContainedModule(Module module)
         {
-            return ModuleGrid.GetGridForComponent(module);
+            return ModuleGrid.GetGridForModule(module);
         }
 
         public bool GridIsEmpty(GridCoordinate grid)
@@ -72,14 +78,21 @@ namespace Assets.Scrips.Modules
             return ModuleGrid.GridIsEmpty(grid);
         }
 
-        public IEnumerator<Module> GetEnumerator()
+        public static string ToJson(Module module)
         {
-            return ModuleGrid.GetEnumerator();
+            var settings = new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.Objects, ReferenceLoopHandling = ReferenceLoopHandling.Serialize };
+            return JsonConvert.SerializeObject(module, Formatting.Indented, settings);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public static Module FromJson(string json)
         {
-            return GetEnumerator();
+            var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects, ReferenceLoopHandling = ReferenceLoopHandling.Serialize };
+            return JsonConvert.DeserializeObject<Module>(json, settings);
+        }
+
+        public List<Module> GetContainedModules()
+        {
+            return ModuleGrid.GetContainedModules();
         }
     }
 }

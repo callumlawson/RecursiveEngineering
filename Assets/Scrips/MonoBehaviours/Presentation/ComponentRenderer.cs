@@ -1,10 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
 using Assets.Scrips.Components;
 using Assets.Scrips.Modules;
 using Assets.Scrips.Util;
 using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.VR;
 
 namespace Assets.Scrips.MonoBehaviours.Presentation
 {
@@ -39,7 +38,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 innerRendererRoot.transform.parent = transform;
             }
 
-            lastRenderedComponent = new Module();
+            lastRenderedComponent = new Module(null, new List<IComponent> { new CoreComponent("Dummy", 0, 0, ModuleType.Container) });
         }
 
         [UsedImplicitly]
@@ -69,7 +68,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
 
             if (!activeModule.IsTopLevelModule)
             {
-                var modulesAtThisModulesLevel = activeModule.ParentModule.AsEnumerable();
+                var modulesAtThisModulesLevel = activeModule.ParentModule.GetContainedModules();
                 foreach (var module in modulesAtThisModulesLevel)
                 {
                     RenderOuterComponent(module, 0.4f);
@@ -117,6 +116,10 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                     {
                         var innerModule = moduleToRender.GetModule(grid);
                         var innerModuleAsset = Resources.Load<GameObject>(innerModule.GetComponent<CoreComponent>().Name);
+                        if (innerModuleAsset == null)
+                        {
+                            UnityEngine.Debug.LogError(innerModule.GetComponent<CoreComponent>().Name);
+                        }
                         var moduleGameObject = Instantiate(innerModuleAsset);
                         SetOpacity(moduleGameObject, opacity);
                         moduleGameObject.transform.parent = innerRendererRoot.transform;

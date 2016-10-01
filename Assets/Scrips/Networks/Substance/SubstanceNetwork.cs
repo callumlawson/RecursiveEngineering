@@ -29,7 +29,7 @@ namespace Assets.Scrips.Networks
                 ? GetNodeForComponent(component).GetSubstance(SubstanceTypes.WATER)
                 : 0.0f;
 
-            foreach (var childModule in component)
+            foreach (var childModule in component.GetContainedModules())
             {
                 nodeValue += GetWater(childModule);
             }
@@ -72,7 +72,7 @@ namespace Assets.Scrips.Networks
             }
         }
 
-        //Generalise to arbitary numbers of levels. Make Neigbouring components include those at higher levels?
+        //Generalise to arbitary numbers of levels. Make Neigbouring Components include those at higher levels?
         private void ConnectToAdjacentModulesWithinMoudle(Module addedModule, GridCoordinate grid)
         {
             foreach (var neigbour in addedModule.ParentModule.ModuleGrid.GetNeigbouringModules(grid))

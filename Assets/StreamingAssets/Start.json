@@ -1,0 +1,1752 @@
+{
+  "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+  "ModuleGrid": {
+    "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+    "innerModules": [
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "VerticalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "VerticalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ]
+            ],
+            "Width": 7,
+            "Height": 7
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "Engine",
+              "InternalWidth": 7,
+              "InteralHeight": 7,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "VerticalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "VerticalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ]
+            ],
+            "Width": 7,
+            "Height": 7
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "Engine",
+              "InternalWidth": 7,
+              "InteralHeight": 7,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ]
+            ],
+            "Width": 7,
+            "Height": 7
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "Engine",
+              "InternalWidth": 7,
+              "InteralHeight": 7,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "VerticalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "VerticalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "VerticalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "VerticalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "VerticalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "VerticalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "VerticalWall",
+              "InternalWidth": 0,
+              "InteralHeight": 0,
+              "Type": 0
+            }
+          ],
+          "ParentModule": null
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    ],
+    "Width": 32,
+    "Height": 18
+  },
+  "components": [
+    {
+      "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+      "Name": "Sub Pen",
+      "InternalWidth": 32,
+      "InteralHeight": 18,
+      "Type": 0
+    }
+  ],
+  "ParentModule": null
+}

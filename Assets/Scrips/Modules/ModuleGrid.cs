@@ -1,53 +1,52 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Assets.Scrips.Components;
 using Assets.Scrips.Util;
+using Newtonsoft.Json;
 
 namespace Assets.Scrips.Modules
 {
     [Serializable]
-    public class ModuleGrid : IEnumerable<Module>
+    public class ModuleGrid
     {
-        public int Width { get; private set; }
-        public int Height { get; private set; }
-
-        private readonly Module[,] innerComponents;
+        [JsonProperty] public int Width { get; private set; }
+        [JsonProperty] public int Height { get; private set; }
+        [JsonProperty] private readonly Module[,] innerModules;
 
         public ModuleGrid(int width, int height)
         {
             Width = width;
             Height = height;
-            innerComponents = new Module[width, height];
+            innerModules = new Module[width, height];
         }
 
-        public bool AddComponent(Module component, GridCoordinate coord)
+        public bool AddModule(Module module, GridCoordinate coord)
         {
-            if (GridIsInComponent(coord) && GridIsEmpty(coord))
+            if (GridIsInModule(coord) && GridIsEmpty(coord))
             {
-                innerComponents[coord.X, coord.Y] = component;
+                innerModules[coord.X, coord.Y] = module;
                 return true;
             }
             return false;
         }
 
-        public Module GetComponent(GridCoordinate grid)
+        public Module GetModule(GridCoordinate grid)
         {
-            if (GridIsInComponent(grid))
+            if (GridIsInModule(grid))
             {
-                return innerComponents[grid.X, grid.Y];
+                return innerModules[grid.X, grid.Y];
             }
             throw new ArgumentOutOfRangeException("grid");
         }
 
-        public GridCoordinate GetGridForComponent(Module component)
+        public GridCoordinate GetGridForModule(Module module)
         {
             for (var x = 0; x < Width; x++)
             {
                 for (var y = 0; y < Height; y++)
                 {
                     var gridCoordinate = new GridCoordinate(x, y);
-                    if (GetComponent(gridCoordinate) == component)
+                    if (GetModule(gridCoordinate) == module)
                     {
                         return gridCoordinate;
                     }
@@ -58,9 +57,9 @@ namespace Assets.Scrips.Modules
 
         public bool GridIsEmpty(GridCoordinate grid)
         {
-            if (GridIsInComponent(grid))
+            if (GridIsInModule(grid))
             {
-                return innerComponents[grid.X, grid.Y] == null;
+                return innerModules[grid.X, grid.Y] == null;
             }
             return true;
         }
@@ -80,15 +79,21 @@ namespace Assets.Scrips.Modules
             return list;
         }
 
-        public IEnumerator<Module> GetEnumerator()
+        public List<Module> GetContainedModules()
         {
-            foreach (var component in innerComponents)
+            var results = new List<Module>();
+            for (var x = 0; x < Width; x++)
             {
-                if (component != null)
+                for (var y = 0; y < Height; y++)
                 {
-                    yield return component;
+                    var gridCoordinate = new GridCoordinate(x, y);
+                    if (GridIsFull(gridCoordinate))
+                    {
+                        results.Add(GetModule(gridCoordinate));
+                    }
                 }
             }
+            return results;
         }
 
         private Module GetNeigbouringModule(GridCoordinate grid, Direction direction)
@@ -97,9 +102,9 @@ namespace Assets.Scrips.Modules
             {
                 case Direction.Up:
                     var up = GetGridInDirection(grid, Direction.Up);
-                    if (GridIsInComponent(up) && GridIsFull(up))
+                    if (GridIsInModule(up) && GridIsFull(up))
                     {
-                        return GetComponent(up);
+                        return GetModule(up);
                     }
                     else
                     {
@@ -108,23 +113,23 @@ namespace Assets.Scrips.Modules
                     return null;
                 case Direction.Down:
                     var down = GetGridInDirection(grid, Direction.Down);
-                    if (GridIsInComponent(down) && GridIsFull(down))
+                    if (GridIsInModule(down) && GridIsFull(down))
                     {
-                        return GetComponent(down);
+                        return GetModule(down);
                     }
                     return null;
                 case Direction.Left:
                     var left = GetGridInDirection(grid, Direction.Left);
-                    if (GridIsInComponent(left) && GridIsFull(left))
+                    if (GridIsInModule(left) && GridIsFull(left))
                     {
-                        return GetComponent(left);
+                        return GetModule(left);
                     }
                     return null;
                 case Direction.Right:
                     var right = GetGridInDirection(grid, Direction.Right);
-                    if (GridIsInComponent(right) && GridIsFull(right))
+                    if (GridIsInModule(right) && GridIsFull(right))
                     {
-                        return GetComponent(right);
+                        return GetModule(right);
                     }
                     return null;
                 case Direction.None:
@@ -158,14 +163,9 @@ namespace Assets.Scrips.Modules
             return !GridIsEmpty(grid);
         }
 
-        private bool GridIsInComponent(GridCoordinate coord)
+        private bool GridIsInModule(GridCoordinate coord)
         {
-            return coord.X >= 0 && coord.Y >= 0 && coord.X < innerComponents.GetLength(0) && coord.Y < innerComponents.GetLength(1);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
+            return coord.X >= 0 && coord.Y >= 0 && coord.X < innerModules.GetLength(0) && coord.Y < innerModules.GetLength(1);
         }
     }
 }

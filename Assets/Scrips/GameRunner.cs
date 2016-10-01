@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using Assets.Scrips.Components;
 using Assets.Scrips.Modules;
+using Assets.Scrips.MonoBehaviours.Interface;
 using Assets.Scrips.MonoBehaviours.Presentation;
 using Assets.Scrips.Networks;
 using Assets.Scrips.Networks.Substance;
@@ -12,8 +13,6 @@ using UnityEngine;
 
 namespace Assets.Scrips
 {
-    //THINGS I NOW UNDERSTAND!
-    //THERE SHOULD ONLY BE ONE OF EACH NETWORK!.
     //TODO: Extract input handler from game runner.
     public class GameRunner : MonoBehaviour
     {
@@ -28,6 +27,8 @@ namespace Assets.Scrips
         private const float DoubleClickTimeLimit = 0.20f;
         private const float SimulationTickPeriodInSeconds = 0.1f;
 
+        private bool acceptingInput = true;
+
         //Networks
         public SubstanceNetwork GlobalSubstanceNetwork;
 
@@ -41,7 +42,7 @@ namespace Assets.Scrips
                 new List<IComponent>{new CoreComponent("Sub Pen", 32 ,18 , ModuleType.Container)} 
             );
 
-            SetActiveComponent(WorldComponent);
+            LoadModule("Start");
             StartCoroutine(InputListener());
             StartCoroutine(Ticker());
         }
@@ -51,6 +52,11 @@ namespace Assets.Scrips
         {
             ComponentRenderer.Render(ActiveComponent);
             SubstanceRenderer.Render(ActiveComponent, GlobalSubstanceNetwork);
+
+            if (!acceptingInput)
+            {
+                return;
+            }
 
             if (Input.GetKeyDown(KeyCode.T))
             {
@@ -70,6 +76,32 @@ namespace Assets.Scrips
             {
                 ModuleLibrary.IncrementSelectedComponent();
             }
+
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                acceptingInput = false;
+                UserTextQuery.Instance.GetTextResponse("Module to load...", LoadModule);
+            }
+
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                acceptingInput = false;
+                UserTextQuery.Instance.GetTextResponse("Module to save...", SaveModule);
+            }
+        }
+
+        private void LoadModule(string moduleName)
+        {
+            var path = string.Format("{0}/{1}.json", Application.streamingAssetsPath, moduleName);
+            var module = Module.FromJson(File.ReadAllText(path));
+            SetActiveModule(module);
+        }
+
+        private void SaveModule(string moduleName)
+        {
+            acceptingInput = true;
+            var path = string.Format("{0}/{1}.json", Application.streamingAssetsPath, moduleName);
+            File.WriteAllText(path, Module.ToJson(ActiveComponent));
         }
 
         public List<Module> CurrentHeirarchy()
@@ -116,12 +148,12 @@ namespace Assets.Scrips
         {
             if (button == 1 && ActiveComponent.ParentModule != null)
             {
-                SetActiveComponent(ActiveComponent.ParentModule);
+                SetActiveModule(ActiveComponent.ParentModule);
             }
 
             if (CurrentlySelectedComponent() != null && button == 0 && !CurrentlySelectedComponent().IsTerminalModule)
             {
-                SetActiveComponent(CurrentlySelectedComponent());
+                SetActiveModule(CurrentlySelectedComponent());
             }
         }
 
@@ -134,7 +166,7 @@ namespace Assets.Scrips
             }
         }
 
-        private void SetActiveComponent(Module component)
+        private void SetActiveModule(Module component)
         {
             //TODO: Encapsulate active component.
             ActiveComponent = component;
@@ -146,7 +178,12 @@ namespace Assets.Scrips
         private IEnumerator InputListener()
         {
             while (enabled)
-            { 
+            {
+                if (!acceptingInput)
+                {
+                    yield return null;
+                }
+
                 if (Input.GetMouseButtonDown(0))
                     yield return ClickEvent(0, ComponentRenderer.CurrentlySelectedGrid());
 
