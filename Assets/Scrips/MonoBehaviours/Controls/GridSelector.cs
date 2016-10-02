@@ -1,5 +1,4 @@
 ﻿using Assets.Scrips.Modules;
-using Assets.Scrips.MonoBehaviours.Camera;
 using Assets.Scrips.Util;
 using JetBrains.Annotations;
 using UnityEngine;

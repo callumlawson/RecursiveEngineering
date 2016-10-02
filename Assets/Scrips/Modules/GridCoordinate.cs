@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.Scrips.Util
+namespace Assets.Scrips.Modules
 {
     public class GridCoordinate
     {

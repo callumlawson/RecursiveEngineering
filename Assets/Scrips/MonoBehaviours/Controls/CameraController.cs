@@ -1,7 +1,7 @@
 ﻿using JetBrains.Annotations;
 using UnityEngine;
 
-namespace Assets.Scrips.MonoBehaviours.Camera
+namespace Assets.Scrips.MonoBehaviours.Controls
 {
     [RequireComponent(typeof(UnityEngine.Camera))]
     public class CameraController : MonoBehaviour {

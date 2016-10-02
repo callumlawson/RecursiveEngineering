@@ -1,6 +1,6 @@
-﻿using Assets.Scrips.Modules;
+﻿using Assets.Scrips.Util;
 
-namespace Assets.Scrips.Util
+namespace Assets.Scrips.Modules
 {
     public static class ModuleUtils
     {

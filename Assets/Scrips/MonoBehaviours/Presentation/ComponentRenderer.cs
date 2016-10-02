@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using Assets.Scrips.Components;
 using Assets.Scrips.Modules;
-using Assets.Scrips.MonoBehaviours.Camera;
-using Assets.Scrips.Util;
+using Assets.Scrips.MonoBehaviours.Controls;
 using JetBrains.Annotations;
 using UnityEngine;
 
