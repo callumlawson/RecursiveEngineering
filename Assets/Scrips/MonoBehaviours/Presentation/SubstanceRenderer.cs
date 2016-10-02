@@ -17,7 +17,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         // Use this for initialization
         [UsedImplicitly]
         void Start () {
-            tileGrid = new SpriteRenderer[LayoutConstants.MaxWidth, LayoutConstants.MaxHeight];
+            tileGrid = new SpriteRenderer[ModuleUtils.MaxWidth, ModuleUtils.MaxHeight];
             substanceRenderRoot = new GameObject();
             if (substanceRenderRoot != null)
             {
@@ -34,9 +34,9 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             var activeComponent = GameRunner.Instance.ActiveModule;
             var substanceNetwork = SubstanceNetwork.Instance;
 
-            for (var x = 0; x < LayoutConstants.MaxWidth; x++)
+            for (var x = 0; x < ModuleUtils.MaxWidth; x++)
             {
-                for (var y = 0; y < LayoutConstants.MaxHeight; y++)
+                for (var y = 0; y < ModuleUtils.MaxHeight; y++)
                 {
                     tileGrid[x, y].enabled = false;
                 }
@@ -45,7 +45,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             foreach (var innerComponent in activeComponent.GetContainedModules())
             {
                 var substanceNode = substanceNetwork.GetNodeForComponent(innerComponent);
-                var gridForSubstance = GridCoordinate.GetGridOffset(activeComponent) +
+                var gridForSubstance = ModuleUtils.GetGridOffset(activeComponent) +
                                        activeComponent.GetGridForContainedModule(innerComponent);
                 if (substanceNode != null)
                 {
@@ -67,9 +67,9 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 Destroy(child.gameObject);
             }
 
-            for (var x = 0; x < LayoutConstants.MaxWidth; x++)
+            for (var x = 0; x < ModuleUtils.MaxWidth; x++)
             {
-                for (var y = 0; y < LayoutConstants.MaxHeight; y++)
+                for (var y = 0; y < ModuleUtils.MaxHeight; y++)
                 {
                     var grid = new GridCoordinate(x, y);
                     var tile = Instantiate(WaterTile);

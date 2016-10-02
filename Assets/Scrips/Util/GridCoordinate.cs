@@ -1,5 +1,4 @@
-﻿using Assets.Scrips.Modules;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.Scrips.Util
 {
@@ -16,23 +15,14 @@ namespace Assets.Scrips.Util
 
         public static Vector3 GridToPosition(GridCoordinate grid)
         {
-            return new Vector3(grid.X * LayoutConstants.TileSizeInMeters, grid.Y * LayoutConstants.TileSizeInMeters);
+            return new Vector3(grid.X * ModuleUtils.TileSizeInMeters, grid.Y * ModuleUtils.TileSizeInMeters);
         }
 
         public static GridCoordinate operator +(GridCoordinate first, GridCoordinate second)
         {
             return new GridCoordinate(first.X + second.X, first.Y + second.Y);
         }
-
-        public static GridCoordinate GetGridOffset(Module module)
-        {
-            var moduleGridPosition = module.GetGridPosition();
-            return new GridCoordinate(
-                moduleGridPosition.X * LayoutConstants.MediumToLargeRatio,
-                moduleGridPosition.Y * LayoutConstants.MediumToLargeRatio
-            );
-        }
-
+      
         public override string ToString()
         {
             return "X: " + X + " Y: " + Y;

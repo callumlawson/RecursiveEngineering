@@ -76,7 +76,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 Mathf.RoundToInt(coreComponent.InternalWidth/2.0f),
                 Mathf.RoundToInt(coreComponent.InteralHeight/2.0f)
             );
-            return midpoint + GridCoordinate.GetGridOffset(module);
+            return midpoint + ModuleUtils.GetGridOffset(module);
         }
 
         private void Clear()
@@ -94,7 +94,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
 
         private void RenderInnerComponents(Module moduleToRender, float opacity = 1.0f)
         {
-            var gridOffset = GridCoordinate.GetGridOffset(moduleToRender);
+            var gridOffset = ModuleUtils.GetGridOffset(moduleToRender);
 
             for (var x = 0; x < moduleToRender.GetComponent<CoreComponent>().InternalWidth; x++)
             {
@@ -121,7 +121,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
 
         private void RenderOuterComponent(Module module, float opacity = 1.0f)
         {
-            var gridOffset = GridCoordinate.GetGridOffset(module);
+            var gridOffset = ModuleUtils.GetGridOffset(module);
 
             for (var x = 0; x < module.GetComponent<CoreComponent>().InternalWidth; x++)
             {

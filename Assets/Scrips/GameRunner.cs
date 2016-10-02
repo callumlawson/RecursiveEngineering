@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using Assets.Scrips.Modules;
 using Assets.Scrips.MonoBehaviours.Controls;
 using Assets.Scrips.Networks;
@@ -48,7 +47,10 @@ namespace Assets.Scrips
 
             if (Input.GetKeyDown(KeyCode.T))
             {
-                CurrentlySelectedModule().AddWater();
+                if (CurrentlySelectedModule() != null)
+                {
+                    CurrentlySelectedModule().AddWater();
+                }
             }
 
             if (Input.GetKeyDown(KeyCode.Q))
@@ -74,19 +76,18 @@ namespace Assets.Scrips
             }
         }
 
+        //TODO: Actual error handling.
         private void LoadModule(string moduleName)
         {
             acceptingInput = true;
-            var path = string.Format("{0}/{1}.json", Application.streamingAssetsPath, moduleName);
-            var module = Module.FromJson(File.ReadAllText(path));
+            var module = Module.FromJson(DiskOperations.ReadText(moduleName));
             ActiveModule = module;
         }
 
         private void SaveModule(string moduleName)
         {
             acceptingInput = true;
-            var path = string.Format("{0}/{1}.json", Application.streamingAssetsPath, moduleName);
-            File.WriteAllText(path, Module.ToJson(ActiveModule));
+            DiskOperations.SaveText(moduleName, Module.ToJson(ActiveModule));
             ModuleLibrary.Instance.UpdateModulesFromDisk();
         }
 
