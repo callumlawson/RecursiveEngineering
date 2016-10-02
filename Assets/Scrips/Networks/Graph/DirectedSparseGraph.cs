@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Assets.Scrips.Networks.Graph
 {
-    public class EngiDirectedSparseGraph<TVertex> : IGraph<TVertex> where TVertex : IComparable<TVertex>
+    public class DirectedSparseGraph<TVertex> : IGraph<TVertex> where TVertex : IComparable<TVertex>
     {
         public int VerticesCount
         {
@@ -15,7 +15,7 @@ namespace Assets.Scrips.Networks.Graph
             get { return edgesCount; }
         }
 
-        public virtual IEnumerable<TVertex> Vertices
+        public IEnumerable<TVertex> Vertices
         {
             get
             {
@@ -35,10 +35,10 @@ namespace Assets.Scrips.Networks.Graph
         private TVertex firstInsertedNode { get; set; }
         private Dictionary<TVertex, LinkedList<TVertex>> adjacencyList { get; set; }
 
-        public EngiDirectedSparseGraph()
+        public DirectedSparseGraph()
         {
             edgesCount = 0;
-            adjacencyList = new Dictionary<TVertex, LinkedList<TVertex>>(10);
+            adjacencyList = new Dictionary<TVertex, LinkedList<TVertex>>(50);
         }
 
         public IEnumerable<IEdge<TVertex>> IncomingEdges(TVertex vertex)

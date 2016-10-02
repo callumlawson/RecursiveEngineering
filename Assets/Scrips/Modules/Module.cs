@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Assets.Scrips.Components;
+using Assets.Scrips.Networks;
 using Assets.Scrips.Util;
 using Newtonsoft.Json;
 
@@ -10,7 +12,7 @@ namespace Assets.Scrips.Modules
     public class Module
     {
         [JsonProperty]
-        public ModuleGrid ModuleGrid;
+        private readonly ModuleGrid moduleGrid;
         [JsonProperty]
         private readonly List<IComponent> components;
         [JsonIgnore]
@@ -34,26 +36,45 @@ namespace Assets.Scrips.Modules
             
         }
 
+        public Module(List<IComponent> components)
+        {
+            this.components = components;
+            moduleGrid = new ModuleGrid(GetComponent<CoreComponent>().InternalWidth, GetComponent<CoreComponent>().InteralHeight);
+        }
+
         public Module(Module parentModule, List<IComponent> components)
         {
             this.components = components;
             ParentModule = parentModule;
-            ModuleGrid = new ModuleGrid(GetComponent<CoreComponent>().InternalWidth, GetComponent<CoreComponent>().InteralHeight);
+            moduleGrid = new ModuleGrid(GetComponent<CoreComponent>().InternalWidth, GetComponent<CoreComponent>().InteralHeight);
         }
 
-        public bool AddModule(Module module, GridCoordinate grid)
+        public void AddModule(Module module, GridCoordinate grid)
         {
-            return ModuleGrid.AddModule(module, grid);
+            if (moduleGrid.AddModule(module, grid))
+            {
+                AddModuleToSubstanceNetwork(module);
+                CheckForConnections(module);
+            }
         }
 
         public void RemoveModule(GridCoordinate grid)
         {
-            ModuleGrid.RemoveModule(grid);
+            var removedModule = moduleGrid.RemoveModule(grid);
+            if (removedModule != null)
+            {
+                RemoveModuleFromSubstanceNetwork(removedModule);
+            }
+        }
+
+        public void AddWater()
+        {
+            SubstanceNetwork.Instance.AddWaterToModule(this);
         }
 
         public Module GetModule(GridCoordinate grid)
         {
-            return ModuleGrid.GetModule(grid);
+            return moduleGrid.GetModule(grid);
         }
 
         public T GetComponent<T>() where T : IComponent
@@ -75,12 +96,12 @@ namespace Assets.Scrips.Modules
 
         public GridCoordinate GetGridForContainedModule(Module module)
         {
-            return ModuleGrid.GetGridForModule(module);
+            return moduleGrid.GetGridForModule(module);
         }
 
         public bool GridIsEmpty(GridCoordinate grid)
         {
-            return ModuleGrid.GridIsEmpty(grid);
+            return moduleGrid.GridIsEmpty(grid);
         }
 
         public static string ToJson(Module module)
@@ -89,11 +110,14 @@ namespace Assets.Scrips.Modules
             return JsonConvert.SerializeObject(module, Formatting.Indented, settings);
         }
 
+        //TODO: Sort out this horror. Use a custom deserializer perhaps to add things the "Correct way".
         public static Module FromJson(string json)
         {
             var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects };
             var module = JsonConvert.DeserializeObject<Module>(json, settings);
             FixupChildParents(module);
+            AddModuleToSubstanceNetwork(module);
+            CheckForConnections(module);
             return module;
         }
 
@@ -106,9 +130,41 @@ namespace Assets.Scrips.Modules
             }
         }
 
+        private static void AddModuleToSubstanceNetwork(Module module)
+        {
+            SubstanceNetwork.Instance.AddModuleToNetwork(module);
+            foreach (var innerModule in module.GetContainedModules())
+            {
+                AddModuleToSubstanceNetwork(innerModule);
+            }
+        }
+
+        private static void RemoveModuleFromSubstanceNetwork(Module module)
+        {
+            SubstanceNetwork.Instance.RemoveModuleFromNetwork(module);
+            foreach (var innerModule in module.GetContainedModules())
+            {
+                RemoveModuleFromSubstanceNetwork(innerModule);
+            }
+        }
+
+        private static void CheckForConnections(Module module)
+        {
+            SubstanceNetwork.Instance.ConnectModule(module);
+            foreach (var innerModule in module.GetContainedModules())
+            {
+                CheckForConnections(innerModule);
+            }
+        }
+
         public List<Module> GetContainedModules()
         {
-            return ModuleGrid.GetContainedModules();
+            return moduleGrid.GetContainedModules();
+        }
+
+        public List<Module> GetNeighbouringModules(GridCoordinate grid)
+        {
+            return moduleGrid.GetNeigbouringModules(grid).ToList();
         }
     }
 }

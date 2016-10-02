@@ -1,21 +1,28 @@
 ﻿using System.Collections.Generic;
 using Assets.Scrips.Components;
-using Assets.Scrips.Modules;
+using Module = Assets.Scrips.Modules.Module;
 
 namespace Assets.Scrips.Util
 {
     public class ModuleLibrary
     {
-        private readonly List<List<IComponent>> componentLibrary = new List<List<IComponent>>
+        private static ModuleLibrary instance;
+
+        public static ModuleLibrary Instance
         {
-            new List<IComponent> { new CoreComponent("Box", 7, 7, ModuleType.Container)},
-            new List<IComponent> { new CoreComponent("Engine", 7, 7, ModuleType.Container)},
-            new List<IComponent> { new CoreComponent("VerticalWall", 0, 0, ModuleType.Container)},
-            new List<IComponent> { new CoreComponent("HorizontalWall", 0, 0, ModuleType.Container)},
-            new List<IComponent> { new CoreComponent("Tank", 0, 0, ModuleType.WaterTank)},
-            new List<IComponent> { new CoreComponent("HorizontalPipe", 0, 0, ModuleType.NotNeeded), new SubstanceConnector(new List<Direction> {Direction.Left, Direction.Right})},
-            new List<IComponent> { new CoreComponent("VerticalPipe", 0, 0, ModuleType.NotNeeded), new SubstanceConnector(new List<Direction> {Direction.Up, Direction.Down})},
-            new List<IComponent> { new CoreComponent("CrossPipe", 0, 0, ModuleType.NotNeeded), new SubstanceConnector(new List<Direction> {Direction.Up, Direction.Down, Direction.Left, Direction.Right})}
+            get { return instance ?? (instance = new ModuleLibrary()); }
+        }
+
+        private readonly List<Module> moduleLibrary = new List<Module>
+        {
+            new Module(new List<IComponent> { new CoreComponent("Box", 7, 7)}),
+            new Module(new List<IComponent> { new CoreComponent("Engine", 7, 7)}),
+            new Module(new List<IComponent> { new CoreComponent("VerticalWall", 0, 0)}),
+            new Module(new List<IComponent> { new CoreComponent("HorizontalWall", 0, 0)}),
+            new Module(new List<IComponent> { new CoreComponent("Tank", 0, 0)}),
+            new Module(new List<IComponent> { new CoreComponent("HorizontalPipe", 0, 0), new SubstanceConnector(new List<Direction> {Direction.Left, Direction.Right})}),
+            new Module(new List<IComponent> { new CoreComponent("VerticalPipe", 0, 0), new SubstanceConnector(new List<Direction> {Direction.Up, Direction.Down})}),
+            new Module(new List<IComponent> { new CoreComponent("CrossPipe", 0, 0), new SubstanceConnector(new List<Direction> {Direction.Up, Direction.Down, Direction.Left, Direction.Right})})
         };
 
         private int selectedLibraryIndex;
@@ -30,42 +37,52 @@ namespace Assets.Scrips.Util
             selectedLibraryIndex = ClampToLibraryIndex(selectedLibraryIndex - 1);
         }
 
-        public List<IComponent> GetSelectedComponent()
+        public Module GetSelectedModule()
         {
-            return componentLibrary[selectedLibraryIndex];
+            return moduleLibrary[selectedLibraryIndex];
         }
 
-        public List<IComponent> GetPreviousComponent()
+        public Module GetPreviousModule()
         {
-            return componentLibrary[ClampToLibraryIndex(selectedLibraryIndex - 1)];
+            return moduleLibrary[ClampToLibraryIndex(selectedLibraryIndex - 1)];
         }
 
-        public List<IComponent> GetNextComponent()
+        public Module GetNextModule()
         {
-            return componentLibrary[ClampToLibraryIndex(selectedLibraryIndex + 1)];
+            return moduleLibrary[ClampToLibraryIndex(selectedLibraryIndex + 1)];
         }
 
-        public T GetComponent<T>(List<IComponent> components) where T : IComponent
+        public void UpdateModulesFromDisk()
         {
-            foreach (var component in components)
+            var moduleJson = DiskOperations.GetModules();
+            foreach (var module in moduleJson)
             {
-                if (component.GetType() == typeof(T))
-                {
-                    return component as T;
-                }
+                AddModuleToLibrary(Module.FromJson(module));
             }
-            return null;
+        }
+
+        private void AddModuleToLibrary(Module moduleToAdd)
+        {
+            //Foreach support modification while iterating. 
+            moduleLibrary.ForEach(module =>
+            {
+                if (moduleToAdd.GetComponent<CoreComponent>().Name == module.GetComponent<CoreComponent>().Name)
+                {
+                    moduleLibrary.Remove(module);
+                }
+            });
+            moduleLibrary.Add(moduleToAdd);
         }
 
         private int ClampToLibraryIndex(int value)
         {
-            if (value >= componentLibrary.Count)
+            if (value >= moduleLibrary.Count)
             {
                 return 0;
             }
             if (value < 0)
             {
-                return componentLibrary.Count - 1;
+                return moduleLibrary.Count - 1;
             }
             return value;
         }

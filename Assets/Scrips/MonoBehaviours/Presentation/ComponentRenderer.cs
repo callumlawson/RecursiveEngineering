@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Assets.Scrips.Components;
 using Assets.Scrips.Modules;
+using Assets.Scrips.MonoBehaviours.Camera;
 using Assets.Scrips.Util;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -10,20 +11,14 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
     public class ComponentRenderer : MonoBehaviour
     {
         [UsedImplicitly] public GameObject Tile;
-        [UsedImplicitly] public GameObject Selector;
 
         private GameObject outerRendererRoot;
         private GameObject innerRendererRoot;
-        private GameObject selectedGridIndicator;
-
         private Module lastRenderedComponent;
 
         [UsedImplicitly]
         public void Start()
         {
-            selectedGridIndicator = Instantiate(Selector);
-            selectedGridIndicator.transform.parent = transform;
-
             outerRendererRoot = new GameObject();
             if (outerRendererRoot != null)
             {
@@ -38,30 +33,15 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 innerRendererRoot.transform.parent = transform;
             }
 
-            lastRenderedComponent = new Module(null, new List<IComponent> { new CoreComponent("Dummy", 0, 0, ModuleType.Container) });
+            lastRenderedComponent = new Module(null, new List<IComponent> { new CoreComponent("Dummy", 0, 0) });
         }
 
         [UsedImplicitly]
         public void Update()
         {
-            var mousePosition = CameraController.ActiveCamera.ScreenToWorldPoint(Input.mousePosition);
-            var gridx = Mathf.Round(mousePosition.x/LayoutConstants.TileSizeInMeters)*LayoutConstants.TileSizeInMeters;
-            var gridy = Mathf.Round(mousePosition.y/LayoutConstants.TileSizeInMeters)*LayoutConstants.TileSizeInMeters;
-            selectedGridIndicator.transform.position = new Vector3(gridx, gridy, 0);
-        }
-
-        public GridCoordinate CurrentlySelectedGrid()
-        {
-            var gridOffset = GetGridOffset(lastRenderedComponent);
-            var mousePosition = CameraController.ActiveCamera.ScreenToWorldPoint(Input.mousePosition);
-            var gridx = Mathf.RoundToInt(mousePosition.x/LayoutConstants.TileSizeInMeters) - gridOffset.X;
-            var gridy = Mathf.RoundToInt(mousePosition.y/LayoutConstants.TileSizeInMeters)- gridOffset.Y;
-            return new GridCoordinate(gridx, gridy);
-        }
-
-        public void Render(Module activeModule)
-        {
             Clear();
+
+            var activeModule = GameRunner.Instance.ActiveModule;
 
             RenderOuterComponent(activeModule);
             RenderInnerComponents(activeModule);
@@ -76,7 +56,17 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 }
             }
 
+            if (activeModule != lastRenderedComponent)
+            {
+                CenterCamera();
+            }
+
             lastRenderedComponent = activeModule;
+        }
+
+        public void CenterCamera()
+        {
+            CameraController.Instance.SetPosition(GridCoordinate.GridToPosition(GetActiveComponentCenter()));
         }
 
         public GridCoordinate GetActiveComponentCenter()
@@ -86,7 +76,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 Mathf.RoundToInt(coreComponent.InternalWidth/2.0f),
                 Mathf.RoundToInt(coreComponent.InteralHeight/2.0f)
             );
-            return midpoint + GetGridOffset(lastRenderedComponent);
+            return midpoint + GridCoordinate.GetGridOffset(lastRenderedComponent);
         }
 
         private void Clear()
@@ -104,11 +94,11 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
 
         private void RenderInnerComponents(Module moduleToRender, float opacity = 1.0f)
         {
-            var gridOffset = GetGridOffset(moduleToRender);
+            var gridOffset = GridCoordinate.GetGridOffset(moduleToRender);
 
-            for (var x = 0; x < moduleToRender.ModuleGrid.Width; x++)
+            for (var x = 0; x < moduleToRender.GetComponent<CoreComponent>().InternalWidth; x++)
             {
-                for (var y = 0; y < moduleToRender.ModuleGrid.Height; y++)
+                for (var y = 0; y < moduleToRender.GetComponent<CoreComponent>().InteralHeight; y++)
                 {
                     var grid = new GridCoordinate(x, y);
                     var innerComponent = moduleToRender.GetModule(grid);
@@ -131,7 +121,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
 
         private void RenderOuterComponent(Module module, float opacity = 1.0f)
         {
-            var gridOffset = GetGridOffset(module);
+            var gridOffset = GridCoordinate.GetGridOffset(module);
 
             for (var x = 0; x < module.GetComponent<CoreComponent>().InternalWidth; x++)
             {
@@ -144,15 +134,6 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                     tile.transform.position = GridCoordinate.GridToPosition(grid + gridOffset);
                 }
             }
-        }
-
-        private static GridCoordinate GetGridOffset(Module module)
-        {
-            var moduleGridPosition = module.GetGridPosition();
-            return new GridCoordinate(
-                moduleGridPosition.X*LayoutConstants.MediumToLargeRatio,
-                moduleGridPosition.Y*LayoutConstants.MediumToLargeRatio
-            );
         }
 
         private void SetOpacity(GameObject go, float opacity)

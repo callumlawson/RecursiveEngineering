@@ -1,0 +1,313 @@
+{
+  "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+  "ModuleGrid": {
+    "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+    "innerModules": [
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "VerticalPipe",
+              "InternalWidth": 0,
+              "InteralHeight": 0
+            },
+            {
+              "$type": "Assets.Scrips.Components.SubstanceConnector, Assembly-CSharp",
+              "Diretions": [
+                0,
+                1
+              ]
+            }
+          ]
+        },
+        null
+      ],
+      [
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "VerticalPipe",
+              "InternalWidth": 0,
+              "InteralHeight": 0
+            },
+            {
+              "$type": "Assets.Scrips.Components.SubstanceConnector, Assembly-CSharp",
+              "Diretions": [
+                0,
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "VerticalPipe",
+              "InternalWidth": 0,
+              "InteralHeight": 0
+            },
+            {
+              "$type": "Assets.Scrips.Components.SubstanceConnector, Assembly-CSharp",
+              "Diretions": [
+                0,
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "VerticalPipe",
+              "InternalWidth": 0,
+              "InteralHeight": 0
+            },
+            {
+              "$type": "Assets.Scrips.Components.SubstanceConnector, Assembly-CSharp",
+              "Diretions": [
+                0,
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "CrossPipe",
+              "InternalWidth": 0,
+              "InteralHeight": 0
+            },
+            {
+              "$type": "Assets.Scrips.Components.SubstanceConnector, Assembly-CSharp",
+              "Diretions": [
+                0,
+                1,
+                2,
+                3
+              ]
+            }
+          ]
+        },
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "VerticalPipe",
+              "InternalWidth": 0,
+              "InteralHeight": 0
+            },
+            {
+              "$type": "Assets.Scrips.Components.SubstanceConnector, Assembly-CSharp",
+              "Diretions": [
+                0,
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "VerticalPipe",
+              "InternalWidth": 0,
+              "InteralHeight": 0
+            },
+            {
+              "$type": "Assets.Scrips.Components.SubstanceConnector, Assembly-CSharp",
+              "Diretions": [
+                0,
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "VerticalPipe",
+              "InternalWidth": 0,
+              "InteralHeight": 0
+            },
+            {
+              "$type": "Assets.Scrips.Components.SubstanceConnector, Assembly-CSharp",
+              "Diretions": [
+                0,
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalPipe",
+              "InternalWidth": 0,
+              "InteralHeight": 0
+            },
+            {
+              "$type": "Assets.Scrips.Components.SubstanceConnector, Assembly-CSharp",
+              "Diretions": [
+                2,
+                3
+              ]
+            }
+          ]
+        },
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        {
+          "$type": "Assets.Scrips.Modules.Module, Assembly-CSharp",
+          "ModuleGrid": {
+            "$type": "Assets.Scrips.Modules.ModuleGrid, Assembly-CSharp",
+            "innerModules": [],
+            "Width": 0,
+            "Height": 0
+          },
+          "components": [
+            {
+              "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+              "Name": "HorizontalPipe",
+              "InternalWidth": 0,
+              "InteralHeight": 0
+            },
+            {
+              "$type": "Assets.Scrips.Components.SubstanceConnector, Assembly-CSharp",
+              "Diretions": [
+                2,
+                3
+              ]
+            }
+          ]
+        },
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    ],
+    "Width": 7,
+    "Height": 7
+  },
+  "components": [
+    {
+      "$type": "Assets.Scrips.Components.CoreComponent, Assembly-CSharp",
+      "Name": "Engine",
+      "InternalWidth": 7,
+      "InteralHeight": 7
+    }
+  ]
+}

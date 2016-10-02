@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace Assets.Scrips.MonoBehaviours.Interface
+namespace Assets.Scrips.MonoBehaviours.Controls
 {
     public class UserTextQuery : MonoBehaviour
     {

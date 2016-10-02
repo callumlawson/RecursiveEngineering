@@ -16,11 +16,18 @@ namespace Assets.Scrips.Networks
     //TODO: Consider using injection.
     public class SubstanceNetwork
     {
-        private EngiDirectedSparseGraph<SubstanceNetworkNode> Network;
+        private static SubstanceNetwork instance;
+
+        public static SubstanceNetwork Instance
+        {
+            get { return instance ?? (instance = new SubstanceNetwork()); }
+        }
+
+        private DirectedSparseGraph<SubstanceNetworkNode> Network;
 
         public SubstanceNetwork()
         {
-            Network = new EngiDirectedSparseGraph<SubstanceNetworkNode>();
+            Network = new DirectedSparseGraph<SubstanceNetworkNode>();
         }
 
         public float GetWater(Module component)
@@ -49,33 +56,55 @@ namespace Assets.Scrips.Networks
             return null;
         }
 
+        public void AddWaterToModule(Module module)
+        {
+            var possibleNode = GetNodeForComponent(module);
+            if (possibleNode != null)
+            {
+                possibleNode.UpdateSubstance(SubstanceTypes.WATER, possibleNode.GetSubstance(SubstanceTypes.WATER) + 10);
+            }
+        }
+
         public void Simulate()
         {
             Flow();
         }
 
-        public void AddComponent(Module addedModule, GridCoordinate grid)
+        public void AddModuleToNetwork(Module module)
         {
-            if (addedModule.GetComponent<SubstanceConnector>() != null)
+            if (module.GetComponent<SubstanceConnector>() != null)
             {
-                AddNode(new SubstanceNetworkNode(addedModule));
-                ConnectToAdjacentModulesWithinMoudle(addedModule, grid);
-                ConnectToModulesAlongEdge(addedModule, grid);
+                AddNode(new SubstanceNetworkNode(module));
             }
         }
 
-        private void ConnectToModulesAlongEdge(Module addedModule, GridCoordinate grid)
+        public void RemoveModuleFromNetwork(Module module)
         {
-            foreach (var module in addedModule.ParentModule.ModuleGrid.GetNeigbouringModules(grid))
+            if (module.GetComponent<SubstanceConnector>() != null)
             {
-
+                RemoveNode(GetNodeForComponent(module));
             }
+        }
+
+        public void ConnectModule(Module module)
+        {
+            if (module.GetComponent<SubstanceConnector>() != null)
+            {
+                ConnectToAdjacentModulesWithinModule(module);
+            }
+        }
+
+        public void SetupModule(Module addedModule)
+        {
+            AddModuleToNetwork(addedModule);
+            ConnectModule(addedModule);
         }
 
         //Generalise to arbitary numbers of levels. Make Neigbouring Components include those at higher levels?
-        private void ConnectToAdjacentModulesWithinMoudle(Module addedModule, GridCoordinate grid)
+        private void ConnectToAdjacentModulesWithinModule(Module addedModule)
         {
-            foreach (var neigbour in addedModule.ParentModule.ModuleGrid.GetNeigbouringModules(grid))
+            var grid = addedModule.GetGridPosition();
+            foreach (var neigbour in addedModule.ParentModule.GetNeighbouringModules(grid))
             {
                 var addedModuleGrid = addedModule.GetGridPosition();
                 var neigbourGrid = neigbour.GetGridPosition();
@@ -88,11 +117,6 @@ namespace Assets.Scrips.Networks
                     AddBidirectionalConnection(GetNodeForComponent(addedModule), GetNodeForComponent(neigbour));
                 }
             }
-        }
-
-        public bool AddConnection(SubstanceNetworkNode source, SubstanceNetworkNode destination)
-        {
-            return Network.AddEdge(source, destination);
         }
 
         public string Readable()
@@ -186,6 +210,11 @@ namespace Assets.Scrips.Networks
         {
             Network.AddEdge(destination, source);
             Network.AddEdge(source, destination);
+        }
+
+        private void RemoveNode(SubstanceNetworkNode node)
+        {
+            Network.RemoveVertex(node);
         }
 
         private void AddNode(SubstanceNetworkNode node)

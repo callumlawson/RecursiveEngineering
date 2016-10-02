@@ -30,12 +30,15 @@ namespace Assets.Scrips.Modules
             return false;
         }
 
-        public void RemoveModule(GridCoordinate grid)
+        public Module RemoveModule(GridCoordinate grid)
         {
+            Module moduleRemoved = null;
             if (GridIsInModule(grid))
             {
+                moduleRemoved = innerModules[grid.X, grid.Y];
                 innerModules[grid.X, grid.Y] = null;
             }
+            return moduleRemoved;
         }
 
         public Module GetModule(GridCoordinate grid)

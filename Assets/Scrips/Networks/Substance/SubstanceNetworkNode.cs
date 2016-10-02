@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Assets.Scrips.Modules;
-using Assets.Scrips.Networks.Graph;
 
 namespace Assets.Scrips.Networks
 {
-    public class SubstanceNetworkNode : NetworkNode, IComparable<SubstanceNetworkNode>
+    public class SubstanceNetworkNode : IComparable<SubstanceNetworkNode>
     {
         public Module Module { get; private set; }
 

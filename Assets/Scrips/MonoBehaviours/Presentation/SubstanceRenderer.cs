@@ -28,8 +28,12 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             InitSubstanceTiles();
         }
 
-        public void Render(Module activeComponent, SubstanceNetwork substanceNetwork)
+        [UsedImplicitly]
+        public void Update()
         {
+            var activeComponent = GameRunner.Instance.ActiveModule;
+            var substanceNetwork = SubstanceNetwork.Instance;
+
             for (var x = 0; x < LayoutConstants.MaxWidth; x++)
             {
                 for (var y = 0; y < LayoutConstants.MaxHeight; y++)
@@ -38,10 +42,11 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 }
             }
 
-            foreach (var innerComponent in activeComponent.ModuleGrid.GetContainedModules())
+            foreach (var innerComponent in activeComponent.GetContainedModules())
             {
                 var substanceNode = substanceNetwork.GetNodeForComponent(innerComponent);
-                var gridForSubstance = activeComponent.GetGridForContainedModule(innerComponent);
+                var gridForSubstance = GridCoordinate.GetGridOffset(activeComponent) +
+                                       activeComponent.GetGridForContainedModule(innerComponent);
                 if (substanceNode != null)
                 {
                     var water = substanceNode.GetSubstance(SubstanceTypes.WATER);
