@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Assets.Scrips.Components;
-using Module = Assets.Scrips.Modules.Module;
+using Assets.Scrips.Util;
 
-namespace Assets.Scrips.Util
+namespace Assets.Scrips.Modules
 {
     public class ModuleLibrary
     {
@@ -17,6 +17,7 @@ namespace Assets.Scrips.Util
         {
             new Module(new List<IComponent> { new CoreComponent("Box", 7, 7)}),
             new Module(new List<IComponent> { new CoreComponent("Engine", 7, 7)}),
+            new Module(new List<IComponent> { new CoreComponent("EngineInternals", 0, 0)}),
             new Module(new List<IComponent> { new CoreComponent("VerticalWall", 0, 0)}),
             new Module(new List<IComponent> { new CoreComponent("HorizontalWall", 0, 0)}),
             new Module(new List<IComponent> { new CoreComponent("Tank", 0, 0)}),

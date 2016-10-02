@@ -1,7 +1,7 @@
 ﻿using Assets.Scrips.Components;
+using Assets.Scrips.Modules;
 using Assets.Scrips.MonoBehaviours.Controls;
 using Assets.Scrips.Networks;
-using Assets.Scrips.Util;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
