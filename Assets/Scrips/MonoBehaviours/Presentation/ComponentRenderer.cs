@@ -58,25 +58,25 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
 
             if (activeModule != lastRenderedComponent)
             {
-                CenterCamera();
+                CenterCamera(activeModule);
             }
 
             lastRenderedComponent = activeModule;
         }
 
-        public void CenterCamera()
+        private void CenterCamera(Module module)
         {
-            CameraController.Instance.SetPosition(GridCoordinate.GridToPosition(GetActiveComponentCenter()));
+            CameraController.Instance.SetPosition(GridCoordinate.GridToPosition(GetComponentCenter(module)));
         }
 
-        public GridCoordinate GetActiveComponentCenter()
+        private GridCoordinate GetComponentCenter(Module module)
         {
-            var coreComponent = lastRenderedComponent.GetComponent<CoreComponent>();
+            var coreComponent = module.GetComponent<CoreComponent>();
             var midpoint = new GridCoordinate(
                 Mathf.RoundToInt(coreComponent.InternalWidth/2.0f),
                 Mathf.RoundToInt(coreComponent.InteralHeight/2.0f)
             );
-            return midpoint + GridCoordinate.GetGridOffset(lastRenderedComponent);
+            return midpoint + GridCoordinate.GetGridOffset(module);
         }
 
         private void Clear()
