@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Assets.Scrips.Modules;
 using Assets.Scrips.MonoBehaviours.Controls;
 using Assets.Scrips.Networks;
+using Assets.Scrips.Systems;
 using Assets.Scrips.Util;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -16,23 +17,29 @@ namespace Assets.Scrips
 
         public Module ActiveModule { get; private set; }
 
+        private List<ISystem> systems = new List<ISystem>
+        {
+            new EngineSystem()
+        };
+
+        private bool acceptingInput = true;
         private const float DoubleClickTimeLimit = 0.20f;
         private const float SimulationTickPeriodInSeconds = 0.1f;
-        private bool acceptingInput = true;
 
         [UsedImplicitly]
         public void Start()
         {
+            //  WorldComponent = new Module( 
+            //       null,
+            //       new List<IComponent>{new CoreComponent("Sub Pen", 32 ,18 , ModuleType.Container)} 
+            //  );
+            //SetActiveModule(WorldComponent);
+
             Instance = this;
             ModuleLibrary.Instance.UpdateModulesFromDisk();
 
-        //  WorldComponent = new Module( 
-        //       null,
-        //       new List<IComponent>{new CoreComponent("Sub Pen", 32 ,18 , ModuleType.Container)} 
-        //  );
-
             LoadModule("Start");
-            //SetActiveModule(WorldComponent);
+
             StartCoroutine(InputListener());
             StartCoroutine(Ticker());
         }
@@ -118,6 +125,10 @@ namespace Assets.Scrips
             while (true)
             {
                 SubstanceNetwork.Instance.Simulate();
+                foreach (var system in systems)
+                {
+                    system.Tick();
+                }
                 yield return new WaitForSeconds(SimulationTickPeriodInSeconds);
             }
         }
@@ -126,14 +137,13 @@ namespace Assets.Scrips
         {
             if (button == 0)
             {
-                var moduleToAdd = ModuleLibrary.Instance.GetSelectedModule().DeepClone();
-                moduleToAdd.ParentModule = ActiveModule;
-                ActiveModule.AddModule(moduleToAdd, currentlySelectedGrid);
+                AddModule(ModuleLibrary.Instance.GetSelectedModule(), ActiveModule, currentlySelectedGrid);
             }
 
             if (button == 1)
             {
-                ActiveModule.RemoveModule(currentlySelectedGrid);
+                RemoveModule(ActiveModule.GetModule(currentlySelectedGrid));
+                
             }
         }
 
@@ -150,6 +160,27 @@ namespace Assets.Scrips
             }
         }
 
+        private void AddModule(Module templateModule, Module moduleToAddItTo, GridCoordinate locationToAddIt)
+        {
+            var newModule = templateModule.DeepClone();
+            newModule.ParentModule = moduleToAddItTo;
+            ActiveModule.AddModule(newModule, locationToAddIt);
+            foreach (var system in systems)
+            {
+                system.OnModuleAdded(newModule);
+            }
+        }
+
+        private void RemoveModule(Module moduleToRemove)
+        {
+            ActiveModule.RemoveModule(moduleToRemove);
+            foreach (var system in systems)
+            {
+                system.OnModuleRemoved(moduleToRemove);
+            }
+        }
+
+        #region Input to be factored out.
         //TODO: Factor into input listener class.
         private IEnumerator InputListener()
         {
@@ -182,5 +213,7 @@ namespace Assets.Scrips
             }
             SingleClick(button, selectedGrid);
         }
+#endregion
     }
 }
+

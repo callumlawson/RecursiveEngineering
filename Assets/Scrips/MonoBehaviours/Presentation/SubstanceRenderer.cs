@@ -1,7 +1,6 @@
 ﻿using Assets.Scrips.Modules;
 using Assets.Scrips.Networks;
 using Assets.Scrips.Networks.Substance;
-using Assets.Scrips.Util;
 using JetBrains.Annotations;
 using UnityEngine;
 

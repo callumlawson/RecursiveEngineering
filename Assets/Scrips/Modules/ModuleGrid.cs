@@ -30,6 +30,24 @@ namespace Assets.Scrips.Modules
             return false;
         }
 
+        public Module RemoveModule(Module moduleToRemove)
+        {
+            for (var x = 0; x < Width; x++)
+            {
+                for (var y = 0; y < Height; y++)
+                {
+                    var grid = new GridCoordinate(x, y);
+                    var moduleAtGrid = GetModule(grid);
+                    if (moduleAtGrid == moduleToRemove)
+                    {
+                        innerModules[grid.X, grid.Y] = null;
+                        return moduleAtGrid;
+                    }
+                }
+            }
+            return null;
+        }
+
         public Module RemoveModule(GridCoordinate grid)
         {
             Module moduleRemoved = null;

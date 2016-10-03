@@ -21,7 +21,7 @@ namespace Assets.Scrips.Modules
         [JsonIgnore]
         public bool IsTerminalModule
         {
-            get { return GetComponent<CoreComponent>().InternalWidth == 0 || GetComponent<CoreComponent>().InteralHeight == 0; }
+            get { return GetState<CoreComponent>().InternalWidth == 0 || GetState<CoreComponent>().InteralHeight == 0; }
         }
 
         [JsonIgnore]
@@ -39,14 +39,14 @@ namespace Assets.Scrips.Modules
         public Module(List<IComponent> components)
         {
             this.components = components;
-            moduleGrid = new ModuleGrid(GetComponent<CoreComponent>().InternalWidth, GetComponent<CoreComponent>().InteralHeight);
+            moduleGrid = new ModuleGrid(GetState<CoreComponent>().InternalWidth, GetState<CoreComponent>().InteralHeight);
         }
 
         public Module(Module parentModule, List<IComponent> components)
         {
             this.components = components;
             ParentModule = parentModule;
-            moduleGrid = new ModuleGrid(GetComponent<CoreComponent>().InternalWidth, GetComponent<CoreComponent>().InteralHeight);
+            moduleGrid = new ModuleGrid(GetState<CoreComponent>().InternalWidth, GetState<CoreComponent>().InteralHeight);
         }
 
         public void AddModule(Module module, GridCoordinate grid)
@@ -55,6 +55,15 @@ namespace Assets.Scrips.Modules
             {
                 AddModuleToSubstanceNetwork(module);
                 CheckForConnections(module);
+            }
+        }
+
+        public void RemoveModule(Module moduleToRemove)
+        {
+            var removedModule = moduleGrid.RemoveModule(moduleToRemove);
+            if (removedModule != null)
+            {
+                RemoveModuleFromSubstanceNetwork(removedModule);
             }
         }
 
@@ -77,7 +86,7 @@ namespace Assets.Scrips.Modules
             return moduleGrid.GetModule(grid);
         }
 
-        public T GetComponent<T>() where T : IComponent
+        public T GetState<T>() where T : IComponent
         {
             foreach (var component in components)
             {

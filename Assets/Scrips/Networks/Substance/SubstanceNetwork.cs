@@ -72,7 +72,7 @@ namespace Assets.Scrips.Networks
 
         public void AddModuleToNetwork(Module module)
         {
-            if (module.GetComponent<SubstanceConnector>() != null)
+            if (module.GetState<SubstanceConnector>() != null)
             {
                 AddNode(new SubstanceNetworkNode(module));
             }
@@ -80,7 +80,7 @@ namespace Assets.Scrips.Networks
 
         public void RemoveModuleFromNetwork(Module module)
         {
-            if (module.GetComponent<SubstanceConnector>() != null)
+            if (module.GetState<SubstanceConnector>() != null)
             {
                 RemoveNode(GetNodeForComponent(module));
             }
@@ -88,7 +88,7 @@ namespace Assets.Scrips.Networks
 
         public void ConnectModule(Module module)
         {
-            if (module.GetComponent<SubstanceConnector>() != null)
+            if (module.GetState<SubstanceConnector>() != null)
             {
                 ConnectToAdjacentModulesWithinModule(module);
             }
@@ -110,9 +110,9 @@ namespace Assets.Scrips.Networks
                 var neigbourGrid = neigbour.GetGridPosition();
                 var direction = AdjacentDirection(addedModuleGrid, neigbourGrid);
 
-                if (neigbour.GetComponent<SubstanceConnector>() != null &&
-                    HaveFacingConnections(direction, addedModule.GetComponent<SubstanceConnector>().Diretions,
-                        neigbour.GetComponent<SubstanceConnector>().Diretions))
+                if (neigbour.GetState<SubstanceConnector>() != null &&
+                    HaveFacingConnections(direction, addedModule.GetState<SubstanceConnector>().Diretions,
+                        neigbour.GetState<SubstanceConnector>().Diretions))
                 {
                     AddBidirectionalConnection(GetNodeForComponent(addedModule), GetNodeForComponent(neigbour));
                 }
@@ -130,7 +130,7 @@ namespace Assets.Scrips.Networks
             {
                 return Direction.Left;
             }
-            if (grid.X == module.GetComponent<CoreComponent>().InternalWidth &&
+            if (grid.X == module.GetState<CoreComponent>().InternalWidth &&
                 connector.Diretions.Contains(Direction.Right))
             {
                 return Direction.Right;
@@ -139,7 +139,7 @@ namespace Assets.Scrips.Networks
             {
                 return Direction.Down;
             }
-            if (grid.Y == module.GetComponent<CoreComponent>().InteralHeight &&
+            if (grid.Y == module.GetState<CoreComponent>().InteralHeight &&
                connector.Diretions.Contains(Direction.Up))
             {
                 return Direction.Up;

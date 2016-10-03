@@ -15,15 +15,38 @@ namespace Assets.Scrips.Modules
 
         private readonly List<Module> moduleLibrary = new List<Module>
         {
-            new Module(new List<IComponent> { new CoreComponent("Box", 7, 7)}),
-            new Module(new List<IComponent> { new CoreComponent("Engine", 7, 7)}),
-            new Module(new List<IComponent> { new CoreComponent("EngineInternals", 0, 0)}),
-            new Module(new List<IComponent> { new CoreComponent("VerticalWall", 0, 0)}),
-            new Module(new List<IComponent> { new CoreComponent("HorizontalWall", 0, 0)}),
-            new Module(new List<IComponent> { new CoreComponent("Tank", 0, 0)}),
-            new Module(new List<IComponent> { new CoreComponent("HorizontalPipe", 0, 0), new SubstanceConnector(new List<Direction> {Direction.Left, Direction.Right})}),
-            new Module(new List<IComponent> { new CoreComponent("VerticalPipe", 0, 0), new SubstanceConnector(new List<Direction> {Direction.Up, Direction.Down})}),
-            new Module(new List<IComponent> { new CoreComponent("CrossPipe", 0, 0), new SubstanceConnector(new List<Direction> {Direction.Up, Direction.Down, Direction.Left, Direction.Right})})
+            new Module(new List<IComponent> {new CoreComponent("Box", 7, 7)}),
+            new Module(new List<IComponent> {new CoreComponent("Engine", 7, 7)}),
+            new Module(new List<IComponent> {new CoreComponent("VerticalWall", 0, 0)}),
+            new Module(new List<IComponent> {new CoreComponent("HorizontalWall", 0, 0)}),
+            new Module(new List<IComponent> {new CoreComponent("Tank", 0, 0)}),
+            new Module(new List<IComponent>
+            {
+                new CoreComponent("HorizontalPipe", 0, 0),
+                new SubstanceConnector(new List<Direction> {Direction.Left, Direction.Right})
+            }),
+            new Module(new List<IComponent>
+            {
+                new CoreComponent("VerticalPipe", 0, 0),
+                new SubstanceConnector(new List<Direction> {Direction.Up, Direction.Down})
+            }),
+            new Module(new List<IComponent>
+            {
+                new CoreComponent("CrossPipe", 0, 0),
+                new SubstanceConnector(new List<Direction>
+                {
+                    Direction.Up,
+                    Direction.Down,
+                    Direction.Left,
+                    Direction.Right
+                })
+            }),
+            new Module(new List<IComponent>
+            {
+                new CoreComponent("EngineInternals", 0, 0),
+                new SubstanceConnector(new List<Direction> {Direction.Left, Direction.Right}),
+                new EngineComponent(0)
+            })
         };
 
         private int selectedLibraryIndex;
@@ -67,7 +90,7 @@ namespace Assets.Scrips.Modules
             //Foreach support modification while iterating. 
             moduleLibrary.ForEach(module =>
             {
-                if (moduleToAdd.GetComponent<CoreComponent>().Name == module.GetComponent<CoreComponent>().Name)
+                if (moduleToAdd.GetState<CoreComponent>().Name == module.GetState<CoreComponent>().Name)
                 {
                     moduleLibrary.Remove(module);
                 }

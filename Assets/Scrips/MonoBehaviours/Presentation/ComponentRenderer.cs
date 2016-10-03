@@ -70,7 +70,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
 
         private GridCoordinate GetComponentCenter(Module module)
         {
-            var coreComponent = module.GetComponent<CoreComponent>();
+            var coreComponent = module.GetState<CoreComponent>();
             var midpoint = new GridCoordinate(
                 Mathf.RoundToInt(coreComponent.InternalWidth/2.0f),
                 Mathf.RoundToInt(coreComponent.InteralHeight/2.0f)
@@ -95,19 +95,19 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         {
             var gridOffset = ModuleUtils.GetGridOffset(moduleToRender);
 
-            for (var x = 0; x < moduleToRender.GetComponent<CoreComponent>().InternalWidth; x++)
+            for (var x = 0; x < moduleToRender.GetState<CoreComponent>().InternalWidth; x++)
             {
-                for (var y = 0; y < moduleToRender.GetComponent<CoreComponent>().InteralHeight; y++)
+                for (var y = 0; y < moduleToRender.GetState<CoreComponent>().InteralHeight; y++)
                 {
                     var grid = new GridCoordinate(x, y);
                     var innerComponent = moduleToRender.GetModule(grid);
                     if (innerComponent != null)
                     {
                         var innerModule = moduleToRender.GetModule(grid);
-                        var innerModuleAsset = Resources.Load<GameObject>(innerModule.GetComponent<CoreComponent>().Name);
+                        var innerModuleAsset = Resources.Load<GameObject>(innerModule.GetState<CoreComponent>().Name);
                         if (innerModuleAsset == null)
                         {
-                            UnityEngine.Debug.LogError(innerModule.GetComponent<CoreComponent>().Name);
+                            UnityEngine.Debug.LogError(innerModule.GetState<CoreComponent>().Name);
                         }
                         var moduleGameObject = Instantiate(innerModuleAsset);
                         SetOpacity(moduleGameObject, opacity);
@@ -122,9 +122,9 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         {
             var gridOffset = ModuleUtils.GetGridOffset(module);
 
-            for (var x = 0; x < module.GetComponent<CoreComponent>().InternalWidth; x++)
+            for (var x = 0; x < module.GetState<CoreComponent>().InternalWidth; x++)
             {
-                for (var y = 0; y < module.GetComponent<CoreComponent>().InteralHeight; y++)
+                for (var y = 0; y < module.GetState<CoreComponent>().InteralHeight; y++)
                 {
                     var grid = new GridCoordinate(x, y);
                     var tile = Instantiate(Tile);

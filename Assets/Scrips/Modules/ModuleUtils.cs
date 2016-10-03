@@ -15,8 +15,8 @@ namespace Assets.Scrips.Modules
         {
             var moduleGridPosition = module.GetGridPosition();
             return new GridCoordinate(
-                moduleGridPosition.X * ModuleUtils.MediumToLargeRatio,
-                moduleGridPosition.Y * ModuleUtils.MediumToLargeRatio
+                moduleGridPosition.X * MediumToLargeRatio,
+                moduleGridPosition.Y * MediumToLargeRatio
             );
         }
 

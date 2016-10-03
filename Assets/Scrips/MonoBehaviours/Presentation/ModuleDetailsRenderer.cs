@@ -34,17 +34,17 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             var moduleLibrary = ModuleLibrary.Instance;
             SelectedComponent.sprite =
                 Resources.Load<GameObject>(
-                    moduleLibrary.GetSelectedModule().GetComponent<CoreComponent>().Name)
+                    moduleLibrary.GetSelectedModule().GetState<CoreComponent>().Name)
                     .GetComponent<SpriteRenderer>()
                     .sprite;
             PreviousComponent.sprite =
                 Resources.Load<GameObject>(
-                    moduleLibrary.GetPreviousModule().GetComponent<CoreComponent>().Name)
+                    moduleLibrary.GetPreviousModule().GetState<CoreComponent>().Name)
                     .GetComponent<SpriteRenderer>()
                     .sprite;
             NextComponent.sprite =
                 Resources.Load<GameObject>(
-                    moduleLibrary.GetNextModule().GetComponent<CoreComponent>().Name)
+                    moduleLibrary.GetNextModule().GetState<CoreComponent>().Name)
                     .GetComponent<SpriteRenderer>()
                     .sprite;
         }
@@ -58,7 +58,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 SelectedComponentName.text = string.Format(
                     "Selected Grid: {0} Selected Module: {1} Water: {2}",
                     GridSelector.CurrentlySelectedGrid(GameRunner.ActiveModule),
-                    GameRunner.CurrentlySelectedModule().GetComponent<CoreComponent>().Name,
+                    GameRunner.CurrentlySelectedModule().GetState<CoreComponent>().Name,
                     SubstanceNetwork.Instance.GetWater(selectedComponent)
                     );
             }
@@ -75,7 +75,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             var breadcrumb = "";
             foreach (var component in GameRunner.CurrentHeirarchy())
             {
-                breadcrumb = ">" + component.GetComponent<CoreComponent>().Name + breadcrumb;
+                breadcrumb = ">" + component.GetState<CoreComponent>().Name + breadcrumb;
             }
             Breadcrumb.text = breadcrumb;
         }
