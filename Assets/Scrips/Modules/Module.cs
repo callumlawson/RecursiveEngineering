@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Assets.Scrips.Components;
 using Assets.Scrips.Networks;
-using Assets.Scrips.Util;
 using Newtonsoft.Json;
 
+//TODO: Delete this. Not needed as an actual object! 
 namespace Assets.Scrips.Modules
 {
     [Serializable]
