@@ -15,24 +15,24 @@ namespace Assets.Scrips.Modules
 
         private readonly List<Module> moduleLibrary = new List<Module>
         {
-            new Module(new List<IComponent> {new CoreComponent("Box", 7, 7)}),
-            new Module(new List<IComponent> {new CoreComponent("Engine", 7, 7)}),
-            new Module(new List<IComponent> {new CoreComponent("VerticalWall", 0, 0)}),
-            new Module(new List<IComponent> {new CoreComponent("HorizontalWall", 0, 0)}),
-            new Module(new List<IComponent> {new CoreComponent("Tank", 0, 0)}),
-            new Module(new List<IComponent>
+            new Module(new List<State> {new CoreState("Box", 7, 7)}),
+            new Module(new List<State> {new CoreState("Engine", 7, 7)}),
+            new Module(new List<State> {new CoreState("VerticalWall", 0, 0)}),
+            new Module(new List<State> {new CoreState("HorizontalWall", 0, 0)}),
+            new Module(new List<State> {new CoreState("Tank", 0, 0)}),
+            new Module(new List<State>
             {
-                new CoreComponent("HorizontalPipe", 0, 0),
+                new CoreState("HorizontalPipe", 0, 0),
                 new SubstanceConnector(new List<Direction> {Direction.Left, Direction.Right})
             }),
-            new Module(new List<IComponent>
+            new Module(new List<State>
             {
-                new CoreComponent("VerticalPipe", 0, 0),
+                new CoreState("VerticalPipe", 0, 0),
                 new SubstanceConnector(new List<Direction> {Direction.Up, Direction.Down})
             }),
-            new Module(new List<IComponent>
+            new Module(new List<State>
             {
-                new CoreComponent("CrossPipe", 0, 0),
+                new CoreState("CrossPipe", 0, 0),
                 new SubstanceConnector(new List<Direction>
                 {
                     Direction.Up,
@@ -41,11 +41,11 @@ namespace Assets.Scrips.Modules
                     Direction.Right
                 })
             }),
-            new Module(new List<IComponent>
+            new Module(new List<State>
             {
-                new CoreComponent("EngineInternals", 0, 0),
+                new CoreState("EngineInternals", 0, 0),
                 new SubstanceConnector(new List<Direction> {Direction.Left, Direction.Right}),
-                new EngineComponent(0)
+                new EngineState(0)
             })
         };
 
@@ -90,7 +90,7 @@ namespace Assets.Scrips.Modules
             //Foreach support modification while iterating. 
             moduleLibrary.ForEach(module =>
             {
-                if (moduleToAdd.GetState<CoreComponent>().Name == module.GetState<CoreComponent>().Name)
+                if (moduleToAdd.GetState<CoreState>().Name == module.GetState<CoreState>().Name)
                 {
                     moduleLibrary.Remove(module);
                 }

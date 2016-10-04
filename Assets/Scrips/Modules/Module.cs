@@ -14,14 +14,14 @@ namespace Assets.Scrips.Modules
         [JsonProperty]
         private readonly ModuleGrid moduleGrid;
         [JsonProperty]
-        private readonly List<IComponent> components;
+        public readonly List<State> Components;
         [JsonIgnore]
         public Module ParentModule;
 
         [JsonIgnore]
         public bool IsTerminalModule
         {
-            get { return GetState<CoreComponent>().InternalWidth == 0 || GetState<CoreComponent>().InteralHeight == 0; }
+            get { return GetState<CoreState>().InternalWidth == 0 || GetState<CoreState>().InteralHeight == 0; }
         }
 
         [JsonIgnore]
@@ -36,17 +36,17 @@ namespace Assets.Scrips.Modules
             
         }
 
-        public Module(List<IComponent> components)
+        public Module(List<State> components)
         {
-            this.components = components;
-            moduleGrid = new ModuleGrid(GetState<CoreComponent>().InternalWidth, GetState<CoreComponent>().InteralHeight);
+            this.Components = components;
+            moduleGrid = new ModuleGrid(GetState<CoreState>().InternalWidth, GetState<CoreState>().InteralHeight);
         }
 
-        public Module(Module parentModule, List<IComponent> components)
+        public Module(Module parentModule, List<State> components)
         {
-            this.components = components;
+            this.Components = components;
             ParentModule = parentModule;
-            moduleGrid = new ModuleGrid(GetState<CoreComponent>().InternalWidth, GetState<CoreComponent>().InteralHeight);
+            moduleGrid = new ModuleGrid(GetState<CoreState>().InternalWidth, GetState<CoreState>().InteralHeight);
         }
 
         public void AddModule(Module module, GridCoordinate grid)
@@ -86,9 +86,9 @@ namespace Assets.Scrips.Modules
             return moduleGrid.GetModule(grid);
         }
 
-        public T GetState<T>() where T : IComponent
+        public T GetState<T>() where T : State
         {
-            foreach (var component in components)
+            foreach (var component in Components)
             {
                 if (component.GetType() == typeof(T))
                 {

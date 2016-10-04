@@ -130,7 +130,7 @@ namespace Assets.Scrips.Networks
             {
                 return Direction.Left;
             }
-            if (grid.X == module.GetState<CoreComponent>().InternalWidth &&
+            if (grid.X == module.GetState<CoreState>().InternalWidth &&
                 connector.Diretions.Contains(Direction.Right))
             {
                 return Direction.Right;
@@ -139,7 +139,7 @@ namespace Assets.Scrips.Networks
             {
                 return Direction.Down;
             }
-            if (grid.Y == module.GetState<CoreComponent>().InteralHeight &&
+            if (grid.Y == module.GetState<CoreState>().InteralHeight &&
                connector.Diretions.Contains(Direction.Up))
             {
                 return Direction.Up;

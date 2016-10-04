@@ -3,11 +3,11 @@
 namespace Assets.Scrips.Components
 {
     [Serializable]
-    class EngineComponent : IComponent
+    public class EngineState : State
     {
         public int CurrentRpm;
 
-        public EngineComponent(int currentRpm)
+        public EngineState(int currentRpm)
         {
             CurrentRpm = currentRpm;
         }

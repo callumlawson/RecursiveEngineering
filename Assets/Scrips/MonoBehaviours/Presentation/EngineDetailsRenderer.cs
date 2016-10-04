@@ -1,4 +1,5 @@
 ﻿using Assets.Scrips.Components;
+using Assets.Scrips.Entities;
 using Assets.Scrips.Systems;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -13,8 +14,13 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         [UsedImplicitly]
         public void Update()
         {
-            var engineModule = EngineSystem.Instance.EngineModule;
-            Rpm.text = engineModule != null ? engineModule.GetState<EngineComponent>().CurrentRpm.ToString() : "0";
+            EngineState engineState = null;
+            if (EngineSystem.Instance.EngineEntityId.HasValue)
+            {
+                engineState = Entity.GetState<EngineState>(EngineSystem.Instance.EngineEntityId.Value);
+            }
+
+            Rpm.text = engineState != null ? engineState.CurrentRpm.ToString() : "0";
         }
     }
 }

@@ -3,7 +3,7 @@
 namespace Assets.Scrips.Components
 {
     [Serializable]
-    public class IComponent
+    public class State
     {
     }
 }

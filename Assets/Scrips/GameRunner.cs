@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Assets.Scrips.Components;
+using Assets.Scrips.Entities;
 using Assets.Scrips.Modules;
 using Assets.Scrips.MonoBehaviours.Controls;
 using Assets.Scrips.Networks;
@@ -16,29 +18,31 @@ namespace Assets.Scrips
         public static GameRunner Instance;
 
         public Module ActiveModule { get; private set; }
-
-        private List<ISystem> systems = new List<ISystem>
-        {
-            new EngineSystem()
-        };
+        public int ActiveEntityId { get; private set; }
 
         private bool acceptingInput = true;
         private const float DoubleClickTimeLimit = 0.20f;
         private const float SimulationTickPeriodInSeconds = 0.1f;
 
+        private Module worldComponent;
+
         [UsedImplicitly]
         public void Start()
         {
-            //  WorldComponent = new Module( 
-            //       null,
-            //       new List<IComponent>{new CoreComponent("Sub Pen", 32 ,18 , ModuleType.Container)} 
-            //  );
-            //SetActiveModule(WorldComponent);
+            worldComponent = new Module(
+                null,
+                new List<State> {new CoreState("Sub Pen", 32, 18)}
+            );
+
+            ActiveModule = worldComponent;
+            ActiveEntityId = EntityManager.CreateEntity(worldComponent.Components);
 
             Instance = this;
             ModuleLibrary.Instance.UpdateModulesFromDisk();
 
-            LoadModule("Start");
+            SystemManager.AddSystem(new EngineSystem());
+
+            //LoadModule("Start");
 
             StartCoroutine(InputListener());
             StartCoroutine(Ticker());
@@ -88,6 +92,7 @@ namespace Assets.Scrips
         {
             acceptingInput = true;
             var module = Module.FromJson(DiskOperations.ReadText(moduleName));
+            ActiveEntityId = EntityManager.CreateEntity(module.Components);
             ActiveModule = module;
         }
 
@@ -120,15 +125,17 @@ namespace Assets.Scrips
             return null;
         }
 
+        public int CurrentlySelectedEntity()
+        {
+            
+        }
+
         private IEnumerator Ticker()
         {
             while (true)
             {
                 SubstanceNetwork.Instance.Simulate();
-                foreach (var system in systems)
-                {
-                    system.Tick();
-                }
+                SystemManager.Tick();
                 yield return new WaitForSeconds(SimulationTickPeriodInSeconds);
             }
         }
@@ -142,8 +149,7 @@ namespace Assets.Scrips
 
             if (button == 1)
             {
-                RemoveModule(ActiveModule.GetModule(currentlySelectedGrid));
-                
+                RemoveModule(ActiveModule.GetModule(currentlySelectedGrid), ActiveEntityId);
             }
         }
 
@@ -164,23 +170,21 @@ namespace Assets.Scrips
         {
             var newModule = templateModule.DeepClone();
             newModule.ParentModule = moduleToAddItTo;
+
+            //NewSystem
+            EntityManager.CreateEntity(newModule.Components);
+
             ActiveModule.AddModule(newModule, locationToAddIt);
-            foreach (var system in systems)
-            {
-                system.OnModuleAdded(newModule);
-            }
         }
 
-        private void RemoveModule(Module moduleToRemove)
+        private void RemoveModule(Module moduleToRemove, int entityId)
         {
             ActiveModule.RemoveModule(moduleToRemove);
-            foreach (var system in systems)
-            {
-                system.OnModuleRemoved(moduleToRemove);
-            }
+            EntityManager.RemoveEntity(entityId);
         }
 
         #region Input to be factored out.
+
         //TODO: Factor into input listener class.
         private IEnumerator InputListener()
         {
@@ -213,7 +217,7 @@ namespace Assets.Scrips
             }
             SingleClick(button, selectedGrid);
         }
-#endregion
+
+        #endregion
     }
 }
-

@@ -1,6 +1,6 @@
 ﻿using System;
 using Assets.Scrips.Components;
-using Assets.Scrips.Modules;
+using Assets.Scrips.Entities;
 
 namespace Assets.Scrips.Systems
 {
@@ -8,7 +8,7 @@ namespace Assets.Scrips.Systems
     {
         public static EngineSystem Instance;
 
-        public Module EngineModule;
+        public int? EngineEntityId;
 
         public EngineSystem()
         {
@@ -17,24 +17,24 @@ namespace Assets.Scrips.Systems
 
         public void Tick()
         {
-            if (EngineModule == null)
+            if (EngineEntityId == null)
             {
                 return;
             }
 
-            var engineComponent = EngineModule.GetState<EngineComponent>();
+            var engineComponent = Entity.GetState<EngineState>(EngineEntityId.Value);
             engineComponent.CurrentRpm += 1;
 
             UnityEngine.Debug.Log("Engine running");
         }
 
-        public void OnModuleAdded(Module module)
+        public void OnEntityAdded(int entityId)
         {
-            if (module.GetState<EngineComponent>() != null)
+            if (Entity.GetState<EngineState>(entityId) != null)
             {
-                if (EngineModule == null)
+                if (EngineEntityId == null)
                 {
-                    EngineModule = module;
+                    EngineEntityId = entityId;
                 }
                 else
                 {
@@ -43,11 +43,11 @@ namespace Assets.Scrips.Systems
             }
         }
 
-        public void OnModuleRemoved(Module module)
+        public void OnEntityRemoved(int entityId)
         {
-            if (EngineModule == module)
+            if (EngineEntityId == entityId)
             {
-                EngineModule = null;
+                EngineEntityId = null;
             }
         }
     }
