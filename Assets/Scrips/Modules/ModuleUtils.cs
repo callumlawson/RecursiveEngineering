@@ -20,14 +20,5 @@ namespace Assets.Scrips.Modules
             );
         }
 
-        public static GridCoordinate GetGridOffset(Module module)
-        {
-            var moduleGridPosition = module.GetGridPosition();
-            return new GridCoordinate(
-                moduleGridPosition.X * MediumToLargeRatio,
-                moduleGridPosition.Y * MediumToLargeRatio
-            );
-        }
-
     }
 }

@@ -4,35 +4,35 @@ using Assets.Scrips.Util;
 
 namespace Assets.Scrips.Modules
 {
-    public class ModuleLibrary
+    public class EntityLibrary
     {
-        private static ModuleLibrary instance;
+        private static EntityLibrary instance;
 
-        public static ModuleLibrary Instance
+        public static EntityLibrary Instance
         {
-            get { return instance ?? (instance = new ModuleLibrary()); }
+            get { return instance ?? (instance = new EntityLibrary()); }
         }
 
         private readonly List<Module> moduleLibrary = new List<Module>
         {
-            new Module(new List<State> {new CoreState("Box", 7, 7)}),
-            new Module(new List<State> {new CoreState("Engine", 7, 7)}),
-            new Module(new List<State> {new CoreState("VerticalWall", 0, 0)}),
-            new Module(new List<State> {new CoreState("HorizontalWall", 0, 0)}),
-            new Module(new List<State> {new CoreState("Tank", 0, 0)}),
-            new Module(new List<State>
+            new Module(new List<IState> {new NameState("Box", 7, 7)}),
+            new Module(new List<IState> {new NameState("Engine", 7, 7)}),
+            new Module(new List<IState> {new NameState("VerticalWall", 0, 0)}),
+            new Module(new List<IState> {new NameState("HorizontalWall", 0, 0)}),
+            new Module(new List<IState> {new NameState("Tank", 0, 0)}),
+            new Module(new List<IState>
             {
-                new CoreState("HorizontalPipe", 0, 0),
+                new NameState("HorizontalPipe", 0, 0),
                 new SubstanceConnector(new List<Direction> {Direction.Left, Direction.Right})
             }),
-            new Module(new List<State>
+            new Module(new List<IState>
             {
-                new CoreState("VerticalPipe", 0, 0),
+                new NameState("VerticalPipe", 0, 0),
                 new SubstanceConnector(new List<Direction> {Direction.Up, Direction.Down})
             }),
-            new Module(new List<State>
+            new Module(new List<IState>
             {
-                new CoreState("CrossPipe", 0, 0),
+                new NameState("CrossPipe", 0, 0),
                 new SubstanceConnector(new List<Direction>
                 {
                     Direction.Up,
@@ -41,9 +41,9 @@ namespace Assets.Scrips.Modules
                     Direction.Right
                 })
             }),
-            new Module(new List<State>
+            new Module(new List<IState>
             {
-                new CoreState("EngineInternals", 0, 0),
+                new NameState("EngineInternals", 0, 0),
                 new SubstanceConnector(new List<Direction> {Direction.Left, Direction.Right}),
                 new EngineState(0)
             })
@@ -90,7 +90,7 @@ namespace Assets.Scrips.Modules
             //Foreach support modification while iterating. 
             moduleLibrary.ForEach(module =>
             {
-                if (moduleToAdd.GetState<CoreState>().Name == module.GetState<CoreState>().Name)
+                if (moduleToAdd.GetState<NameState>().Name == module.GetState<NameState>().Name)
                 {
                     moduleLibrary.Remove(module);
                 }

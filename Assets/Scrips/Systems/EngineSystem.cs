@@ -17,30 +17,30 @@ namespace Assets.Scrips.Systems
 
         public void Tick()
         {
-            if (EngineEntityId == null)
-            {
-                return;
-            }
-
-            var engineComponent = Entity.GetState<EngineState>(EngineEntityId.Value);
-            engineComponent.CurrentRpm += 1;
-
-            UnityEngine.Debug.Log("Engine running");
+//            if (EngineEntityId == null)
+//            {
+//                return;
+//            }
+//
+//            var engineComponent = Entity.GetState<EngineState>(EngineEntityId.Value);
+//            engineComponent.CurrentRpm += 1;
+//
+//            UnityEngine.Debug.Log("Engine running");
         }
 
         public void OnEntityAdded(int entityId)
         {
-            if (Entity.GetState<EngineState>(entityId) != null)
-            {
-                if (EngineEntityId == null)
-                {
-                    EngineEntityId = entityId;
-                }
-                else
-                {
-                    throw new Exception("More than one engine added! Only one engine is supported.");
-                }
-            }
+//            if (Entity.GetState<EngineState>(entityId) != null)
+//            {
+//                if (EngineEntityId == null)
+//                {
+//                    EngineEntityId = entityId;
+//                }
+//                else
+//                {
+//                    throw new Exception("More than one engine added! Only one engine is supported.");
+//                }
+//            }
         }
 
         public void OnEntityRemoved(int entityId)

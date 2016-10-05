@@ -1,39 +1,34 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using Assets.Scrips.Components;
-using Assets.Scrips.Modules;
+using UnityEngine.Assertions;
 
 namespace Assets.Scrips.Entities
 {
-    public static class Entity
+    public class Entity
     {
-        public static T GetState<T>(List<State> states) where T : State
+        private EntityManager entityManager;
+        public int EntityId { get; private set; }
+
+        public Entity(EntityManager entityManager, int entityId)
         {
-            foreach (var state in states)
-            {
-                if (state.GetType() == typeof(T))
-                {
-                    return state as T;
-                }
-            }
-            return null;
+            this.entityManager = entityManager;
+            EntityId = entityId;
         }
 
-        public static T GetState<T>(int entityId) where T : State
+        public void AddState<T>(IState state) where T : IState
         {
-            var states = EntityManager.GetEntity(entityId);
-            return GetState<T>(states);
+            Assert.IsTrue(state != null, "State added must not be null.");
+            entityManager.AddState<T>(this, state);
         }
 
-        public GridCoordinate GetGridPosition(int entityId)
+        public T GetState<T>() where T : IState
         {
-            var states = EntityManager.GetEntity(entityId);
-            var hierarchy = GetState<HierarchyState>(entityId);
-            return hierarchy.ParentEntity.HasValue ? ParentModule.GetGridForContainedModule(this) : new GridCoordinate(0, 0);
+            return entityManager.GetState<T>(this);
         }
 
-        public GetGridForContainedModule(int entityId)
+        public void Delete()
         {
-            
+            entityManager.DeleteEntity(this);
         }
     }
 }

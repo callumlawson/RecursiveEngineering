@@ -9,6 +9,7 @@ using Assets.Scrips.Systems;
 using Assets.Scrips.Util;
 using JetBrains.Annotations;
 using UnityEngine;
+using EntityLibrary = Assets.Scrips.Modules.EntityLibrary;
 
 namespace Assets.Scrips
 {
@@ -18,27 +19,30 @@ namespace Assets.Scrips
         public static GameRunner Instance;
 
         public Module ActiveModule { get; private set; }
-        public int ActiveEntityId { get; private set; }
+        public Entity ActiveEntity { get; private set; }
 
         private bool acceptingInput = true;
         private const float DoubleClickTimeLimit = 0.20f;
         private const float SimulationTickPeriodInSeconds = 0.1f;
 
         private Module worldComponent;
+        private EntityManager entityManager;
 
         [UsedImplicitly]
         public void Start()
         {
             worldComponent = new Module(
                 null,
-                new List<State> {new CoreState("Sub Pen", 32, 18)}
+                new List<IState> {new NameState("Sub Pen", 32, 18)}
             );
 
             ActiveModule = worldComponent;
-            ActiveEntityId = EntityManager.CreateEntity(worldComponent.Components);
+            entityManager = new EntityManager();
+
+            ActiveEntity = entityManager.BuildEntity(worldComponent.Components);
 
             Instance = this;
-            ModuleLibrary.Instance.UpdateModulesFromDisk();
+            EntityLibrary.Instance.UpdateModulesFromDisk();
 
             SystemManager.AddSystem(new EngineSystem());
 
@@ -66,12 +70,12 @@ namespace Assets.Scrips
 
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                ModuleLibrary.Instance.DecrementSelectedComponent();
+                EntityLibrary.Instance.DecrementSelectedComponent();
             }
 
             if (Input.GetKeyDown(KeyCode.E))
             {
-                ModuleLibrary.Instance.IncrementSelectedComponent();
+                EntityLibrary.Instance.IncrementSelectedComponent();
             }
 
             if (Input.GetKeyDown(KeyCode.O))
@@ -92,7 +96,7 @@ namespace Assets.Scrips
         {
             acceptingInput = true;
             var module = Module.FromJson(DiskOperations.ReadText(moduleName));
-            ActiveEntityId = EntityManager.CreateEntity(module.Components);
+            ActiveEntity = entityManager.BuildEntity(module.Components);
             ActiveModule = module;
         }
 
@@ -100,7 +104,7 @@ namespace Assets.Scrips
         {
             acceptingInput = true;
             DiskOperations.SaveText(moduleName, Module.ToJson(ActiveModule));
-            ModuleLibrary.Instance.UpdateModulesFromDisk();
+            EntityLibrary.Instance.UpdateModulesFromDisk();
         }
 
         public List<Module> CurrentHeirarchy()
@@ -125,11 +129,6 @@ namespace Assets.Scrips
             return null;
         }
 
-        public int CurrentlySelectedEntity()
-        {
-            
-        }
-
         private IEnumerator Ticker()
         {
             while (true)
@@ -144,12 +143,12 @@ namespace Assets.Scrips
         {
             if (button == 0)
             {
-                AddModule(ModuleLibrary.Instance.GetSelectedModule(), ActiveModule, currentlySelectedGrid);
+                AddModule(EntityLibrary.Instance.GetSelectedModule(), ActiveModule, currentlySelectedGrid);
             }
 
             if (button == 1)
             {
-                RemoveModule(ActiveModule.GetModule(currentlySelectedGrid), ActiveEntityId);
+                RemoveModule(ActiveModule.GetModule(currentlySelectedGrid), ActiveEntity);
             }
         }
 
@@ -172,15 +171,15 @@ namespace Assets.Scrips
             newModule.ParentModule = moduleToAddItTo;
 
             //NewSystem
-            EntityManager.CreateEntity(newModule.Components);
+            entityManager.BuildEntity(newModule.Components);
 
             ActiveModule.AddModule(newModule, locationToAddIt);
         }
 
-        private void RemoveModule(Module moduleToRemove, int entityId)
+        private void RemoveModule(Module moduleToRemove, Entity entity)
         {
             ActiveModule.RemoveModule(moduleToRemove);
-            EntityManager.RemoveEntity(entityId);
+            entityManager.DeleteEntity(entity);
         }
 
         #region Input to be factored out.

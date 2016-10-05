@@ -14,14 +14,14 @@ namespace Assets.Scrips.Modules
         [JsonProperty]
         private readonly ModuleGrid moduleGrid;
         [JsonProperty]
-        public readonly List<State> Components;
+        public readonly List<IState> Components;
         [JsonIgnore]
         public Module ParentModule;
 
         [JsonIgnore]
         public bool IsTerminalModule
         {
-            get { return GetState<CoreState>().InternalWidth == 0 || GetState<CoreState>().InteralHeight == 0; }
+            get { return GetState<NameState>().InternalWidth == 0 || GetState<NameState>().InteralHeight == 0; }
         }
 
         [JsonIgnore]
@@ -36,17 +36,17 @@ namespace Assets.Scrips.Modules
             
         }
 
-        public Module(List<State> components)
+        public Module(List<IState> components)
         {
-            this.Components = components;
-            moduleGrid = new ModuleGrid(GetState<CoreState>().InternalWidth, GetState<CoreState>().InteralHeight);
+            Components = components;
+            moduleGrid = new ModuleGrid(GetState<NameState>().InternalWidth, GetState<NameState>().InteralHeight);
         }
 
-        public Module(Module parentModule, List<State> components)
+        public Module(Module parentModule, List<IState> components)
         {
-            this.Components = components;
+            Components = components;
             ParentModule = parentModule;
-            moduleGrid = new ModuleGrid(GetState<CoreState>().InternalWidth, GetState<CoreState>().InteralHeight);
+            moduleGrid = new ModuleGrid(GetState<NameState>().InternalWidth, GetState<NameState>().InteralHeight);
         }
 
         public void AddModule(Module module, GridCoordinate grid)
@@ -86,16 +86,17 @@ namespace Assets.Scrips.Modules
             return moduleGrid.GetModule(grid);
         }
 
-        public T GetState<T>() where T : State
+        //VERY SLOW
+        public T GetState<T>() where T : IState
         {
             foreach (var component in Components)
             {
                 if (component.GetType() == typeof(T))
                 {
-                    return component as T;
+                    return (T)component;
                 }
             }
-            return null;
+            return default(T);
         }
 
         public GridCoordinate GetGridPosition()

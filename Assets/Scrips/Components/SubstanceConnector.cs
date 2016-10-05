@@ -13,7 +13,7 @@ namespace Assets.Scrips.Components
     }
 
     [Serializable]
-    public class SubstanceConnector : State
+    public class SubstanceConnector : IState
     {
         public List<Direction> Diretions;
 
