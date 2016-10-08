@@ -40,6 +40,7 @@ namespace Assets.Scrips
             //EntityLibrary.Instance.UpdateModulesFromDisk();
 
             SystemManager.AddSystem(new EngineSystem());
+            SystemManager.AddSystem(new SubstanceNetwork());
 
             //LoadModule("Start");
 
@@ -125,7 +126,6 @@ namespace Assets.Scrips
         {
             while (true)
             {
-                SubstanceNetwork.Instance.Tick();
                 SystemManager.Tick();
                 yield return new WaitForSeconds(SimulationTickPeriodInSeconds);
             }
@@ -175,7 +175,6 @@ namespace Assets.Scrips
         }
 
         #region Input to be factored out.
-
         //TODO: Factor into input listener class.
         private IEnumerator InputListener()
         {

@@ -42,7 +42,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
 //
 //            foreach (var entity in activeEnity.GetState<PhysicalState>().ChildEntities)
 //            {
-//                var substanceNode = substanceNetwork.GetNodeForComponent(entity);
+//                var substanceNode = substanceNetwork.GetNodeForEntity(entity);
 //                var gridForSubstance = EntityUtils.GetGridOffset(activeEnity) +
 //                                       activeEnity.GetGridForContainedModule(entity);
 //                if (substanceNode != null)

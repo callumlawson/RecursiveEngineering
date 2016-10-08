@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Assets.Scrips.Datastructures;
 using Assets.Scrips.Datastructures.Graph;
@@ -16,61 +15,14 @@ namespace Assets.Scrips.Systems.Substance
     //TODO: Consider using injection.
     public class SubstanceNetwork : ISystem
     {
-        private static SubstanceNetwork instance;
+        public static SubstanceNetwork Instance;
 
-        public static SubstanceNetwork Instance
-        {
-            get { return instance ?? (instance = new SubstanceNetwork()); }
-        }
-
-        private DirectedSparseGraph<SubstanceNetworkNode> Network;
+        private readonly DirectedSparseGraph<SubstanceNetworkNode> network;
 
         public SubstanceNetwork()
         {
-            Network = new DirectedSparseGraph<SubstanceNetworkNode>();
-        }
-
-        public float GetWater(Entity entity)
-        {
-            var nodeValue = GetNodeForComponent(entity) != null
-                ? GetNodeForComponent(entity).GetSubstance(SubstanceTypes.WATER)
-                : 0.0f;
-
-            foreach (var childModule in entity.GetState<PhysicalState>().ChildEntities)
-            {
-                nodeValue += GetWater(childModule);
-            }
-
-            return nodeValue;
-        }
-
-        public SubstanceNetworkNode GetNodeForComponent(Entity entity)
-        {
-            foreach (var vertex in Network.Vertices)
-            {
-                if (vertex.Entity == entity)
-                {
-                    return vertex;
-                }
-            }
-            return null;
-        }
-
-        public void AddWaterToEntity(Entity entity)
-        {
-            var possibleNode = GetNodeForComponent(entity);
-            if (possibleNode != null)
-            {
-                possibleNode.UpdateSubstance(SubstanceTypes.WATER, possibleNode.GetSubstance(SubstanceTypes.WATER) + 10);
-            }
-        }
-
-        public void AddEntityToNetwork(Entity entity)
-        {
-            if (entity.GetState<SubstanceConnectorState>() != null)
-            {
-                AddNode(new SubstanceNetworkNode(entity));
-            }
+            network = new DirectedSparseGraph<SubstanceNetworkNode>();
+            Instance = this;
         }
 
         public void OnEntityAdded(Entity entity)
@@ -78,6 +30,7 @@ namespace Assets.Scrips.Systems.Substance
             if (entity.HasState<SubstanceConnectorState>())
             {
                 AddNode(new SubstanceNetworkNode(entity));
+                ConnectEntity(entity);
             }
         }
 
@@ -88,29 +41,58 @@ namespace Assets.Scrips.Systems.Substance
 
         public void OnEntityRemoved(Entity entity)
         {
-            throw new NotImplementedException();
-        }
-
-        public void RemoveModuleFromNetwork(Entity entity)
-        {
-            if (entity.GetState<SubstanceConnectorState>() != null)
+            if (entity.HasState<SubstanceConnectorState>())
             {
-                RemoveNode(GetNodeForComponent(entity));
+                RemoveNode(GetNodeForEntity(entity));
             }
         }
 
-        public void ConnectModule(Entity entity)
+        public float GetWater(Entity entity)
+        {
+            var nodeValue = GetNodeForEntity(entity) != null
+                ? GetNodeForEntity(entity).GetSubstance(SubstanceTypes.WATER)
+                : 0.0f;
+
+            foreach (var childModule in entity.GetState<PhysicalState>().ChildEntities)
+            {
+                nodeValue += GetWater(childModule);
+            }
+
+            return nodeValue;
+        }
+
+        public void AddWaterToEntity(Entity entity)
+        {
+            var possibleNode = GetNodeForEntity(entity);
+            if (possibleNode != null)
+            {
+                possibleNode.UpdateSubstance(SubstanceTypes.WATER, possibleNode.GetSubstance(SubstanceTypes.WATER) + 10);
+            }
+        }
+
+        public string Readable()
+        {
+            return network.ToReadable();
+        }
+
+        private SubstanceNetworkNode GetNodeForEntity(Entity entity)
+        {
+            foreach (var vertex in network.Vertices)
+            {
+                if (vertex.Entity == entity)
+                {
+                    return vertex;
+                }
+            }
+            return null;
+        }
+
+        private void ConnectEntity(Entity entity)
         {
             if (entity.GetState<SubstanceConnectorState>() != null)
             {
                 ConnectToAdjacentModulesWithinModule(entity);
             }
-        }
-
-        public void SetupModule(Entity addedEntity)
-        {
-            AddEntityToNetwork(addedEntity);
-            ConnectModule(addedEntity);
         }
 
         //Generalise to arbitary numbers of levels. Make Neigbouring Components include those at higher levels?
@@ -126,14 +108,9 @@ namespace Assets.Scrips.Systems.Substance
                     HaveFacingConnections(direction, addedEntity.GetState<SubstanceConnectorState>().Diretions,
                         neigbour.GetState<SubstanceConnectorState>().Diretions))
                 {
-                    AddBidirectionalConnection(GetNodeForComponent(addedEntity), GetNodeForComponent(neigbour));
+                    AddBidirectionalConnection(GetNodeForEntity(addedEntity), GetNodeForEntity(neigbour));
                 }
             }
-        }
-
-        public string Readable()
-        {
-            return Network.ToReadable();
         }
 
         private Direction EdgeConnection(Module module, GridCoordinate grid, SubstanceConnectorState connectorState)
@@ -207,9 +184,9 @@ namespace Assets.Scrips.Systems.Substance
 
         private void Flow()
         {
-            foreach (var graphVertex in Network.Vertices)
+            foreach (var graphVertex in network.Vertices)
             {
-                var neighbours = Network.NeighboursInclusive(graphVertex);
+                var neighbours = network.NeighboursInclusive(graphVertex);
                 var averageValue = neighbours.Sum(vertex => vertex.GetSubstance(SubstanceTypes.WATER))/neighbours.Count;
                 foreach (var neighbour in neighbours)
                 {
@@ -220,19 +197,18 @@ namespace Assets.Scrips.Systems.Substance
 
         private void AddBidirectionalConnection(SubstanceNetworkNode source, SubstanceNetworkNode destination)
         {
-            Network.AddEdge(destination, source);
-            Network.AddEdge(source, destination);
+            network.AddEdge(destination, source);
+            network.AddEdge(source, destination);
         }
 
         private void RemoveNode(SubstanceNetworkNode node)
         {
-            Network.RemoveVertex(node);
+            network.RemoveVertex(node);
         }
 
         private void AddNode(SubstanceNetworkNode node)
         {
-            Network.AddVertex(node);
+            network.AddVertex(node);
         }
-
     }
 }

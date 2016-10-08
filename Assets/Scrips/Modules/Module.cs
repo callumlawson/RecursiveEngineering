@@ -136,7 +136,7 @@ namespace Assets.Scrips.Modules
 
 //        private static void AddModuleToSubstanceNetwork(Module module)
 //        {
-//            SubstanceNetwork.Instance.AddModuleToNetwork(module);
+//            SubstanceNetwork.Instance.AddEntityToNetwork(module);
 //            foreach (var innerModule in module.GetContainedModules())
 //            {
 //                AddModuleToSubstanceNetwork(innerModule);
@@ -168,7 +168,7 @@ namespace Assets.Scrips.Modules
 //
 //        public List<Module> GetNeighbouringModules(GridCoordinate grid)
 //        {
-//            return GridOperations.GetNeigbouringModules(grid).ToList();
+//            return GridOperations.GetNeigbouringEntities(grid).ToList();
 //        }
     }
 }
