@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Assets.Scrips.Networks.Graph
+namespace Assets.Scrips.Datastructures.Graph
 {
     public class DirectedSparseGraph<TVertex> : IGraph<TVertex> where TVertex : IComparable<TVertex>
     {

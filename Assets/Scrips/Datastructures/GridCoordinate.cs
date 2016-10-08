@@ -2,7 +2,7 @@
 using Assets.Scrips.Modules;
 using UnityEngine;
 
-namespace Assets.Scrips.Datatypes
+namespace Assets.Scrips.Datastructures
 {
     [Serializable]
     public class GridCoordinate

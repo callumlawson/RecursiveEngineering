@@ -1,8 +1,7 @@
-﻿using Assets.Scrips.Components;
-using Assets.Scrips.Entities;
-using Assets.Scrips.Modules;
+﻿using Assets.Scrips.Entities;
 using Assets.Scrips.MonoBehaviours.Controls;
-using Assets.Scrips.Networks;
+using Assets.Scrips.States;
+using Assets.Scrips.Systems.Substance;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,22 +31,22 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
 
         private void UpdateSelectedLibraryComponent()
         {
-//            var moduleLibrary = EntityLibrary.Instance;
-//            SelectedComponent.sprite =
-//                Resources.Load<GameObject>(
-//                    moduleLibrary.GetSelectedModule().GetState<NameState>().Name)
-//                    .GetComponent<SpriteRenderer>()
-//                    .sprite;
-//            PreviousComponent.sprite =
-//                Resources.Load<GameObject>(
-//                    moduleLibrary.GetPreviousModule().GetState<NameState>().Name)
-//                    .GetComponent<SpriteRenderer>()
-//                    .sprite;
-//            NextComponent.sprite =
-//                Resources.Load<GameObject>(
-//                    moduleLibrary.GetNextModule().GetState<NameState>().Name)
-//                    .GetComponent<SpriteRenderer>()
-//                    .sprite;
+            var entityLibrary= EntityLibrary.Instance;
+            SelectedComponent.sprite =
+                Resources.Load<GameObject>(
+                    EntityLibrary.GetState<NameState>(entityLibrary.GetSelectedModule()).Name)
+                    .GetComponent<SpriteRenderer>()
+                    .sprite;
+            PreviousComponent.sprite =
+                Resources.Load<GameObject>(
+                    EntityLibrary.GetState<NameState>(entityLibrary.GetPreviousModule()).Name)
+                    .GetComponent<SpriteRenderer>()
+                    .sprite;
+            NextComponent.sprite =
+                Resources.Load<GameObject>(
+                    EntityLibrary.GetState<NameState>(entityLibrary.GetNextModule()).Name)
+                    .GetComponent<SpriteRenderer>()
+                    .sprite;
         }
 
         //TODO: Use custom "toString" style pattern here.
@@ -57,7 +56,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             if (selectedComponent != null)
             {
                 SelectedComponentName.text = string.Format(
-                    "Selected Grid: {0} Selected Module: {1} Water: {2}",
+                    "Selected Grid: {0} Selected Entity: {1} Water: {2}",
                     GridSelector.CurrentlySelectedGrid(GameRunner.ActiveEntity),
                     GameRunner.CurrentlySelectedEntity().GetState<NameState>().Name,
                     SubstanceNetwork.Instance.GetWater(selectedComponent)

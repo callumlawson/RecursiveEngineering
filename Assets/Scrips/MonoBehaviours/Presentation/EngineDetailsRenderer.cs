@@ -1,5 +1,5 @@
-﻿using Assets.Scrips.Components;
-using Assets.Scrips.Entities;
+﻿using Assets.Scrips.Entities;
+using Assets.Scrips.States;
 using Assets.Scrips.Systems;
 using JetBrains.Annotations;
 using UnityEngine;

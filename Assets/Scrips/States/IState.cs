@@ -1,4 +1,4 @@
-﻿namespace Assets.Scrips.Components
+﻿namespace Assets.Scrips.States
 {
     public interface IState
     {

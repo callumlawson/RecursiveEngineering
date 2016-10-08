@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Assets.Scrips.Datatypes;
-using Assets.Scrips.Entities;
+using Assets.Scrips.Datastructures;
 using Assets.Scrips.Modules;
+using Entity = Assets.Scrips.Entities.Entity;
 
-namespace Assets.Scrips.Components
+namespace Assets.Scrips.States
 {
     [Serializable]
     public class PhysicalState : IState
@@ -61,6 +61,29 @@ namespace Assets.Scrips.Components
             return true;
         }
 
+        public List<Entity> GetNeighbouringEntities()
+        {
+            if (IsRoot())
+            {
+                return new List<Entity>();
+            }
+
+            var parentGrid = ParentEntity.GetState<PhysicalState>();
+            var results = new List<Entity>();
+
+            foreach (Direction direction in Enum.GetValues(typeof(Direction)))
+            {
+                var neighbourGrid = GridOperations.GetGridInDirection(BottomLeftCoordinate, direction);
+                var neighbour = parentGrid.GetEntityAtGrid(neighbourGrid);
+                if (neighbour != null)
+                {
+                    results.Add(neighbour);
+                }    
+            }
+
+            return results;
+        }
+
         public Entity GetEntityAtGrid(GridCoordinate grid)
         {
             foreach (var entity in ChildEntities)
@@ -79,6 +102,17 @@ namespace Assets.Scrips.Components
             physicalState.ParentEntity = entityToAddItTo;
             physicalState.BottomLeftCoordinate = locationToAddIt;
             entityToAddItTo.GetState<PhysicalState>().ChildEntities.Add(entityToAdd);
+        }
+
+        public void RemoveEntityFromEntity(Entity entityToRemove)
+        {
+            ChildEntities.ForEach(entity =>
+            {
+                if (entity == entityToRemove)
+                {
+                    ChildEntities.Remove(entityToRemove);
+                }
+            });
         }
     }
 }

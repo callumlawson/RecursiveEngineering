@@ -1,9 +1,11 @@
-﻿namespace Assets.Scrips.Systems
+﻿using Assets.Scrips.Entities;
+
+namespace Assets.Scrips.Systems
 {
     public interface ISystem
     {
         void Tick();
-        void OnEntityAdded(int entityId);
-        void OnEntityRemoved(int entity);
+        void OnEntityAdded(Entity entity);
+        void OnEntityRemoved(Entity entity);
     }
 }

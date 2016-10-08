@@ -1,81 +1,82 @@
 ﻿using System;
 using System.Collections.Generic;
-using Assets.Scrips.Components;
-using Assets.Scrips.Datatypes;
+using Assets.Scrips.Datastructures;
+using Assets.Scrips.Entities;
+using Assets.Scrips.States;
 using Newtonsoft.Json;
 
 namespace Assets.Scrips.Modules
 {
     [Serializable]
-    public class ModuleGrid
+    public class GridOperations
     {
         [JsonProperty] public int Width { get; private set; }
         [JsonProperty] public int Height { get; private set; }
-        [JsonProperty] private readonly Module[,] innerModules;
+        [JsonProperty] private readonly Entity[,] innerEntities;
 
-        public ModuleGrid(int width, int height)
+        public GridOperations(int width, int height)
         {
             Width = width;
             Height = height;
-            innerModules = new Module[width, height];
+            innerEntities = new Entity[width, height];
         }
 
-        public bool AddModule(Module module, GridCoordinate coord)
-        {
-            if (GridIsInModule(coord) && GridIsEmpty(coord))
-            {
-                innerModules[coord.X, coord.Y] = module;
-                return true;
-            }
-            return false;
-        }
+//        public bool AddModule(Entity Entity, GridCoordinate coord)
+//        {
+//            if (GridIsInModule(coord) && GridIsEmpty(coord))
+//            {
+//                innerEntities[coord.X, coord.Y] = Entity;
+//                return true;
+//            }
+//            return false;
+//        }
+//
+//        public Entity RemoveModule(Entity moduleToRemove)
+//        {
+//            for (var x = 0; x < Width; x++)
+//            {
+//                for (var y = 0; y < Height; y++)
+//                {
+//                    var grid = new GridCoordinate(x, y);
+//                    var moduleAtGrid = GetModule(grid);
+//                    if (moduleAtGrid == moduleToRemove)
+//                    {
+//                        innerEntities[grid.X, grid.Y] = null;
+//                        return moduleAtGrid;
+//                    }
+//                }
+//            }
+//            return null;
+//        }
 
-        public Module RemoveModule(Module moduleToRemove)
+        public Entity RemoveModule(GridCoordinate grid)
         {
-            for (var x = 0; x < Width; x++)
-            {
-                for (var y = 0; y < Height; y++)
-                {
-                    var grid = new GridCoordinate(x, y);
-                    var moduleAtGrid = GetModule(grid);
-                    if (moduleAtGrid == moduleToRemove)
-                    {
-                        innerModules[grid.X, grid.Y] = null;
-                        return moduleAtGrid;
-                    }
-                }
-            }
-            return null;
-        }
-
-        public Module RemoveModule(GridCoordinate grid)
-        {
-            Module moduleRemoved = null;
+            Entity entityRemoved = null;
             if (GridIsInModule(grid))
             {
-                moduleRemoved = innerModules[grid.X, grid.Y];
-                innerModules[grid.X, grid.Y] = null;
+                entityRemoved = innerEntities[grid.X, grid.Y];
+                innerEntities[grid.X, grid.Y] = null;
             }
-            return moduleRemoved;
+            return entityRemoved;
         }
 
-        public Module GetModule(GridCoordinate grid)
+        public Entity GetModule(GridCoordinate grid)
         {
             if (GridIsInModule(grid))
             {
-                return innerModules[grid.X, grid.Y];
+                return innerEntities[grid.X, grid.Y];
             }
             throw new ArgumentOutOfRangeException("grid");
         }
 
-        public GridCoordinate GetGridForModule(Module module)
+        public GridCoordinate GetGridForModule(Entity entity)
         {
             for (var x = 0; x < Width; x++)
             {
                 for (var y = 0; y < Height; y++)
                 {
                     var gridCoordinate = new GridCoordinate(x, y);
-                    if (GetModule(gridCoordinate) == module)
+                    if (GetModule(gridCoordinate) == entity)
                     {
                         return gridCoordinate;
                     }
@@ -88,29 +89,29 @@ namespace Assets.Scrips.Modules
         {
             if (GridIsInModule(grid))
             {
-                return innerModules[grid.X, grid.Y] == null;
+                return innerEntities[grid.X, grid.Y] == null;
             }
             return true;
         }
 
-        public IEnumerable<Module> GetNeigbouringModules(GridCoordinate grid)
+        public IEnumerable<Entity> GetNeigbouringEntities(GridCoordinate grid)
         {
-            var list = new List<Module>();
+            var list = new List<Entity>();
 
             foreach (Direction direction in Enum.GetValues(typeof(Direction)))
             {
-                var module = GetNeigbouringModule(grid, direction);
-                if (module != null)
+                var entity = GetNeigbouringEntity(grid, direction);
+                if (entity != null)
                 {
-                    list.Add(module);
+                    list.Add(entity);
                 }
             }
             return list;
         }
 
-        public List<Module> GetContainedModules()
+        public List<Entity> GetContainedModules()
         {
-            var results = new List<Module>();
+            var results = new List<Entity>();
             for (var x = 0; x < Width; x++)
             {
                 for (var y = 0; y < Height; y++)
@@ -125,7 +126,7 @@ namespace Assets.Scrips.Modules
             return results;
         }
 
-        private Module GetNeigbouringModule(GridCoordinate grid, Direction direction)
+        private Entity GetNeigbouringEntity(GridCoordinate grid, Direction direction)
         {
             switch (direction)
             {
@@ -134,10 +135,6 @@ namespace Assets.Scrips.Modules
                     if (GridIsInModule(up) && GridIsFull(up))
                     {
                         return GetModule(up);
-                    }
-                    else
-                    {
-                        
                     }
                     return null;
                 case Direction.Down:
@@ -168,7 +165,7 @@ namespace Assets.Scrips.Modules
             }
         }
 
-        private GridCoordinate GetGridInDirection(GridCoordinate grid, Direction direction)
+        public static GridCoordinate GetGridInDirection(GridCoordinate grid, Direction direction)
         {
             switch (direction)
             {
@@ -194,7 +191,7 @@ namespace Assets.Scrips.Modules
 
         private bool GridIsInModule(GridCoordinate coord)
         {
-            return coord.X >= 0 && coord.Y >= 0 && coord.X < innerModules.GetLength(0) && coord.Y < innerModules.GetLength(1);
+            return coord.X >= 0 && coord.Y >= 0 && coord.X < innerEntities.GetLength(0) && coord.Y < innerEntities.GetLength(1);
         }
 
     }

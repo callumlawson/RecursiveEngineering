@@ -1,8 +1,9 @@
-﻿using Assets.Scrips.Datatypes;
+﻿using Assets.Scrips.Datastructures;
 using Assets.Scrips.Entities;
 using Assets.Scrips.Modules;
 using JetBrains.Annotations;
 using UnityEngine;
+using Entity = Assets.Scrips.Entities.Entity;
 
 namespace Assets.Scrips.MonoBehaviours.Controls
 {

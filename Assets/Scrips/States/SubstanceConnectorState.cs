@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Assets.Scrips.Components
+namespace Assets.Scrips.States
 {
     public enum Direction
     {
@@ -13,11 +13,11 @@ namespace Assets.Scrips.Components
     }
 
     [Serializable]
-    public class SubstanceConnector : IState
+    public class SubstanceConnectorState : IState
     {
         public List<Direction> Diretions;
 
-        public SubstanceConnector(List<Direction> diretions)
+        public SubstanceConnectorState(List<Direction> diretions)
         {
             Diretions = diretions;
         }

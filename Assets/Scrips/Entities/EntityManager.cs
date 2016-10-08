@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Assets.Scrips.Components;
-using Assets.Scrips.Datatypes;
+using Assets.Scrips.Datastructures;
+using Assets.Scrips.States;
 using JetBrains.Annotations;
 
 namespace Assets.Scrips.Entities

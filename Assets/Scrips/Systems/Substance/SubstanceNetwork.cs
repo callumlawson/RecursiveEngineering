@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Scrips.Components;
-using Assets.Scrips.Datatypes;
+using Assets.Scrips.Datastructures;
+using Assets.Scrips.Datastructures.Graph;
 using Assets.Scrips.Entities;
 using Assets.Scrips.Modules;
-using Assets.Scrips.Networks.Graph;
-using Assets.Scrips.Networks.Substance;
-using Assets.Scrips.Util;
+using Assets.Scrips.States;
 
-namespace Assets.Scrips.Networks
+namespace Assets.Scrips.Systems.Substance
 {
     //A comoponent can have serveral networks. 
     //Networks have a type. 
     //Networks of the same type can be combined.
     //Networks are basically graphs with rules on their connections. 
     //TODO: Consider using injection.
-    public class SubstanceNetwork
+    public class SubstanceNetwork : ISystem
     {
         private static SubstanceNetwork instance;
 
@@ -34,24 +32,23 @@ namespace Assets.Scrips.Networks
 
         public float GetWater(Entity entity)
         {
-            return 0.0f;
-//            var nodeValue = GetNodeForComponent(entity) != null
-//                ? GetNodeForComponent(entity).GetSubstance(SubstanceTypes.WATER)
-//                : 0.0f;
-//
-//            foreach (var childModule in entity.GetState<PhysicalState>().ChildEntities)
-//            {
-//                nodeValue += GetWater(childModule);
-//            }
-//
-//            return nodeValue;
+            var nodeValue = GetNodeForComponent(entity) != null
+                ? GetNodeForComponent(entity).GetSubstance(SubstanceTypes.WATER)
+                : 0.0f;
+
+            foreach (var childModule in entity.GetState<PhysicalState>().ChildEntities)
+            {
+                nodeValue += GetWater(childModule);
+            }
+
+            return nodeValue;
         }
 
-        public SubstanceNetworkNode GetNodeForComponent(Module module)
+        public SubstanceNetworkNode GetNodeForComponent(Entity entity)
         {
             foreach (var vertex in Network.Vertices)
             {
-                if (vertex.Module == module)
+                if (vertex.Entity == entity)
                 {
                     return vertex;
                 }
@@ -59,67 +56,79 @@ namespace Assets.Scrips.Networks
             return null;
         }
 
-        public void AddWaterToModule(Module module)
+        public void AddWaterToEntity(Entity entity)
         {
-            var possibleNode = GetNodeForComponent(module);
+            var possibleNode = GetNodeForComponent(entity);
             if (possibleNode != null)
             {
                 possibleNode.UpdateSubstance(SubstanceTypes.WATER, possibleNode.GetSubstance(SubstanceTypes.WATER) + 10);
             }
         }
 
-        public void Simulate()
+        public void AddEntityToNetwork(Entity entity)
+        {
+            if (entity.GetState<SubstanceConnectorState>() != null)
+            {
+                AddNode(new SubstanceNetworkNode(entity));
+            }
+        }
+
+        public void OnEntityAdded(Entity entity)
+        {
+            if (entity.HasState<SubstanceConnectorState>())
+            {
+                AddNode(new SubstanceNetworkNode(entity));
+            }
+        }
+
+        public void Tick()
         {
             Flow();
         }
 
-        public void AddModuleToNetwork(Module module)
+        public void OnEntityRemoved(Entity entity)
         {
-            if (module.GetState<SubstanceConnector>() != null)
+            throw new NotImplementedException();
+        }
+
+        public void RemoveModuleFromNetwork(Entity entity)
+        {
+            if (entity.GetState<SubstanceConnectorState>() != null)
             {
-                AddNode(new SubstanceNetworkNode(module));
+                RemoveNode(GetNodeForComponent(entity));
             }
         }
 
-        public void RemoveModuleFromNetwork(Module module)
+        public void ConnectModule(Entity entity)
         {
-            if (module.GetState<SubstanceConnector>() != null)
+            if (entity.GetState<SubstanceConnectorState>() != null)
             {
-                RemoveNode(GetNodeForComponent(module));
+                ConnectToAdjacentModulesWithinModule(entity);
             }
         }
 
-        public void ConnectModule(Module module)
+        public void SetupModule(Entity addedEntity)
         {
-            if (module.GetState<SubstanceConnector>() != null)
-            {
-                ConnectToAdjacentModulesWithinModule(module);
-            }
-        }
-
-        public void SetupModule(Module addedModule)
-        {
-            AddModuleToNetwork(addedModule);
-            ConnectModule(addedModule);
+            AddEntityToNetwork(addedEntity);
+            ConnectModule(addedEntity);
         }
 
         //Generalise to arbitary numbers of levels. Make Neigbouring Components include those at higher levels?
-        private void ConnectToAdjacentModulesWithinModule(Module addedModule)
+        private void ConnectToAdjacentModulesWithinModule(Entity addedEntity)
         {
-//            var grid = addedModule.GetGridPosition();
-//            foreach (var neigbour in addedModule.ParentModule.GetNeighbouringModules(grid))
-//            {
-//                var addedModuleGrid = addedModule.GetGridPosition();
-//                var neigbourGrid = neigbour.GetGridPosition();
-//                var direction = AdjacentDirection(addedModuleGrid, neigbourGrid);
-//
-//                if (neigbour.GetState<SubstanceConnector>() != null &&
-//                    HaveFacingConnections(direction, addedModule.GetState<SubstanceConnector>().Diretions,
-//                        neigbour.GetState<SubstanceConnector>().Diretions))
-//                {
-//                    AddBidirectionalConnection(GetNodeForComponent(addedModule), GetNodeForComponent(neigbour));
-//                }
-//            }
+            var grid = addedEntity.GetState<PhysicalState>().BottomLeftCoordinate;
+            foreach (var neigbour in addedEntity.GetState<PhysicalState>().GetNeighbouringEntities())
+            {
+                var neigbourGrid = neigbour.GetState<PhysicalState>().BottomLeftCoordinate;
+                var direction = AdjacentDirection(grid, neigbourGrid);
+
+                if (neigbour.GetState<SubstanceConnectorState>() != null &&
+                    HaveFacingConnections(direction, addedEntity.GetState<SubstanceConnectorState>().Diretions,
+                        neigbour.GetState<SubstanceConnectorState>().Diretions))
+                {
+                    AddBidirectionalConnection(GetNodeForComponent(addedEntity), GetNodeForComponent(neigbour));
+                }
+            }
         }
 
         public string Readable()
@@ -127,23 +136,23 @@ namespace Assets.Scrips.Networks
             return Network.ToReadable();
         }
 
-        private Direction EdgeConnection(Module module, GridCoordinate grid, SubstanceConnector connector)
+        private Direction EdgeConnection(Module module, GridCoordinate grid, SubstanceConnectorState connectorState)
         {
-            if (grid.X == 0 && connector.Diretions.Contains(Direction.Left))
+            if (grid.X == 0 && connectorState.Diretions.Contains(Direction.Left))
             {
                 return Direction.Left;
             }
             if (grid.X == module.GetState<PhysicalState>().InternalWidth &&
-                connector.Diretions.Contains(Direction.Right))
+                connectorState.Diretions.Contains(Direction.Right))
             {
                 return Direction.Right;
             }
-            if (grid.Y == 0 && connector.Diretions.Contains(Direction.Down))
+            if (grid.Y == 0 && connectorState.Diretions.Contains(Direction.Down))
             {
                 return Direction.Down;
             }
             if (grid.Y == module.GetState<PhysicalState>().InternalHeight &&
-               connector.Diretions.Contains(Direction.Up))
+               connectorState.Diretions.Contains(Direction.Up))
             {
                 return Direction.Up;
             }
@@ -224,5 +233,6 @@ namespace Assets.Scrips.Networks
         {
             Network.AddVertex(node);
         }
+
     }
 }

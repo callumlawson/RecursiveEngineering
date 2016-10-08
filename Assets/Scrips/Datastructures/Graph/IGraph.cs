@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Assets.Scrips.Networks.Graph
+namespace Assets.Scrips.Datastructures.Graph
 {
     public interface IGraph<T> where T : IComparable<T>
     {

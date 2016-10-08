@@ -1,12 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Assets.Scrips.Components;
-using Assets.Scrips.Datatypes;
+using Assets.Scrips.Datastructures;
 using Assets.Scrips.Entities;
-using Assets.Scrips.Modules;
 using Assets.Scrips.MonoBehaviours.Controls;
-using Assets.Scrips.Networks;
+using Assets.Scrips.States;
 using Assets.Scrips.Systems;
+using Assets.Scrips.Systems.Substance;
 using Assets.Scrips.Util;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -58,10 +57,10 @@ namespace Assets.Scrips
 
             if (Input.GetKeyDown(KeyCode.T))
             {
-//                if (CurrentlySelectedEntity() != null)
-//                {
-//                    CurrentlySelectedEntity().AddWater();
-//                }
+                if (CurrentlySelectedEntity() != null)
+                {
+                    SubstanceNetwork.Instance.AddWaterToEntity(CurrentlySelectedEntity());
+                }
             }
 
             if (Input.GetKeyDown(KeyCode.Q))
@@ -77,13 +76,13 @@ namespace Assets.Scrips
 //            if (Input.GetKeyDown(KeyCode.O))
 //            {
 //                acceptingInput = false;
-//                UserTextQuery.Instance.GetTextResponse("Module to load...", LoadModule);
+//                UserTextQuery.Instance.GetTextResponse("Entity to load...", LoadModule);
 //            }
 //
 //            if (Input.GetKeyDown(KeyCode.P))
 //            {
 //                acceptingInput = false;
-//                UserTextQuery.Instance.GetTextResponse("Module to save...", SaveModule);
+//                UserTextQuery.Instance.GetTextResponse("Part to save...", SaveModule);
 //            }
         }
 
@@ -91,7 +90,7 @@ namespace Assets.Scrips
 //        private void LoadModule(string moduleName)
 //        {
 //            acceptingInput = true;
-//            var module = Module.FromJson(DiskOperations.ReadText(moduleName));
+//            var module = Entity.FromJson(DiskOperations.ReadText(moduleName));
 //            ActiveEntity = entityManager.BuildEntity(module.Components);
 //            ActiveModule = module;
 //        }
@@ -99,7 +98,7 @@ namespace Assets.Scrips
 //        private void SaveModule(string moduleName)
 //        {
 //            acceptingInput = true;
-//            DiskOperations.SaveText(moduleName, Module.ToJson(ActiveModule));
+//            DiskOperations.SaveText(moduleName, Entity.ToJson(ActiveModule));
 //            EntityLibrary.Instance.UpdateModulesFromDisk();
 //        }
 
@@ -126,7 +125,7 @@ namespace Assets.Scrips
         {
             while (true)
             {
-                SubstanceNetwork.Instance.Simulate();
+                SubstanceNetwork.Instance.Tick();
                 SystemManager.Tick();
                 yield return new WaitForSeconds(SimulationTickPeriodInSeconds);
             }
@@ -141,13 +140,13 @@ namespace Assets.Scrips
 
             if (button == 1)
             {
-                RemoveEntity(ActiveEntity);
+                RemoveEntity(CurrentlySelectedEntity());
             }
         }
 
         private void DoubleClick(int button, GridCoordinate currentlySelectedGrid)
         {
-            if (button == 1 && ActiveEntity.GetState<PhysicalState>().ParentEntity != null)
+            if (button == 1 && !ActiveEntity.GetState<PhysicalState>().IsRoot())
             {
                 ActiveEntity = ActiveEntity.GetState<PhysicalState>().ParentEntity;
             }
@@ -167,8 +166,12 @@ namespace Assets.Scrips
 
         private void RemoveEntity(Entity entityToRemove)
         {
-            ActiveEntity.GetState<PhysicalState>().ChildEntities.Remove(entityToRemove);
-            entityManager.DeleteEntity(entityToRemove);
+            if (!entityToRemove.GetState<PhysicalState>().IsRoot())
+            {
+                var parentEntity = entityToRemove.GetState<PhysicalState>().ParentEntity;
+                parentEntity.GetState<PhysicalState>().RemoveEntityFromEntity(entityToRemove);
+                entityManager.DeleteEntity(entityToRemove);
+            }
         }
 
         #region Input to be factored out.

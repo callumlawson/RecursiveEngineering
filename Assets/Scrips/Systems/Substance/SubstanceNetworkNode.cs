@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using Assets.Scrips.Modules;
+using Assets.Scrips.Entities;
 
-namespace Assets.Scrips.Networks
+namespace Assets.Scrips.Systems.Substance
 {
     public class SubstanceNetworkNode : IComparable<SubstanceNetworkNode>
     {
-        public Module Module { get; private set; }
+        public Entity Entity { get; private set; }
 
         private readonly Dictionary<string, float> substances;
 
-        public SubstanceNetworkNode(Module module, Dictionary<string, float> substances = null)
+        public SubstanceNetworkNode(Entity entity, Dictionary<string, float> substances = null)
         {
-            Module = module;
+            Entity = entity;
             this.substances = substances ?? new Dictionary<string, float>();
         }
 

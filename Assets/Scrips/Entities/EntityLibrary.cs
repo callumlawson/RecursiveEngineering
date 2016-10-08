@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Assets.Scrips.Components;
-using Assets.Scrips.Modules;
-using Assets.Scrips.Util;
+using Assets.Scrips.States;
 
 namespace Assets.Scrips.Entities
 {
@@ -42,33 +40,37 @@ namespace Assets.Scrips.Entities
                 new NameState("Tank"),
                 new PhysicalState()
             },
-//            new List<IState>
-//            {
-//                new NameState("HorizontalPipe"),
-//                new SubstanceConnector(new List<Direction> {Direction.Left, Direction.Right})
-//            },
-//            new List<IState>
-//            {
-//                new NameState("VerticalPipe"),
-//                new SubstanceConnector(new List<Direction> {Direction.Up, Direction.Down})
-//            },
-//            new List<IState>
-//            {
-//                new NameState("CrossPipe"),
-//                new SubstanceConnector(new List<Direction>
-//                {
-//                    Direction.Up,
-//                    Direction.Down,
-//                    Direction.Left,
-//                    Direction.Right
-//                })
-//            },
-//            new List<IState>
-//            {
-//                new NameState("EngineInternals", 0, 0),
-//                new SubstanceConnector(new List<Direction> {Direction.Left, Direction.Right}),
-//                new EngineState(0)
-//            }
+            new List<IState>
+            {
+                new NameState("HorizontalPipe"),
+                new PhysicalState(),
+                new SubstanceConnectorState(new List<Direction> {Direction.Left, Direction.Right})
+            },
+            new List<IState>
+            {
+                new NameState("VerticalPipe"),
+                new PhysicalState(),
+                new SubstanceConnectorState(new List<Direction> {Direction.Up, Direction.Down})
+            },
+            new List<IState>
+            {
+                new NameState("CrossPipe"),
+                new PhysicalState(),
+                new SubstanceConnectorState(new List<Direction>
+                {
+                    Direction.Up,
+                    Direction.Down,
+                    Direction.Left,
+                    Direction.Right
+                })
+            },
+            new List<IState>
+            {
+                new NameState("EngineInternals"),
+                new PhysicalState(),
+                new SubstanceConnectorState(new List<Direction> {Direction.Left, Direction.Right}),
+                new EngineState(0)
+            }
         };
 
         private int selectedLibraryIndex;
@@ -98,12 +100,24 @@ namespace Assets.Scrips.Entities
             return entityLibrary[ClampToLibraryIndex(selectedLibraryIndex + 1)];
         }
 
+        public static T GetState<T>(List<IState> states) where T : IState
+        {
+            foreach (var state in states)
+            {
+                if (state.GetType() == typeof(T))
+                {
+                    return (T)state;
+                }
+            }
+            return default(T);
+        }
+
         public void UpdateModulesFromDisk()
         {
 //            var moduleJson = DiskOperations.GetModules();
 //            foreach (var module in moduleJson)
 //            {
-//                AddEntityToLibrary(Module.FromJson(module));
+//                AddEntityToLibrary(Entity.FromJson(module));
 //            }
         }
 

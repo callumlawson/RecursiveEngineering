@@ -1,23 +1,20 @@
-﻿using Assets.Scrips.Components;
-using Assets.Scrips.Datatypes;
+﻿using Assets.Scrips.Datastructures;
 using Assets.Scrips.Modules;
-using Assets.Scrips.Networks;
-using Assets.Scrips.Networks.Substance;
 using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Assets.Scrips.MonoBehaviours.Presentation
 {
-    public class SubstanceRenderer : MonoBehaviour {
-
-        [UsedImplicitly] public GameObject WaterTile;
-
+    public class SubstanceRenderer : MonoBehaviour
+    {
         private GameObject substanceRenderRoot;
         private SpriteRenderer[,] tileGrid;
+        [UsedImplicitly] public GameObject WaterTile;
 
         // Use this for initialization
         [UsedImplicitly]
-        void Start () {
+        private void Start()
+        {
             tileGrid = new SpriteRenderer[EntityUtils.MaxWidth, EntityUtils.MaxHeight];
             substanceRenderRoot = new GameObject();
             if (substanceRenderRoot != null)

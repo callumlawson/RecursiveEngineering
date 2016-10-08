@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Assets.Scrips.Components
+namespace Assets.Scrips.States
 {
     [Serializable]
     public class NameState : IState

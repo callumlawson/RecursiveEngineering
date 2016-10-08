@@ -1,4 +1,4 @@
-﻿using Assets.Scrips.Datatypes;
+﻿using Assets.Scrips.Datastructures;
 using Assets.Scrips.Entities;
 
 namespace Assets.Scrips.Modules
@@ -12,7 +12,7 @@ namespace Assets.Scrips.Modules
         public const int MaxHeight = MediumToLargeRatio * 18;
         public const int MediumToLargeRatio = 7;
 
-        public static GridCoordinate GetGridOffset(Entity entity)
+        public static GridCoordinate GetGridOffset(Entities.Entity entity)
         {
             return new GridCoordinate(0, 0);
 //            var moduleGridPosition = entity.GetGridPosition();

@@ -21,7 +21,7 @@ namespace Assets.Scrips.Util
         public static List<string> GetModules()
         {
             var results = new List<string>();
-            var filePaths = Directory.GetFiles(Application.streamingAssetsPath, "*Module.json", SearchOption.AllDirectories);
+            var filePaths = Directory.GetFiles(Application.streamingAssetsPath, "*Entity.json", SearchOption.AllDirectories);
             foreach (var path in filePaths)
             {
                 results.Add(File.ReadAllText(path));

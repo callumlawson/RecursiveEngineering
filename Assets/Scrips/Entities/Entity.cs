@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Assets.Scrips.Components;
+using Assets.Scrips.States;
 using UnityEngine.Assertions;
 
 namespace Assets.Scrips.Entities
@@ -33,6 +33,11 @@ namespace Assets.Scrips.Entities
             return entityManager.GetState<T>(this);
         }
 
+        public bool HasState<T>() where T : IState
+        {
+            return GetState<T>() != null;
+        }
+
         public void Delete()
         {
             entityManager.DeleteEntity(this);
@@ -41,6 +46,11 @@ namespace Assets.Scrips.Entities
         public List<IState> States()
         {
            return entityManager.GetStates(this);
+        }
+
+        public string ToJson()
+        {
+            return "";
         }
     }
 }

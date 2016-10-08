@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Assets.Scrips.Components;
-using Assets.Scrips.Datatypes;
-using Assets.Scrips.Networks;
+using Assets.Scrips.Datastructures;
+using Assets.Scrips.States;
 using Newtonsoft.Json;
 
 //TODO: Delete this. Not needed as an actual object! 
@@ -13,7 +11,7 @@ namespace Assets.Scrips.Modules
     public class Module
     {
         [JsonProperty]
-        private readonly ModuleGrid moduleGrid;
+        private readonly GridOperations gridOperations;
         [JsonProperty]
         public readonly List<IState> Components;
         [JsonIgnore]
@@ -40,19 +38,19 @@ namespace Assets.Scrips.Modules
         public Module(List<IState> components)
         {
             Components = components;
-            moduleGrid = new ModuleGrid(EntityUtils.MediumToLargeRatio, EntityUtils.MediumToLargeRatio);
+            gridOperations = new GridOperations(EntityUtils.MediumToLargeRatio, EntityUtils.MediumToLargeRatio);
         }
 
         public Module(Module parentModule, List<IState> components)
         {
             Components = components;
             ParentModule = parentModule;
-            moduleGrid = new ModuleGrid(EntityUtils.MediumToLargeRatio, EntityUtils.MediumToLargeRatio);
+            gridOperations = new GridOperations(EntityUtils.MediumToLargeRatio, EntityUtils.MediumToLargeRatio);
         }
 
 //        public void AddModule(Module module, GridCoordinate grid)
 //        {
-//            if (moduleGrid.AddModule(module, grid))
+//            if (GridOperations.AddModule(module, grid))
 //            {
 //                AddModuleToSubstanceNetwork(module);
 //                CheckForConnections(module);
@@ -61,7 +59,7 @@ namespace Assets.Scrips.Modules
 //
 //        public void RemoveModule(Module moduleToRemove)
 //        {
-//            var removedModule = moduleGrid.RemoveModule(moduleToRemove);
+//            var removedModule = GridOperations.RemoveModule(moduleToRemove);
 //            if (removedModule != null)
 //            {
 //                RemoveModuleFromSubstanceNetwork(removedModule);
@@ -70,22 +68,17 @@ namespace Assets.Scrips.Modules
 //
 //        public void RemoveModule(GridCoordinate grid)
 //        {
-//            var removedModule = moduleGrid.RemoveModule(grid);
+//            var removedModule = GridOperations.RemoveModule(grid);
 //            if (removedModule != null)
 //            {
 //                RemoveModuleFromSubstanceNetwork(removedModule);
 //            }
 //        }
 
-        public void AddWater()
-        {
-            SubstanceNetwork.Instance.AddWaterToModule(this);
-        }
-
-        public Module GetModule(GridCoordinate grid)
-        {
-            return moduleGrid.GetModule(grid);
-        }
+//        public Module GetModule(GridCoordinate grid)
+//        {
+//            return gridOperations.GetModule(grid);
+//        }
 
         //VERY SLOW
         public T GetState<T>() where T : IState
@@ -100,19 +93,19 @@ namespace Assets.Scrips.Modules
             return default(T);
         }
 
-        public GridCoordinate GetGridPosition()
-        {
-            return IsTopLevelModule ? new GridCoordinate(0, 0) : ParentModule.GetGridForContainedModule(this);
-        }
+//        public GridCoordinate GetGridPosition()
+//        {
+//            return IsTopLevelModule ? new GridCoordinate(0, 0) : ParentModule.GetGridForContainedModule(this);
+//        }
 
-        public GridCoordinate GetGridForContainedModule(Module module)
-        {
-            return moduleGrid.GetGridForModule(module);
-        }
+//        public GridCoordinate GetGridForContainedModule(Module module)
+//        {
+//            return gridOperations.GetGridForModule(module);
+//        }
 
         public bool GridIsEmpty(GridCoordinate grid)
         {
-            return moduleGrid.GridIsEmpty(grid);
+            return gridOperations.GridIsEmpty(grid);
         }
 
 //        public static string ToJson(Module module)
@@ -170,12 +163,12 @@ namespace Assets.Scrips.Modules
 
 //        public List<Module> GetContainedModules()
 //        {
-//            return moduleGrid.GetContainedModules();
+//            return GridOperations.GetContainedModules();
 //        }
 //
 //        public List<Module> GetNeighbouringModules(GridCoordinate grid)
 //        {
-//            return moduleGrid.GetNeigbouringModules(grid).ToList();
+//            return GridOperations.GetNeigbouringModules(grid).ToList();
 //        }
     }
 }
