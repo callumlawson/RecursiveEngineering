@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Assets.Scrips.Components;
+using Assets.Scrips.Datatypes;
 using Assets.Scrips.Entities;
 using Assets.Scrips.Modules;
 using Assets.Scrips.MonoBehaviours.Controls;
@@ -9,7 +10,6 @@ using Assets.Scrips.Systems;
 using Assets.Scrips.Util;
 using JetBrains.Annotations;
 using UnityEngine;
-using EntityLibrary = Assets.Scrips.Modules.EntityLibrary;
 
 namespace Assets.Scrips
 {
@@ -18,31 +18,27 @@ namespace Assets.Scrips
     {
         public static GameRunner Instance;
 
-        public Module ActiveModule { get; private set; }
         public Entity ActiveEntity { get; private set; }
 
         private bool acceptingInput = true;
         private const float DoubleClickTimeLimit = 0.20f;
         private const float SimulationTickPeriodInSeconds = 0.1f;
 
-        private Module worldComponent;
         private EntityManager entityManager;
 
         [UsedImplicitly]
         public void Start()
         {
-            worldComponent = new Module(
-                null,
-                new List<IState> {new NameState("Sub Pen", 32, 18)}
-            );
-
-            ActiveModule = worldComponent;
             entityManager = new EntityManager();
-
-            ActiveEntity = entityManager.BuildEntity(worldComponent.Components);
+            ActiveEntity = entityManager.BuildEntity(new List<IState>
+                {
+                    new NameState("Sub Pen"),
+                    new PhysicalState(null, new List<Entity>(), new GridCoordinate(0, 0), 1, 1, 28, 13)
+                });
 
             Instance = this;
-            EntityLibrary.Instance.UpdateModulesFromDisk();
+
+            //EntityLibrary.Instance.UpdateModulesFromDisk();
 
             SystemManager.AddSystem(new EngineSystem());
 
@@ -62,10 +58,10 @@ namespace Assets.Scrips
 
             if (Input.GetKeyDown(KeyCode.T))
             {
-                if (CurrentlySelectedModule() != null)
-                {
-                    CurrentlySelectedModule().AddWater();
-                }
+//                if (CurrentlySelectedEntity() != null)
+//                {
+//                    CurrentlySelectedEntity().AddWater();
+//                }
             }
 
             if (Input.GetKeyDown(KeyCode.Q))
@@ -78,58 +74,55 @@ namespace Assets.Scrips
                 EntityLibrary.Instance.IncrementSelectedComponent();
             }
 
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                acceptingInput = false;
-                UserTextQuery.Instance.GetTextResponse("Module to load...", LoadModule);
-            }
-
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                acceptingInput = false;
-                UserTextQuery.Instance.GetTextResponse("Module to save...", SaveModule);
-            }
+//            if (Input.GetKeyDown(KeyCode.O))
+//            {
+//                acceptingInput = false;
+//                UserTextQuery.Instance.GetTextResponse("Module to load...", LoadModule);
+//            }
+//
+//            if (Input.GetKeyDown(KeyCode.P))
+//            {
+//                acceptingInput = false;
+//                UserTextQuery.Instance.GetTextResponse("Module to save...", SaveModule);
+//            }
         }
 
-        //TODO: Actual error handling.
-        private void LoadModule(string moduleName)
-        {
-            acceptingInput = true;
-            var module = Module.FromJson(DiskOperations.ReadText(moduleName));
-            ActiveEntity = entityManager.BuildEntity(module.Components);
-            ActiveModule = module;
-        }
+//        //TODO: Actual error handling.
+//        private void LoadModule(string moduleName)
+//        {
+//            acceptingInput = true;
+//            var module = Module.FromJson(DiskOperations.ReadText(moduleName));
+//            ActiveEntity = entityManager.BuildEntity(module.Components);
+//            ActiveModule = module;
+//        }
+//
+//        private void SaveModule(string moduleName)
+//        {
+//            acceptingInput = true;
+//            DiskOperations.SaveText(moduleName, Module.ToJson(ActiveModule));
+//            EntityLibrary.Instance.UpdateModulesFromDisk();
+//        }
 
-        private void SaveModule(string moduleName)
+        public IEnumerable<Entity> CurrentHeirarchy()
         {
-            acceptingInput = true;
-            DiskOperations.SaveText(moduleName, Module.ToJson(ActiveModule));
-            EntityLibrary.Instance.UpdateModulesFromDisk();
-        }
-
-        public List<Module> CurrentHeirarchy()
-        {
-            var heirarchy = new List<Module>();
-            var current = ActiveModule;
+            var heirarchy = new List<Entity>();
+            var current = ActiveEntity;
             do
             {
                 heirarchy.Add(current);
-                current = current.ParentModule;
+                current = current.GetState<PhysicalState>().ParentEntity;
             } while (current != null);
             return heirarchy;
         }
 
-        public Module CurrentlySelectedModule()
+        public Entity CurrentlySelectedEntity()
         {
-            var selectedGrid = GridSelector.CurrentlySelectedGrid(ActiveModule);
-            if (!ActiveModule.GridIsEmpty(selectedGrid))
-            {
-                return ActiveModule.GetModule(selectedGrid);
-            }
-            return null;
+            var selectedGrid = GridSelector.CurrentlySelectedGrid(ActiveEntity);
+            var physicalState = ActiveEntity.GetState<PhysicalState>();
+            return !physicalState.GridIsEmpty(selectedGrid) ? physicalState.GetEntityAtGrid(selectedGrid) : null;
         }
 
-        private IEnumerator Ticker()
+        private static IEnumerator Ticker()
         {
             while (true)
             {
@@ -143,43 +136,39 @@ namespace Assets.Scrips
         {
             if (button == 0)
             {
-                AddModule(EntityLibrary.Instance.GetSelectedModule(), ActiveModule, currentlySelectedGrid);
+                AddEntity(EntityLibrary.Instance.GetSelectedModule(), ActiveEntity, currentlySelectedGrid);
             }
 
             if (button == 1)
             {
-                RemoveModule(ActiveModule.GetModule(currentlySelectedGrid), ActiveEntity);
+                RemoveEntity(ActiveEntity);
             }
         }
 
         private void DoubleClick(int button, GridCoordinate currentlySelectedGrid)
         {
-            if (button == 1 && ActiveModule.ParentModule != null)
+            if (button == 1 && ActiveEntity.GetState<PhysicalState>().ParentEntity != null)
             {
-                ActiveModule = ActiveModule.ParentModule;
+                ActiveEntity = ActiveEntity.GetState<PhysicalState>().ParentEntity;
             }
 
-            if (CurrentlySelectedModule() != null && button == 0 && !CurrentlySelectedModule().IsTerminalModule)
+            if (CurrentlySelectedEntity() != null && button == 0 && !CurrentlySelectedEntity().GetState<PhysicalState>().IsRoot())
             {
-                ActiveModule = CurrentlySelectedModule();
+                ActiveEntity = CurrentlySelectedEntity();
             }
         }
 
-        private void AddModule(Module templateModule, Module moduleToAddItTo, GridCoordinate locationToAddIt)
+        private void AddEntity(List<IState> states, Entity entityToAddItTo, GridCoordinate locationToAddIt)
         {
-            var newModule = templateModule.DeepClone();
-            newModule.ParentModule = moduleToAddItTo;
-
-            //NewSystem
-            entityManager.BuildEntity(newModule.Components);
-
-            ActiveModule.AddModule(newModule, locationToAddIt);
+            var newStates = states.DeepClone();
+            var entity = entityManager.BuildEntity(newStates);
+            PhysicalState.AddEntityToEntity(entity, entityToAddItTo, locationToAddIt);
         }
 
-        private void RemoveModule(Module moduleToRemove, Entity entity)
+        private void RemoveEntity(Entity entityToRemove)
         {
-            ActiveModule.RemoveModule(moduleToRemove);
-            entityManager.DeleteEntity(entity);
+            ActiveEntity.GetState<PhysicalState>().ChildEntities.Remove(entityToRemove);
+            entityManager.DeleteEntity(entityToRemove);
         }
 
         #region Input to be factored out.
@@ -190,10 +179,10 @@ namespace Assets.Scrips
             while (enabled)
             {
                 if (Input.GetMouseButtonDown(0) && acceptingInput)
-                    yield return ClickEvent(0, GridSelector.CurrentlySelectedGrid(ActiveModule));
+                    yield return ClickEvent(0, GridSelector.CurrentlySelectedGrid(ActiveEntity));
 
                 if (Input.GetMouseButtonDown(1) && acceptingInput)
-                    yield return ClickEvent(1, GridSelector.CurrentlySelectedGrid(ActiveModule));
+                    yield return ClickEvent(1, GridSelector.CurrentlySelectedGrid(ActiveEntity));
 
                 yield return null;
             }

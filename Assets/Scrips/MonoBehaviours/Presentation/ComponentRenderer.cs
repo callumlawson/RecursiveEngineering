@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using Assets.Scrips.Components;
+﻿using Assets.Scrips.Components;
+using Assets.Scrips.Datatypes;
+using Assets.Scrips.Entities;
 using Assets.Scrips.Modules;
-using Assets.Scrips.MonoBehaviours.Controls;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -13,7 +13,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
 
         private GameObject outerRendererRoot;
         private GameObject innerRendererRoot;
-        private Module lastRenderedComponent;
+        private Entity lastRenderedEntity;
 
         [UsedImplicitly]
         public void Start()
@@ -32,7 +32,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 innerRendererRoot.transform.parent = transform;
             }
 
-            lastRenderedComponent = new Module(null, new List<IState> { new NameState("Dummy", 0, 0) });
+            lastRenderedEntity = new Entity(null, -1);
         }
 
         [UsedImplicitly]
@@ -40,42 +40,42 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         {
             Clear();
 
-            var activeModule = GameRunner.Instance.ActiveModule;
+            var activeEntity = GameRunner.Instance.ActiveEntity;
 
-            RenderOuterComponent(activeModule);
-            RenderInnerComponents(activeModule);
+            RenderOuterComponent(activeEntity);
+            RenderInnerComponents(activeEntity);
 
-            if (!activeModule.IsTopLevelModule)
+            if (!activeEntity.GetState<PhysicalState>().IsRoot())
             {
-                var modulesAtThisModulesLevel = activeModule.ParentModule.GetContainedModules();
-                foreach (var module in modulesAtThisModulesLevel)
+                var entitiesAtThisEntitiesLevel = activeEntity.GetState<PhysicalState>().ParentEntity.GetState<PhysicalState>().ChildEntities;
+                foreach (var entity in entitiesAtThisEntitiesLevel)
                 {
-                    RenderOuterComponent(module, 0.4f);
-                    RenderInnerComponents(module, 0.4f);
+                    RenderOuterComponent(entity, 0.4f);
+                    RenderInnerComponents(entity, 0.4f);
                 }
             }
 
-            if (activeModule != lastRenderedComponent)
+            if (activeEntity != lastRenderedEntity)
             {
-                CenterCamera(activeModule);
+                CenterCamera(activeEntity);
             }
 
-            lastRenderedComponent = activeModule;
+            lastRenderedEntity = activeEntity;
         }
 
-        private void CenterCamera(Module module)
+        private void CenterCamera(Entity entity)
         {
-            CameraController.Instance.SetPosition(GridCoordinate.GridToPosition(GetComponentCenter(module)));
+            //CameraController.Instance.SetPosition(GridCoordinate.GridToPosition(GetComponentCenter(module)));
         }
 
-        private GridCoordinate GetComponentCenter(Module module)
+        private GridCoordinate GetComponentCenter(Entity entity)
         {
-            var coreComponent = module.GetState<NameState>();
+            var coreComponent = entity.GetState<PhysicalState>();
             var midpoint = new GridCoordinate(
                 Mathf.RoundToInt(coreComponent.InternalWidth/2.0f),
-                Mathf.RoundToInt(coreComponent.InteralHeight/2.0f)
+                Mathf.RoundToInt(coreComponent.InternalHeight/2.0f)
             );
-            return midpoint + ModuleUtils.GetGridOffset(module);
+            return midpoint + EntityUtils.GetGridOffset(entity);
         }
 
         private void Clear()
@@ -91,19 +91,19 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             }
         }
 
-        private void RenderInnerComponents(Module moduleToRender, float opacity = 1.0f)
+        private void RenderInnerComponents(Entity entityToRender, float opacity = 1.0f)
         {
-            var gridOffset = ModuleUtils.GetGridOffset(moduleToRender);
+            var gridOffset = EntityUtils.GetGridOffset(entityToRender);
 
-            for (var x = 0; x < moduleToRender.GetState<NameState>().InternalWidth; x++)
+            for (var x = 0; x < entityToRender.GetState<PhysicalState>().InternalWidth; x++)
             {
-                for (var y = 0; y < moduleToRender.GetState<NameState>().InteralHeight; y++)
+                for (var y = 0; y < entityToRender.GetState<PhysicalState>().InternalHeight; y++)
                 {
                     var grid = new GridCoordinate(x, y);
-                    var innerComponent = moduleToRender.GetModule(grid);
+                    var innerComponent = entityToRender.GetState<PhysicalState>().GetEntityAtGrid(grid);
                     if (innerComponent != null)
                     {
-                        var innerModule = moduleToRender.GetModule(grid);
+                        var innerModule = entityToRender.GetState<PhysicalState>().GetEntityAtGrid(grid);
                         var innerModuleAsset = Resources.Load<GameObject>(innerModule.GetState<NameState>().Name);
                         if (innerModuleAsset == null)
                         {
@@ -118,13 +118,13 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             }
         }
 
-        private void RenderOuterComponent(Module module, float opacity = 1.0f)
+        private void RenderOuterComponent(Entity module, float opacity = 1.0f)
         {
-            var gridOffset = ModuleUtils.GetGridOffset(module);
+            var gridOffset = EntityUtils.GetGridOffset(module);
 
-            for (var x = 0; x < module.GetState<NameState>().InternalWidth; x++)
+            for (var x = 0; x < module.GetState<PhysicalState>().InternalWidth; x++)
             {
-                for (var y = 0; y < module.GetState<NameState>().InteralHeight; y++)
+                for (var y = 0; y < module.GetState<PhysicalState>().InternalHeight; y++)
                 {
                     var grid = new GridCoordinate(x, y);
                     var tile = Instantiate(Tile);

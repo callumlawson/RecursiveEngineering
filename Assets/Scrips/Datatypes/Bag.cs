@@ -32,7 +32,7 @@
 
 using System;
 
-namespace Assets.Scrips.Util
+namespace Assets.Scrips.Datatypes
 {
     public class Bag<T>
     {

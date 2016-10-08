@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scrips.Components;
+using Assets.Scrips.Datatypes;
+using Assets.Scrips.Entities;
 using Assets.Scrips.Modules;
 using Assets.Scrips.Networks.Graph;
 using Assets.Scrips.Networks.Substance;
@@ -30,18 +32,19 @@ namespace Assets.Scrips.Networks
             Network = new DirectedSparseGraph<SubstanceNetworkNode>();
         }
 
-        public float GetWater(Module component)
+        public float GetWater(Entity entity)
         {
-            var nodeValue = GetNodeForComponent(component) != null
-                ? GetNodeForComponent(component).GetSubstance(SubstanceTypes.WATER)
-                : 0.0f;
-
-            foreach (var childModule in component.GetContainedModules())
-            {
-                nodeValue += GetWater(childModule);
-            }
-
-            return nodeValue;
+            return 0.0f;
+//            var nodeValue = GetNodeForComponent(entity) != null
+//                ? GetNodeForComponent(entity).GetSubstance(SubstanceTypes.WATER)
+//                : 0.0f;
+//
+//            foreach (var childModule in entity.GetState<PhysicalState>().ChildEntities)
+//            {
+//                nodeValue += GetWater(childModule);
+//            }
+//
+//            return nodeValue;
         }
 
         public SubstanceNetworkNode GetNodeForComponent(Module module)
@@ -103,20 +106,20 @@ namespace Assets.Scrips.Networks
         //Generalise to arbitary numbers of levels. Make Neigbouring Components include those at higher levels?
         private void ConnectToAdjacentModulesWithinModule(Module addedModule)
         {
-            var grid = addedModule.GetGridPosition();
-            foreach (var neigbour in addedModule.ParentModule.GetNeighbouringModules(grid))
-            {
-                var addedModuleGrid = addedModule.GetGridPosition();
-                var neigbourGrid = neigbour.GetGridPosition();
-                var direction = AdjacentDirection(addedModuleGrid, neigbourGrid);
-
-                if (neigbour.GetState<SubstanceConnector>() != null &&
-                    HaveFacingConnections(direction, addedModule.GetState<SubstanceConnector>().Diretions,
-                        neigbour.GetState<SubstanceConnector>().Diretions))
-                {
-                    AddBidirectionalConnection(GetNodeForComponent(addedModule), GetNodeForComponent(neigbour));
-                }
-            }
+//            var grid = addedModule.GetGridPosition();
+//            foreach (var neigbour in addedModule.ParentModule.GetNeighbouringModules(grid))
+//            {
+//                var addedModuleGrid = addedModule.GetGridPosition();
+//                var neigbourGrid = neigbour.GetGridPosition();
+//                var direction = AdjacentDirection(addedModuleGrid, neigbourGrid);
+//
+//                if (neigbour.GetState<SubstanceConnector>() != null &&
+//                    HaveFacingConnections(direction, addedModule.GetState<SubstanceConnector>().Diretions,
+//                        neigbour.GetState<SubstanceConnector>().Diretions))
+//                {
+//                    AddBidirectionalConnection(GetNodeForComponent(addedModule), GetNodeForComponent(neigbour));
+//                }
+//            }
         }
 
         public string Readable()
@@ -130,7 +133,7 @@ namespace Assets.Scrips.Networks
             {
                 return Direction.Left;
             }
-            if (grid.X == module.GetState<NameState>().InternalWidth &&
+            if (grid.X == module.GetState<PhysicalState>().InternalWidth &&
                 connector.Diretions.Contains(Direction.Right))
             {
                 return Direction.Right;
@@ -139,7 +142,7 @@ namespace Assets.Scrips.Networks
             {
                 return Direction.Down;
             }
-            if (grid.Y == module.GetState<NameState>().InteralHeight &&
+            if (grid.Y == module.GetState<PhysicalState>().InternalHeight &&
                connector.Diretions.Contains(Direction.Up))
             {
                 return Direction.Up;

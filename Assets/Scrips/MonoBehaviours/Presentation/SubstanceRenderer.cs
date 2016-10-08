@@ -1,4 +1,6 @@
-﻿using Assets.Scrips.Modules;
+﻿using Assets.Scrips.Components;
+using Assets.Scrips.Datatypes;
+using Assets.Scrips.Modules;
 using Assets.Scrips.Networks;
 using Assets.Scrips.Networks.Substance;
 using JetBrains.Annotations;
@@ -16,7 +18,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         // Use this for initialization
         [UsedImplicitly]
         void Start () {
-            tileGrid = new SpriteRenderer[ModuleUtils.MaxWidth, ModuleUtils.MaxHeight];
+            tileGrid = new SpriteRenderer[EntityUtils.MaxWidth, EntityUtils.MaxHeight];
             substanceRenderRoot = new GameObject();
             if (substanceRenderRoot != null)
             {
@@ -30,33 +32,33 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         [UsedImplicitly]
         public void Update()
         {
-            var activeComponent = GameRunner.Instance.ActiveModule;
-            var substanceNetwork = SubstanceNetwork.Instance;
-
-            for (var x = 0; x < ModuleUtils.MaxWidth; x++)
-            {
-                for (var y = 0; y < ModuleUtils.MaxHeight; y++)
-                {
-                    tileGrid[x, y].enabled = false;
-                }
-            }
-
-            foreach (var innerComponent in activeComponent.GetContainedModules())
-            {
-                var substanceNode = substanceNetwork.GetNodeForComponent(innerComponent);
-                var gridForSubstance = ModuleUtils.GetGridOffset(activeComponent) +
-                                       activeComponent.GetGridForContainedModule(innerComponent);
-                if (substanceNode != null)
-                {
-                    var water = substanceNode.GetSubstance(SubstanceTypes.WATER);
-                    if (water > 0.0f)
-                    {
-                        var tile = tileGrid[gridForSubstance.X, gridForSubstance.Y];
-                        tile.enabled = true;
-                        tile.color = new Color(1, 1, 1, Mathf.Clamp(water/100.0f, 0, 1));
-                    }
-                }
-            }
+//            var activeEnity = GameRunner.Instance.ActiveEntity;
+//            var substanceNetwork = SubstanceNetwork.Instance;
+//
+//            for (var x = 0; x < EntityUtils.MaxWidth; x++)
+//            {
+//                for (var y = 0; y < EntityUtils.MaxHeight; y++)
+//                {
+//                    tileGrid[x, y].enabled = false;
+//                }
+//            }
+//
+//            foreach (var entity in activeEnity.GetState<PhysicalState>().ChildEntities)
+//            {
+//                var substanceNode = substanceNetwork.GetNodeForComponent(entity);
+//                var gridForSubstance = EntityUtils.GetGridOffset(activeEnity) +
+//                                       activeEnity.GetGridForContainedModule(entity);
+//                if (substanceNode != null)
+//                {
+//                    var water = substanceNode.GetSubstance(SubstanceTypes.WATER);
+//                    if (water > 0.0f)
+//                    {
+//                        var tile = tileGrid[gridForSubstance.X, gridForSubstance.Y];
+//                        tile.enabled = true;
+//                        tile.color = new Color(1, 1, 1, Mathf.Clamp(water/100.0f, 0, 1));
+//                    }
+//                }
+//            }
         }
 
         private void InitSubstanceTiles()
@@ -66,9 +68,9 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 Destroy(child.gameObject);
             }
 
-            for (var x = 0; x < ModuleUtils.MaxWidth; x++)
+            for (var x = 0; x < EntityUtils.MaxWidth; x++)
             {
-                for (var y = 0; y < ModuleUtils.MaxHeight; y++)
+                for (var y = 0; y < EntityUtils.MaxHeight; y++)
                 {
                     var grid = new GridCoordinate(x, y);
                     var tile = Instantiate(WaterTile);

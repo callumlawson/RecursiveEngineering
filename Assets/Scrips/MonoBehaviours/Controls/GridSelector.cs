@@ -1,6 +1,6 @@
-﻿using Assets.Scrips.Entities;
+﻿using Assets.Scrips.Datatypes;
+using Assets.Scrips.Entities;
 using Assets.Scrips.Modules;
-using Assets.Scrips.Util;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -23,21 +23,21 @@ namespace Assets.Scrips.MonoBehaviours.Controls
         public void Update()
         {
             var mousePosition = CameraController.ActiveCamera.ScreenToWorldPoint(Input.mousePosition);
-            var gridx = Mathf.Round(mousePosition.x / ModuleUtils.TileSizeInMeters) * ModuleUtils.TileSizeInMeters;
-            var gridy = Mathf.Round(mousePosition.y / ModuleUtils.TileSizeInMeters) * ModuleUtils.TileSizeInMeters;
+            var gridx = Mathf.Round(mousePosition.x / EntityUtils.TileSizeInMeters) * EntityUtils.TileSizeInMeters;
+            var gridy = Mathf.Round(mousePosition.y / EntityUtils.TileSizeInMeters) * EntityUtils.TileSizeInMeters;
             selectedGridIndicator.transform.position = new Vector3(gridx, gridy, 0);
         }
 
-        public static GridCoordinate CurrentlySelectedGrid(Module activeComponent)
+        public static GridCoordinate CurrentlySelectedGrid(Entity activeEntity)
         {
             var gridOffset = new GridCoordinate(0, 0);
-            if (activeComponent != null)
-            {
-                gridOffset = ModuleUtils.GetGridOffset(activeComponent);
-            }
+//            if (activeEntity != null)
+//            {
+//                gridOffset = EntityUtils.GetGridOffset(activeEntity);
+//            }
             var mousePosition = CameraController.ActiveCamera.ScreenToWorldPoint(Input.mousePosition);
-            var gridx = Mathf.RoundToInt(mousePosition.x / ModuleUtils.TileSizeInMeters) - gridOffset.X;
-            var gridy = Mathf.RoundToInt(mousePosition.y / ModuleUtils.TileSizeInMeters) - gridOffset.Y;
+            var gridx = Mathf.RoundToInt(mousePosition.x / EntityUtils.TileSizeInMeters) - gridOffset.X;
+            var gridy = Mathf.RoundToInt(mousePosition.y / EntityUtils.TileSizeInMeters) - gridOffset.Y;
             return new GridCoordinate(gridx, gridy);
         }
     }

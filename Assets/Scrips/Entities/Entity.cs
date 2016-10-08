@@ -1,13 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using Assets.Scrips.Components;
 using UnityEngine.Assertions;
 
 namespace Assets.Scrips.Entities
 {
+    [Serializable]
     public class Entity
     {
-        private EntityManager entityManager;
+        private readonly EntityManager entityManager;
         public int EntityId { get; private set; }
+
+        public List<IState> DebugStates
+        {
+            get { return States(); }
+        }
 
         public Entity(EntityManager entityManager, int entityId)
         {
@@ -29,6 +36,11 @@ namespace Assets.Scrips.Entities
         public void Delete()
         {
             entityManager.DeleteEntity(this);
+        }
+
+        public List<IState> States()
+        {
+           return entityManager.GetStates(this);
         }
     }
 }

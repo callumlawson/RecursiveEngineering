@@ -7,7 +7,7 @@ namespace Assets.Scrips.Components
     {
         public string Name { get; set; }
       
-        public NameState(string name, int internalWidth, int interalHeight)
+        public NameState(string name)
         {
             Name = name;
         }

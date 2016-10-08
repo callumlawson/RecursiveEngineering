@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using Assets.Scrips.Components;
-using Assets.Scrips.Util;
+using Assets.Scrips.Datatypes;
 using JetBrains.Annotations;
 
 namespace Assets.Scrips.Entities
@@ -70,6 +69,21 @@ namespace Assets.Scrips.Entities
 
             componentsOfType.Set(entity.EntityId, state);
         }
+
+        //For debug only!
+        public List<IState> GetStates(Entity entity)
+        {
+            var results = new List<IState>();
+            foreach (var states in statesByType.Values)
+            {
+                if (states.Get(entity.EntityId) != null)
+                {
+                    results.Add(states.Get(entity.EntityId));
+                }
+            }
+            return results;
+        }
+
 
         public T GetState<T>(Entity entity)
         {

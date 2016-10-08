@@ -3,14 +3,14 @@ using UnityEngine;
 
 namespace Assets.Scrips.MonoBehaviours.Controls
 {
-    [RequireComponent(typeof(UnityEngine.Camera))]
+    [RequireComponent(typeof(Camera))]
     public class CameraController : MonoBehaviour {
 
         [UsedImplicitly] public float ScrollSensitivity;
         [UsedImplicitly] public float PanSpeed;
         [UsedImplicitly] public float MaxPanSpeed;
 
-        public static UnityEngine.Camera ActiveCamera;
+        public static Camera ActiveCamera;
         public static CameraController Instance;
 
         private Vector3 mouseOrigin;
@@ -24,7 +24,7 @@ namespace Assets.Scrips.MonoBehaviours.Controls
         void Start ()
         {
             Instance = this;
-            ActiveCamera = GetComponent<UnityEngine.Camera>();
+            ActiveCamera = GetComponent<Camera>();
             mouseOrigin = ActiveCamera.ScreenToWorldPoint(Input.mousePosition);
         }
 	
@@ -44,7 +44,7 @@ namespace Assets.Scrips.MonoBehaviours.Controls
 
             if (Input.GetMouseButton(2))
             {
-                var mouseDelta = UnityEngine.Camera.main.ScreenToViewportPoint(Input.mousePosition - mouseOrigin);
+                var mouseDelta = Camera.main.ScreenToViewportPoint(Input.mousePosition - mouseOrigin);
                 var move = - Vector3.ClampMagnitude(mouseDelta * PanSpeed * Time.deltaTime, MaxPanSpeed);
                 transform.Translate(move, Space.World);
             }
