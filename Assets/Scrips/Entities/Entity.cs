@@ -11,6 +11,7 @@ namespace Assets.Scrips.Entities
         private readonly EntityManager entityManager;
         public int EntityId { get; private set; }
 
+        //For debugging only!
         public List<IState> DebugStates
         {
             get { return States(); }
@@ -43,7 +44,7 @@ namespace Assets.Scrips.Entities
             entityManager.DeleteEntity(this);
         }
 
-        public List<IState> States()
+        private List<IState> States()
         {
            return entityManager.GetStates(this);
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Assets.Scrips.Datastructures;
 using Assets.Scrips.States;
+using Assets.Scrips.Systems;
 using JetBrains.Annotations;
 
 namespace Assets.Scrips.Entities
@@ -15,7 +16,7 @@ namespace Assets.Scrips.Entities
 
         private int nextAvailableId;
 
-        //Premature optimisation is the devils work...
+        //Premature optimisation is the devil's work...
         private readonly MethodInfo addStateMethod = typeof(EntityManager).GetMethod("AddState");
 
         public EntityManager()
@@ -33,10 +34,12 @@ namespace Assets.Scrips.Entities
                 var genericAdd = addStateMethod.MakeGenericMethod(state.GetType());
                 genericAdd.Invoke(this, new object[] {entity, state});
             }
+            SystemManager.EntityAdded(entity);
             return entity;
         }
 
-        public Entity CreateEmptyEntity()
+        //Should not be called directly - will mess up registration with systems
+        private Entity CreateEmptyEntity()
         {
             var entityId = nextAvailableId;
             nextAvailableId++;
@@ -52,6 +55,7 @@ namespace Assets.Scrips.Entities
 
         public void DeleteEntity([NotNull] Entity entity)
         {
+            SystemManager.EntityRemoved(entity);
             RemoveStatesForEntity(entity);
             entities[entity.EntityId] = null;
         }
@@ -85,10 +89,15 @@ namespace Assets.Scrips.Entities
         }
 
 
-        public T GetState<T>(Entity entity)
+        public T GetState<T>([NotNull] Entity entity)
         {
-            var componentsOfType = statesByType[typeof(T)];
-            return componentsOfType != null ? (T)componentsOfType.Get(entity.EntityId) : default(T);
+            Bag<IState> statesOfType;
+            var hasType = statesByType.TryGetValue(typeof(T), out statesOfType);
+            if (hasType)
+            {
+                return (T)statesByType[typeof(T)].Get(entity.EntityId);
+            }
+            return default(T);
         }
 
         private void RemoveStatesForEntity([NotNull] Entity entity)

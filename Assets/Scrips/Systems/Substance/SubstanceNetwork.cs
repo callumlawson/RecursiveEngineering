@@ -75,7 +75,7 @@ namespace Assets.Scrips.Systems.Substance
             return network.ToReadable();
         }
 
-        private SubstanceNetworkNode GetNodeForEntity(Entity entity)
+        public SubstanceNetworkNode GetNodeForEntity(Entity entity)
         {
             foreach (var vertex in network.Vertices)
             {
