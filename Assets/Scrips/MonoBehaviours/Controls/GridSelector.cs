@@ -1,9 +1,7 @@
 ﻿using Assets.Scrips.Datastructures;
-using Assets.Scrips.Entities;
 using Assets.Scrips.Modules;
 using JetBrains.Annotations;
 using UnityEngine;
-using Entity = Assets.Scrips.Entities.Entity;
 
 namespace Assets.Scrips.MonoBehaviours.Controls
 {
@@ -29,7 +27,7 @@ namespace Assets.Scrips.MonoBehaviours.Controls
             selectedGridIndicator.transform.position = new Vector3(gridx, gridy, 0);
         }
 
-        public static GridCoordinate CurrentlySelectedGrid(Entity activeEntity)
+        public static GridCoordinate CurrentlySelectedGrid()
         {
             var gridOffset = new GridCoordinate(0, 0);
 //            if (activeEntity != null)

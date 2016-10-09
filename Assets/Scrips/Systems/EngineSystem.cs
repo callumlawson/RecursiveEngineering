@@ -1,51 +1,39 @@
-﻿using Assets.Scrips.Entities;
+﻿using System.Collections.Generic;
+using Assets.Scrips.Entities;
+using Assets.Scrips.States;
 
 namespace Assets.Scrips.Systems
 {
     public class EngineSystem : ISystem
     {
-        public static EngineSystem Instance;
-
-        public Entity EngineEntityId;
+        private List<Entity> activeEntities;
 
         public EngineSystem()
         {
-            Instance = this;
+            activeEntities = new List<Entity>();
         }
 
         public void Tick()
         {
-//            if (EngineEntityId == null)
-//            {
-//                return;
-//            }
-//
-//            var engineComponent = Entity.GetState<EngineState>(EngineEntityId.Value);
-//            engineComponent.CurrentRpm += 1;
-//
-//            UnityEngine.Debug.Log("Engine running");
-        }
-
-        public void OnEntityAdded(Entity entityId)
-        {
-//            if (Entity.GetState<EngineState>(entityId) != null)
-//            {
-//                if (EngineEntityId == null)
-//                {
-//                    EngineEntityId = entityId;
-//                }
-//                else
-//                {
-//                    throw new Exception("More than one engine added! Only one engine is supported.");
-//                }
-//            }
-        }
-
-        public void OnEntityRemoved(Entity entityId)
-        {
-            if (EngineEntityId == entityId)
+            foreach (var entity in activeEntities)
             {
-                EngineEntityId = null;
+                entity.GetState<EngineState>().CurrentRpm += 1;
+            }
+        }
+
+        public void OnEntityAdded(Entity entity)
+        {
+            if (entity.HasState<EngineState>())
+            {
+                activeEntities.Add(entity);
+            }
+        }
+
+        public void OnEntityRemoved(Entity entity)
+        {
+            if (entity.HasState<EngineState>())
+            {
+                activeEntities.Remove(entity);
             }
         }
     }

@@ -15,9 +15,9 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         public void Update()
         {
             EngineState engineState = null;
-//            if (EngineSystem.Instance.EngineEntityId.HasValue)
+//            if (EngineSystem.Instance.EngineEntity.HasValue)
 //            {
-//                engineState = Entity.GetState<EngineState>(EngineSystem.Instance.EngineEntityId.Value);
+//                engineState = Entity.GetState<EngineState>(EngineSystem.Instance.EngineEntity.Value);
 //            }
 
             Rpm.text = engineState != null ? engineState.CurrentRpm.ToString() : "0";

@@ -34,7 +34,7 @@ namespace Assets.Scrips.Entities
                 var genericAdd = addStateMethod.MakeGenericMethod(state.GetType());
                 genericAdd.Invoke(this, new object[] {entity, state});
             }
-            SystemManager.EntityAdded(entity);
+            
             return entity;
         }
 
@@ -55,7 +55,7 @@ namespace Assets.Scrips.Entities
 
         public void DeleteEntity([NotNull] Entity entity)
         {
-            SystemManager.EntityRemoved(entity);
+            
             RemoveStatesForEntity(entity);
             entities[entity.EntityId] = null;
         }

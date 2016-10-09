@@ -117,7 +117,7 @@ namespace Assets.Scrips
 
         public Entity CurrentlySelectedEntity()
         {
-            var selectedGrid = GridSelector.CurrentlySelectedGrid(ActiveEntity);
+            var selectedGrid = GridSelector.CurrentlySelectedGrid();
             var physicalState = ActiveEntity.GetState<PhysicalState>();
             return !physicalState.GridIsEmpty(selectedGrid) ? physicalState.GetEntityAtGrid(selectedGrid) : null;
         }
@@ -185,10 +185,10 @@ namespace Assets.Scrips
             while (enabled)
             {
                 if (Input.GetMouseButtonDown(0) && acceptingInput)
-                    yield return ClickEvent(0, GridSelector.CurrentlySelectedGrid(ActiveEntity));
+                    yield return ClickEvent(0, GridSelector.CurrentlySelectedGrid());
 
                 if (Input.GetMouseButtonDown(1) && acceptingInput)
-                    yield return ClickEvent(1, GridSelector.CurrentlySelectedGrid(ActiveEntity));
+                    yield return ClickEvent(1, GridSelector.CurrentlySelectedGrid());
 
                 yield return null;
             }

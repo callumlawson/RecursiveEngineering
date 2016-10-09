@@ -57,7 +57,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             {
                 SelectedComponentName.text = string.Format(
                     "Selected Grid: {0} Selected Entity: {1} Water: {2}",
-                    GridSelector.CurrentlySelectedGrid(GameRunner.ActiveEntity),
+                    GridSelector.CurrentlySelectedGrid(),
                     GameRunner.CurrentlySelectedEntity().GetState<NameState>().Name,
                     SubstanceNetwork.Instance.GetWater(selectedComponent)
                 );
@@ -66,7 +66,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             {
                 SelectedComponentName.text = string.Format(
                     "Selected Grid: {0}",
-                    GridSelector.CurrentlySelectedGrid(GameRunner.ActiveEntity)
+                    GridSelector.CurrentlySelectedGrid()
                 );
             }
         }
