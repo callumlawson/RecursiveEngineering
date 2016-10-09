@@ -101,14 +101,13 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 for (var y = 0; y < entityToRender.GetState<PhysicalState>().InternalHeight; y++)
                 {
                     var grid = new GridCoordinate(x, y);
-                    var innerComponent = entityToRender.GetState<PhysicalState>().GetEntityAtGrid(grid);
-                    if (innerComponent != null)
+                    var innerEntity = entityToRender.GetState<PhysicalState>().GetEntityAtGrid(grid);
+                    if (innerEntity != null)
                     {
-                        var innerModule = entityToRender.GetState<PhysicalState>().GetEntityAtGrid(grid);
-                        var innerModuleAsset = Resources.Load<GameObject>(innerModule.GetState<NameState>().Name);
+                        var innerModuleAsset = Resources.Load<GameObject>(innerEntity.GetState<NameState>().Name);
                         if (innerModuleAsset == null)
                         {
-                            UnityEngine.Debug.LogError(innerModule.GetState<NameState>().Name);
+                            UnityEngine.Debug.LogError(innerEntity.GetState<NameState>().Name);
                         }
                         var moduleGameObject = Instantiate(innerModuleAsset);
                         SetOpacity(moduleGameObject, opacity);

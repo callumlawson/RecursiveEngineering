@@ -162,12 +162,16 @@ namespace Assets.Scrips
             var newStates = states.DeepClone();
             var entity = entityManager.BuildEntity(newStates);
             PhysicalState.AddEntityToEntity(entity, entityToAddItTo, locationToAddIt);
+            SystemManager.EntityAdded(entity);
         }
 
         private void RemoveEntity(Entity entityToRemove)
         {
-            if (!entityToRemove.GetState<PhysicalState>().IsRoot())
+            if (entityToRemove != null &&
+                entityToRemove.HasState<PhysicalState>() 
+                && !entityToRemove.GetState<PhysicalState>().IsRoot())
             {
+                SystemManager.EntityRemoved(entityToRemove);
                 var parentEntity = entityToRemove.GetState<PhysicalState>().ParentEntity;
                 parentEntity.GetState<PhysicalState>().RemoveEntityFromEntity(entityToRemove);
                 entityManager.DeleteEntity(entityToRemove);
@@ -207,7 +211,6 @@ namespace Assets.Scrips
             }
             SingleClick(button, selectedGrid);
         }
-
         #endregion
     }
 }

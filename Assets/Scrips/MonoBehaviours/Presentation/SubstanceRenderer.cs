@@ -9,11 +9,11 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
 {
     public class SubstanceRenderer : MonoBehaviour
     {
-        private GameObject substanceRenderRoot;
-        private SpriteRenderer[,] tileGrid;
         [UsedImplicitly] public GameObject WaterTile;
 
-        // Use this for initialization
+        private GameObject substanceRenderRoot;
+        private SpriteRenderer[,] tileGrid;
+
         [UsedImplicitly]
         private void Start()
         {

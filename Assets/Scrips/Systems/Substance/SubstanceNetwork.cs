@@ -30,7 +30,7 @@ namespace Assets.Scrips.Systems.Substance
             if (entity.HasState<SubstanceConnectorState>())
             {
                 AddNode(new SubstanceNetworkNode(entity));
-                ConnectEntity(entity);
+                ConnectToAdjacentModulesWithinModule(entity);
             }
         }
 
@@ -87,26 +87,17 @@ namespace Assets.Scrips.Systems.Substance
             return null;
         }
 
-        private void ConnectEntity(Entity entity)
-        {
-            if (entity.GetState<SubstanceConnectorState>() != null)
-            {
-                ConnectToAdjacentModulesWithinModule(entity);
-            }
-        }
-
         //Generalise to arbitary numbers of levels. Make Neigbouring Components include those at higher levels?
         private void ConnectToAdjacentModulesWithinModule(Entity addedEntity)
         {
-            var grid = addedEntity.GetState<PhysicalState>().BottomLeftCoordinate;
+            var addedEntityGrid = addedEntity.GetState<PhysicalState>().BottomLeftCoordinate;
             foreach (var neigbour in addedEntity.GetState<PhysicalState>().GetNeighbouringEntities())
             {
                 var neigbourGrid = neigbour.GetState<PhysicalState>().BottomLeftCoordinate;
-                var direction = AdjacentDirection(grid, neigbourGrid);
+                var direction = AdjacentDirection(addedEntityGrid, neigbourGrid);
 
-                if (neigbour.GetState<SubstanceConnectorState>() != null &&
-                    HaveFacingConnections(direction, addedEntity.GetState<SubstanceConnectorState>().Diretions,
-                        neigbour.GetState<SubstanceConnectorState>().Diretions))
+                if (neigbour.HasState<SubstanceConnectorState>() && 
+                    HaveFacingConnections(direction, addedEntity.GetState<SubstanceConnectorState>().Diretions, neigbour.GetState<SubstanceConnectorState>().Diretions))
                 {
                     AddBidirectionalConnection(GetNodeForEntity(addedEntity), GetNodeForEntity(neigbour));
                 }

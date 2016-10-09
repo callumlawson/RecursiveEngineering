@@ -68,7 +68,7 @@ namespace Assets.Scrips.Entities
             {
                 new NameState("EngineInternals"),
                 new PhysicalState(),
-                new SubstanceConnectorState(new List<Direction> {Direction.Left, Direction.Right}),
+                new SubstanceConnectorState(new List<Direction> {Direction.Left, Direction.Right, Direction.Up, Direction.Down}),
                 new EngineState(0)
             }
         };
