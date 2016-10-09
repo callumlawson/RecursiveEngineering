@@ -60,7 +60,7 @@ namespace Assets.Scrips
             {
                 if (CurrentlySelectedEntity() != null)
                 {
-                    SubstanceNetwork.Instance.AddWaterToEntity(CurrentlySelectedEntity());
+                    SubstanceNetwork.Instance.AddSubstanceToEntity(SubstanceType.Diesel, CurrentlySelectedEntity());
                 }
             }
 

@@ -9,7 +9,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
 {
     public class SubstanceRenderer : MonoBehaviour
     {
-        [UsedImplicitly] public GameObject WaterTile;
+        [UsedImplicitly] public GameObject SubstanceTile;
 
         private GameObject substanceRenderRoot;
         private SpriteRenderer[,] tileGrid;
@@ -49,7 +49,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                                        entity.GetState<PhysicalState>().BottomLeftCoordinate;
                 if (substanceNode != null)
                 {
-                    var water = substanceNode.GetSubstance(SubstanceTypes.WATER);
+                    var water = substanceNode.GetSubstance(SubstanceType.Diesel);
                     if (water > 0.0f)
                     {
                         var tile = tileGrid[gridForSubstance.X, gridForSubstance.Y];
@@ -72,7 +72,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 for (var y = 0; y < EntityUtils.MaxHeight; y++)
                 {
                     var grid = new GridCoordinate(x, y);
-                    var tile = Instantiate(WaterTile);
+                    var tile = Instantiate(SubstanceTile);
                     var spriteRenderer = tile.GetComponent<SpriteRenderer>();
                     spriteRenderer.enabled = false;
                     tileGrid[x, y] = spriteRenderer;

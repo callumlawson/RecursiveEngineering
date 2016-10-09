@@ -8,20 +8,20 @@ namespace Assets.Scrips.Systems.Substance
     {
         public Entity Entity { get; private set; }
 
-        private readonly Dictionary<string, float> substances;
+        private readonly Dictionary<SubstanceType, float> substances;
 
-        public SubstanceNetworkNode(Entity entity, Dictionary<string, float> substances = null)
+        public SubstanceNetworkNode(Entity entity, Dictionary<SubstanceType, float> substances = null)
         {
             Entity = entity;
-            this.substances = substances ?? new Dictionary<string, float>();
+            this.substances = substances ?? new Dictionary<SubstanceType, float>();
         }
 
-        public void UpdateSubstance(string substance, float amount)
+        public void UpdateSubstance(SubstanceType substance, float amount)
         {
             substances[substance] = amount;
         }
 
-        public float GetSubstance(string substance)
+        public float GetSubstance(SubstanceType substance)
         {
             return substances.ContainsKey(substance) ? substances[substance] : 0.0f;
         }

@@ -1,7 +1,8 @@
 ﻿namespace Assets.Scrips.Systems.Substance
 {
-    public static class SubstanceTypes
+    public enum SubstanceType
     {
-        public const string WATER = "Water";
+        Water,
+        Diesel
     }
 }

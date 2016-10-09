@@ -47,26 +47,26 @@ namespace Assets.Scrips.Systems.Substance
             }
         }
 
-        public float GetWater(Entity entity)
+        public float GetDiesel(Entity entity)
         {
             var nodeValue = GetNodeForEntity(entity) != null
-                ? GetNodeForEntity(entity).GetSubstance(SubstanceTypes.WATER)
+                ? GetNodeForEntity(entity).GetSubstance(SubstanceType.Diesel)
                 : 0.0f;
 
             foreach (var childModule in entity.GetState<PhysicalState>().ChildEntities)
             {
-                nodeValue += GetWater(childModule);
+                nodeValue += GetDiesel(childModule);
             }
 
             return nodeValue;
         }
 
-        public void AddWaterToEntity(Entity entity)
+        public void AddSubstanceToEntity(SubstanceType substance, Entity entity)
         {
             var possibleNode = GetNodeForEntity(entity);
             if (possibleNode != null)
             {
-                possibleNode.UpdateSubstance(SubstanceTypes.WATER, possibleNode.GetSubstance(SubstanceTypes.WATER) + 10);
+                possibleNode.UpdateSubstance(substance, possibleNode.GetSubstance(substance) + 10);
             }
         }
 
@@ -178,10 +178,10 @@ namespace Assets.Scrips.Systems.Substance
             foreach (var graphVertex in network.Vertices)
             {
                 var neighbours = network.NeighboursInclusive(graphVertex);
-                var averageValue = neighbours.Sum(vertex => vertex.GetSubstance(SubstanceTypes.WATER))/neighbours.Count;
+                var averageValue = neighbours.Sum(vertex => vertex.GetSubstance(SubstanceType.Diesel))/neighbours.Count;
                 foreach (var neighbour in neighbours)
                 {
-                    neighbour.UpdateSubstance(SubstanceTypes.WATER, averageValue);
+                    neighbour.UpdateSubstance(SubstanceType.Diesel, averageValue);
                 }
             }
         }

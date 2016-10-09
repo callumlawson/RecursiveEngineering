@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using Assets.Scrips.Entities;
 using Assets.Scrips.States;
 using JetBrains.Annotations;
@@ -12,7 +13,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         [UsedImplicitly] public GameObject TooltipWindow;
         [UsedImplicitly] public Text TooltipTextField;
 
-        private const float TooltipTime = 0.5f;
+        private const float TooltipTime = 0.3f;
         private float hoverTime;
         private Entity lastEntitySelected;
 
@@ -22,14 +23,12 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             TooltipWindow.SetActive(false);
         }
 
+        [UsedImplicitly]
         public void Update()
         {
             var currentlySelectedEntity = GameRunner.Instance.CurrentlySelectedEntity();
-            if (currentlySelectedEntity == null)
-            {
-                return;
-            }
-            if (currentlySelectedEntity == lastEntitySelected)
+
+            if (currentlySelectedEntity != null && currentlySelectedEntity == lastEntitySelected)
             {
                 hoverTime += Time.deltaTime;
             }
@@ -37,6 +36,8 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             {
                 hoverTime = 0;
             }
+            lastEntitySelected = currentlySelectedEntity;
+
             if (hoverTime > TooltipTime)
             {
                 TooltipTextField.text = TooltipMessage(currentlySelectedEntity);
@@ -47,17 +48,17 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             {
                 TooltipWindow.SetActive(false);
             }
-            lastEntitySelected = currentlySelectedEntity;
         }
 
         //TODO: Replace with automatic builder based on state metadata. Use Annotations.
         private static string TooltipMessage(Entity entity)
         {
             var message = new StringBuilder();
-            message.AppendLine(string.Format("Name: {0}", entity.GetState<NameState>().Name));
+            message.Append(string.Format("Name: {0}", entity.GetState<NameState>().Name));
             if (entity.HasState<EngineState>())
             {
-                message.AppendLine(string.Format("RPM: {0}", entity.GetState<EngineState>().CurrentRpm));
+                message.Append(Environment.NewLine);
+                message.Append(string.Format("RPM: {0}", entity.GetState<EngineState>().CurrentRpm));
             }
             return message.ToString();
         }
