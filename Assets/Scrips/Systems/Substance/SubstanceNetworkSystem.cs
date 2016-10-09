@@ -8,13 +8,13 @@ using Assets.Scrips.States;
 
 namespace Assets.Scrips.Systems.Substance
 {
-    public class SubstanceNetwork : ISystem
+    public class SubstanceNetworkSystem : ISystem
     {
-        public static SubstanceNetwork Instance;
+        public static SubstanceNetworkSystem Instance;
 
         private readonly DirectedSparseGraph<Entity> network;
 
-        public SubstanceNetwork()
+        public SubstanceNetworkSystem()
         {
             network = new DirectedSparseGraph<Entity>();
             Instance = this;

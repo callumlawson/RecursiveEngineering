@@ -39,7 +39,7 @@ namespace Assets.Scrips
             //EntityLibrary.Instance.UpdateModulesFromDisk();
 
             SystemManager.AddSystem(new EngineSystem());
-            SystemManager.AddSystem(new SubstanceNetwork());
+            SystemManager.AddSystem(new SubstanceNetworkSystem());
 
             //LoadModule("Start");
 

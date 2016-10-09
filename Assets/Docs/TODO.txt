@@ -1,4 +1,5 @@
 ﻿Game:
+Add environment entities where there are no other entities. Remove environment entity when adding new entities.
 Add Exauhst for the engine.
 Add Sea water (different to drinking water) to right edge of the screen when you press Play.
 Add Crewman. 

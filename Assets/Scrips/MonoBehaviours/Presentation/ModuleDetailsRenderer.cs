@@ -58,7 +58,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 SelectedComponentName.text = string.Format(
                     "Selected Grid: {0} Diesel: {1}",
                     GridSelector.CurrentlySelectedGrid(),
-                    SubstanceNetwork.Instance.GetDiesel(selectedComponent)
+                    SubstanceNetworkSystem.Instance.GetDiesel(selectedComponent)
                 );
             }
             else

@@ -17,16 +17,9 @@ namespace Assets.Scrips.States
         public int InternalWidth;
         public int InternalHeight;
 
-        public PhysicalState()
-        {
-            ParentEntity = null;
-            ChildEntities = new List<Entity>();
-            BottomLeftCoordinate = new GridCoordinate(0, 0);
-            ExternalWidth = 1;
-            ExternalHeight = 1;
-            InternalWidth = GlobalConstants.MediumToLargeRatio;
-            InternalHeight = GlobalConstants.MediumToLargeRatio;
-        }
+        public PhysicalState(int width, int height) : this(null, new List<Entity>(), new GridCoordinate(0, 0), 1, 1, width, height) { }
+
+        public PhysicalState() : this (null, new List<Entity>(), new GridCoordinate(0, 0), 1, 1, GlobalConstants.MediumToLargeRatio, GlobalConstants.MediumToLargeRatio) { }
 
         public PhysicalState(Entity parentEntity, List<Entity> childEntities, GridCoordinate bottomLeftCoordinate, int externalWidth, int externalHeight, int internalWidth, int internalHeight)
         {
@@ -106,8 +99,7 @@ namespace Assets.Scrips.States
 
         public void RemoveEntityFromEntity(Entity entityToRemove)
         {
-            ChildEntities.ForEach(entity =>
-            {
+            ChildEntities.ForEach(entity => {
                 if (entity == entityToRemove)
                 {
                     ChildEntities.Remove(entityToRemove);

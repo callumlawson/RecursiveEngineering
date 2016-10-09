@@ -76,6 +76,13 @@ namespace Assets.Scrips.Entities
                 new SubstanceConnectorState(new List<Direction> {Direction.Left, Direction.Right, Direction.Up, Direction.Down}),
                 new EngineState(0),
                 new SubstanceNetworkState()
+            },
+            new List<IState>
+            {
+                new NameState("Environment"),
+                new PhysicalState(0, 0),
+                new SubstanceConnectorState(new List<Direction> {Direction.Left, Direction.Right, Direction.Up, Direction.Down}),
+                new SubstanceNetworkState()
             }
         };
 

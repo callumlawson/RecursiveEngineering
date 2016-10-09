@@ -136,7 +136,7 @@ namespace Assets.Scrips.Modules
 
 //        private static void AddModuleToSubstanceNetwork(Module module)
 //        {
-//            SubstanceNetwork.Instance.AddEntityToNetwork(module);
+//            SubstanceNetworkSystem.Instance.AddEntityToNetwork(module);
 //            foreach (var innerModule in module.GetContainedModules())
 //            {
 //                AddModuleToSubstanceNetwork(innerModule);
@@ -145,7 +145,7 @@ namespace Assets.Scrips.Modules
 //
 //        private static void RemoveModuleFromSubstanceNetwork(Module module)
 //        {
-//            SubstanceNetwork.Instance.RemoveModuleFromNetwork(module);
+//            SubstanceNetworkSystem.Instance.RemoveModuleFromNetwork(module);
 //            foreach (var innerModule in module.GetContainedModules())
 //            {
 //                RemoveModuleFromSubstanceNetwork(innerModule);
@@ -154,7 +154,7 @@ namespace Assets.Scrips.Modules
 //
 //        private static void CheckForConnections(Module module)
 //        {
-//            SubstanceNetwork.Instance.ConnectModule(module);
+//            SubstanceNetworkSystem.Instance.ConnectModule(module);
 //            foreach (var innerModule in module.GetContainedModules())
 //            {
 //                CheckForConnections(innerModule);
