@@ -38,19 +38,23 @@ namespace Assets.Scrips.Entities
             new List<IState>
             {
                 new NameState("Tank"),
-                new PhysicalState()
+                new PhysicalState(),
+                new SubstanceNetworkState(),
+                new SubstanceConnectorState(new List<Direction> {Direction.Left, Direction.Right, Direction.Up, Direction.Down}),
             },
             new List<IState>
             {
                 new NameState("HorizontalPipe"),
                 new PhysicalState(),
-                new SubstanceConnectorState(new List<Direction> {Direction.Left, Direction.Right})
+                new SubstanceConnectorState(new List<Direction> {Direction.Left, Direction.Right}),
+                new SubstanceNetworkState()
             },
             new List<IState>
             {
                 new NameState("VerticalPipe"),
                 new PhysicalState(),
-                new SubstanceConnectorState(new List<Direction> {Direction.Up, Direction.Down})
+                new SubstanceConnectorState(new List<Direction> {Direction.Up, Direction.Down}),
+                new SubstanceNetworkState()
             },
             new List<IState>
             {
@@ -62,14 +66,16 @@ namespace Assets.Scrips.Entities
                     Direction.Down,
                     Direction.Left,
                     Direction.Right
-                })
+                }),
+                new SubstanceNetworkState()
             },
             new List<IState>
             {
                 new NameState("EngineInternals"),
                 new PhysicalState(),
                 new SubstanceConnectorState(new List<Direction> {Direction.Left, Direction.Right, Direction.Up, Direction.Down}),
-                new EngineState(0)
+                new EngineState(0),
+                new SubstanceNetworkState()
             }
         };
 

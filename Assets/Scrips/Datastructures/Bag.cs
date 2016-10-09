@@ -58,7 +58,7 @@ namespace Assets.Scrips.Datastructures
 
         public T this[int index]
         {
-            get { return contents[index]; }
+            get { return Get(index); }
 
             set
             {
@@ -120,6 +120,12 @@ namespace Assets.Scrips.Datastructures
 
         public T Get(int index)
         {
+            //Not confident this is the right solution. 
+            if (index >= contents.Length)
+            {
+                Grow(index*2);
+            }
+
             return contents[index];
         }
 

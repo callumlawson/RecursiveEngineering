@@ -1,6 +1,4 @@
 ﻿using Assets.Scrips.Datastructures;
-using Assets.Scrips.Entities;
-using Assets.Scrips.Modules;
 using Assets.Scrips.States;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -76,7 +74,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 Mathf.RoundToInt(coreComponent.InternalWidth/2.0f),
                 Mathf.RoundToInt(coreComponent.InternalHeight/2.0f)
             );
-            return midpoint + EntityUtils.GetGridOffset(entity);
+            return midpoint;
         }
 
         private void Clear()
@@ -94,8 +92,6 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
 
         private void RenderInnerComponents(Entity entityToRender, float opacity = 1.0f)
         {
-            var gridOffset = EntityUtils.GetGridOffset(entityToRender);
-
             for (var x = 0; x < entityToRender.GetState<PhysicalState>().InternalWidth; x++)
             {
                 for (var y = 0; y < entityToRender.GetState<PhysicalState>().InternalHeight; y++)
@@ -112,7 +108,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                         var moduleGameObject = Instantiate(innerModuleAsset);
                         SetOpacity(moduleGameObject, opacity);
                         moduleGameObject.transform.parent = innerRendererRoot.transform;
-                        moduleGameObject.transform.position = GridCoordinate.GridToPosition(grid + gridOffset);
+                        moduleGameObject.transform.position = GridCoordinate.GridToPosition(grid);
                     }
                 }
             }
@@ -120,8 +116,6 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
 
         private void RenderOuterComponent(Entity module, float opacity = 1.0f)
         {
-            var gridOffset = EntityUtils.GetGridOffset(module);
-
             for (var x = 0; x < module.GetState<PhysicalState>().InternalWidth; x++)
             {
                 for (var y = 0; y < module.GetState<PhysicalState>().InternalHeight; y++)
@@ -130,7 +124,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                     var tile = Instantiate(Tile);
                     SetOpacity(tile, opacity);
                     tile.transform.parent = outerRendererRoot.transform;
-                    tile.transform.position = GridCoordinate.GridToPosition(grid + gridOffset);
+                    tile.transform.position = GridCoordinate.GridToPosition(grid);
                 }
             }
         }

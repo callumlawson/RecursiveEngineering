@@ -56,9 +56,8 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             if (selectedComponent != null)
             {
                 SelectedComponentName.text = string.Format(
-                    "Selected Grid: {0} Selected Entity: {1} Diesel: {2}",
+                    "Selected Grid: {0} Diesel: {1}",
                     GridSelector.CurrentlySelectedGrid(),
-                    GameRunner.CurrentlySelectedEntity().GetState<NameState>().Name,
                     SubstanceNetwork.Instance.GetDiesel(selectedComponent)
                 );
             }

@@ -24,8 +24,8 @@ namespace Assets.Scrips.States
             BottomLeftCoordinate = new GridCoordinate(0, 0);
             ExternalWidth = 1;
             ExternalHeight = 1;
-            InternalWidth = EntityUtils.MediumToLargeRatio;
-            InternalHeight = EntityUtils.MediumToLargeRatio;
+            InternalWidth = GlobalConstants.MediumToLargeRatio;
+            InternalHeight = GlobalConstants.MediumToLargeRatio;
         }
 
         public PhysicalState(Entity parentEntity, List<Entity> childEntities, GridCoordinate bottomLeftCoordinate, int externalWidth, int externalHeight, int internalWidth, int internalHeight)

@@ -95,7 +95,7 @@ namespace Assets.Scrips.Entities
             var hasType = statesByType.TryGetValue(typeof(T), out statesOfType);
             if (hasType)
             {
-                return (T)statesByType[typeof(T)].Get(entity.EntityId);
+                return (T)statesOfType.Get(entity.EntityId);
             }
             return default(T);
         }

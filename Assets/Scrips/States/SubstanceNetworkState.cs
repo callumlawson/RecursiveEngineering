@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using Assets.Scrips.Entities;
+using Assets.Scrips.Systems.Substance;
 
-namespace Assets.Scrips.Systems.Substance
+namespace Assets.Scrips.States
 {
-    public class SubstanceNetworkNode : IComparable<SubstanceNetworkNode>
+    [Serializable]
+    public class SubstanceNetworkState : IComparable<SubstanceNetworkState>, IState
     {
-        public Entity Entity { get; private set; }
-
         private readonly Dictionary<SubstanceType, float> substances;
 
-        public SubstanceNetworkNode(Entity entity, Dictionary<SubstanceType, float> substances = null)
+        public SubstanceNetworkState(Dictionary<SubstanceType, float> substances = null)
         {
-            Entity = entity;
             this.substances = substances ?? new Dictionary<SubstanceType, float>();
         }
 
@@ -26,7 +24,7 @@ namespace Assets.Scrips.Systems.Substance
             return substances.ContainsKey(substance) ? substances[substance] : 0.0f;
         }
 
-        public int CompareTo(SubstanceNetworkNode other)
+        public int CompareTo(SubstanceNetworkState other)
         {
             throw new NotImplementedException();
         }

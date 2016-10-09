@@ -17,7 +17,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         [UsedImplicitly]
         private void Start()
         {
-            tileGrid = new SpriteRenderer[EntityUtils.MaxWidth, EntityUtils.MaxHeight];
+            tileGrid = new SpriteRenderer[GlobalConstants.MaxWidth, GlobalConstants.MaxHeight];
             substanceRenderRoot = new GameObject();
             if (substanceRenderRoot != null)
             {
@@ -32,11 +32,10 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         public void Update()
         {
             var activeEnity = GameRunner.Instance.ActiveEntity;
-            var substanceNetwork = SubstanceNetwork.Instance;
 
-            for (var x = 0; x < EntityUtils.MaxWidth; x++)
+            for (var x = 0; x < GlobalConstants.MaxWidth; x++)
             {
-                for (var y = 0; y < EntityUtils.MaxHeight; y++)
+                for (var y = 0; y < GlobalConstants.MaxHeight; y++)
                 {
                     tileGrid[x, y].enabled = false;
                 }
@@ -44,12 +43,11 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
 
             foreach (var entity in activeEnity.GetState<PhysicalState>().ChildEntities)
             {
-                var substanceNode = substanceNetwork.GetNodeForEntity(entity);
-                var gridForSubstance = EntityUtils.GetGridOffset(activeEnity) +
-                                       entity.GetState<PhysicalState>().BottomLeftCoordinate;
-                if (substanceNode != null)
+                var substanceState = entity.GetState<SubstanceNetworkState>();
+                var gridForSubstance = entity.GetState<PhysicalState>().BottomLeftCoordinate;
+                if (substanceState != null)
                 {
-                    var water = substanceNode.GetSubstance(SubstanceType.Diesel);
+                    var water = substanceState.GetSubstance(SubstanceType.Diesel);
                     if (water > 0.0f)
                     {
                         var tile = tileGrid[gridForSubstance.X, gridForSubstance.Y];
@@ -67,9 +65,9 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 Destroy(child.gameObject);
             }
 
-            for (var x = 0; x < EntityUtils.MaxWidth; x++)
+            for (var x = 0; x < GlobalConstants.MaxWidth; x++)
             {
-                for (var y = 0; y < EntityUtils.MaxHeight; y++)
+                for (var y = 0; y < GlobalConstants.MaxHeight; y++)
                 {
                     var grid = new GridCoordinate(x, y);
                     var tile = Instantiate(SubstanceTile);

@@ -18,7 +18,7 @@ namespace Assets.Scrips.Datastructures
 
         public static Vector3 GridToPosition(GridCoordinate grid)
         {
-            return new Vector3(grid.X*EntityUtils.TileSizeInMeters, grid.Y*EntityUtils.TileSizeInMeters);
+            return new Vector3(grid.X*GlobalConstants.TileSizeInMeters, grid.Y*GlobalConstants.TileSizeInMeters);
         }
 
         public static GridCoordinate operator +(GridCoordinate first, GridCoordinate second)

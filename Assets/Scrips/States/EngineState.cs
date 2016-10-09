@@ -5,9 +5,9 @@ namespace Assets.Scrips.States
     [Serializable]
     public class EngineState : IState
     {
-        public int CurrentRpm;
+        public float CurrentRpm;
 
-        public EngineState(int currentRpm)
+        public EngineState(float currentRpm)
         {
             CurrentRpm = currentRpm;
         }

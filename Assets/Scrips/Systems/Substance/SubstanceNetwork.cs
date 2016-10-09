@@ -8,83 +8,58 @@ using Assets.Scrips.States;
 
 namespace Assets.Scrips.Systems.Substance
 {
-    //A comoponent can have serveral networks. 
-    //Networks have a type. 
-    //Networks of the same type can be combined.
-    //Networks are basically graphs with rules on their connections. 
-    //TODO: Consider using injection.
     public class SubstanceNetwork : ISystem
     {
         public static SubstanceNetwork Instance;
 
-        private readonly DirectedSparseGraph<SubstanceNetworkNode> network;
+        private readonly DirectedSparseGraph<Entity> network;
 
         public SubstanceNetwork()
         {
-            network = new DirectedSparseGraph<SubstanceNetworkNode>();
+            network = new DirectedSparseGraph<Entity>();
             Instance = this;
         }
 
         public void OnEntityAdded(Entity entity)
         {
-            if (entity.HasState<SubstanceConnectorState>())
+            if (entity.HasState<SubstanceConnectorState>() && entity.HasState<SubstanceNetworkState>())
             {
-                AddNode(new SubstanceNetworkNode(entity));
+                network.AddVertex(entity);
                 ConnectToAdjacentModulesWithinModule(entity);
             }
         }
 
         public void Tick()
         {
-            Flow();
+            foreach (var graphEntity in network.Vertices)
+            {
+                var neighbours = network.NeighboursInclusive(graphEntity);
+                var averageValue = neighbours.Sum(entity => entity.GetState<SubstanceNetworkState>().GetSubstance(SubstanceType.Diesel)) / neighbours.Count;
+                foreach (var neighbour in neighbours)
+                {
+                    neighbour.GetState<SubstanceNetworkState>().UpdateSubstance(SubstanceType.Diesel, averageValue);
+                }
+            }
         }
 
         public void OnEntityRemoved(Entity entity)
         {
-            if (entity.HasState<SubstanceConnectorState>())
+            if (entity.HasState<SubstanceConnectorState>() && entity.HasState<SubstanceNetworkState>())
             {
-                RemoveNode(GetNodeForEntity(entity));
+                network.RemoveVertex(entity);
             }
         }
 
         public float GetDiesel(Entity entity)
         {
-            var nodeValue = GetNodeForEntity(entity) != null
-                ? GetNodeForEntity(entity).GetSubstance(SubstanceType.Diesel)
-                : 0.0f;
-
-            foreach (var childModule in entity.GetState<PhysicalState>().ChildEntities)
-            {
-                nodeValue += GetDiesel(childModule);
-            }
-
-            return nodeValue;
-        }
-
-        public void AddSubstanceToEntity(SubstanceType substance, Entity entity)
-        {
-            var possibleNode = GetNodeForEntity(entity);
-            if (possibleNode != null)
-            {
-                possibleNode.UpdateSubstance(substance, possibleNode.GetSubstance(substance) + 10);
-            }
+            return network.HasVertex(entity) ? 
+                entity.GetState<SubstanceNetworkState>().GetSubstance(SubstanceType.Diesel) : 
+                0.0f;
         }
 
         public string Readable()
         {
             return network.ToReadable();
-        }
-
-        public SubstanceNetworkNode GetNodeForEntity(Entity entity)
-        {
-            foreach (var vertex in network.Vertices)
-            {
-                if (vertex.Entity == entity)
-                {
-                    return vertex;
-                }
-            }
-            return null;
         }
 
         //Generalise to arbitary numbers of levels. Make Neigbouring Components include those at higher levels?
@@ -99,7 +74,7 @@ namespace Assets.Scrips.Systems.Substance
                 if (neigbour.HasState<SubstanceConnectorState>() && 
                     HaveFacingConnections(direction, addedEntity.GetState<SubstanceConnectorState>().Diretions, neigbour.GetState<SubstanceConnectorState>().Diretions))
                 {
-                    AddBidirectionalConnection(GetNodeForEntity(addedEntity), GetNodeForEntity(neigbour));
+                    AddBidirectionalConnection(addedEntity, neigbour);
                 }
             }
         }
@@ -173,33 +148,10 @@ namespace Assets.Scrips.Systems.Substance
             }
         }
 
-        private void Flow()
-        {
-            foreach (var graphVertex in network.Vertices)
-            {
-                var neighbours = network.NeighboursInclusive(graphVertex);
-                var averageValue = neighbours.Sum(vertex => vertex.GetSubstance(SubstanceType.Diesel))/neighbours.Count;
-                foreach (var neighbour in neighbours)
-                {
-                    neighbour.UpdateSubstance(SubstanceType.Diesel, averageValue);
-                }
-            }
-        }
-
-        private void AddBidirectionalConnection(SubstanceNetworkNode source, SubstanceNetworkNode destination)
+        private void AddBidirectionalConnection(Entity source, Entity destination)
         {
             network.AddEdge(destination, source);
             network.AddEdge(source, destination);
-        }
-
-        private void RemoveNode(SubstanceNetworkNode node)
-        {
-            network.RemoveVertex(node);
-        }
-
-        private void AddNode(SubstanceNetworkNode node)
-        {
-            network.AddVertex(node);
         }
     }
 }

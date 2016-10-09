@@ -38,14 +38,14 @@ namespace Assets.Scrips.Modules
         public Module(List<IState> components)
         {
             Components = components;
-            gridOperations = new GridOperations(EntityUtils.MediumToLargeRatio, EntityUtils.MediumToLargeRatio);
+            gridOperations = new GridOperations(GlobalConstants.MediumToLargeRatio, GlobalConstants.MediumToLargeRatio);
         }
 
         public Module(Module parentModule, List<IState> components)
         {
             Components = components;
             ParentModule = parentModule;
-            gridOperations = new GridOperations(EntityUtils.MediumToLargeRatio, EntityUtils.MediumToLargeRatio);
+            gridOperations = new GridOperations(GlobalConstants.MediumToLargeRatio, GlobalConstants.MediumToLargeRatio);
         }
 
 //        public void AddModule(Module module, GridCoordinate grid)

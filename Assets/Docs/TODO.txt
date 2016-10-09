@@ -1,0 +1,9 @@
+﻿Game:
+Add Exauhst for the engine.
+Add Sea water (different to drinking water) to right edge of the screen when you press Play.
+Add Crewman. 
+Make Crewman die from the fumes/flooding. 
+
+Framework:
+Make systems specify components they require.
+Check artemis for OnComponentUpdated - how is it done? Could I do it.

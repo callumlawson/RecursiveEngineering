@@ -6,7 +6,7 @@ using UnityEngine.Assertions;
 namespace Assets.Scrips.Entities
 {
     [Serializable]
-    public class Entity
+    public class Entity : IComparable<Entity>
     {
         private readonly EntityManager entityManager;
         public int EntityId { get; private set; }
@@ -51,7 +51,12 @@ namespace Assets.Scrips.Entities
 
         public string ToJson()
         {
-            return "";
+            throw new NotImplementedException();
+        }
+
+        public int CompareTo(Entity other)
+        {
+            throw new NotImplementedException();
         }
     }
 }

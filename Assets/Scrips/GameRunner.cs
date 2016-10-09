@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Assets.Scrips.Datastructures;
 using Assets.Scrips.Entities;
+using Assets.Scrips.Modules;
 using Assets.Scrips.MonoBehaviours.Controls;
 using Assets.Scrips.States;
 using Assets.Scrips.Systems;
@@ -20,8 +21,6 @@ namespace Assets.Scrips
         public Entity ActiveEntity { get; private set; }
 
         private bool acceptingInput = true;
-        private const float DoubleClickTimeLimit = 0.20f;
-        private const float SimulationTickPeriodInSeconds = 0.1f;
 
         private EntityManager entityManager;
 
@@ -58,9 +57,10 @@ namespace Assets.Scrips
 
             if (Input.GetKeyDown(KeyCode.T))
             {
-                if (CurrentlySelectedEntity() != null)
+                if (CurrentlySelectedEntity() != null && CurrentlySelectedEntity().HasState<SubstanceNetworkState>())
                 {
-                    SubstanceNetwork.Instance.AddSubstanceToEntity(SubstanceType.Diesel, CurrentlySelectedEntity());
+                    var substanceState = CurrentlySelectedEntity().GetState<SubstanceNetworkState>();
+                    substanceState.UpdateSubstance(SubstanceType.Diesel, substanceState.GetSubstance(SubstanceType.Diesel) + 10);
                 }
             }
 
@@ -127,7 +127,7 @@ namespace Assets.Scrips
             while (true)
             {
                 SystemManager.Tick();
-                yield return new WaitForSeconds(SimulationTickPeriodInSeconds);
+                yield return new WaitForSeconds(GlobalConstants.TickPeriodInSeconds);
             }
         }
 
@@ -174,7 +174,7 @@ namespace Assets.Scrips
                 SystemManager.EntityRemoved(entityToRemove);
                 var parentEntity = entityToRemove.GetState<PhysicalState>().ParentEntity;
                 parentEntity.GetState<PhysicalState>().RemoveEntityFromEntity(entityToRemove);
-                entityManager.DeleteEntity(entityToRemove);
+                entityToRemove.Delete();
             }
         }
 
@@ -199,7 +199,7 @@ namespace Assets.Scrips
             yield return new WaitForEndOfFrame();
 
             var count = 0f;
-            while (count < DoubleClickTimeLimit)
+            while (count < GlobalConstants.DoubleClickTimeLimit)
             {
                 if (Input.GetMouseButtonDown(button))
                 {
