@@ -31,10 +31,10 @@ namespace Assets.Scrips.MonoBehaviours.Controls
         [UsedImplicitly]
         void Update () {
             var scroll = Input.GetAxis("Mouse ScrollWheel");
-            ActiveCamera.orthographicSize -= scroll * ScrollSensitivity * Time.deltaTime;
-            if(ActiveCamera.orthographicSize < 0)
+            var zoomDelta = scroll * ScrollSensitivity * Time.deltaTime;
+            if(ActiveCamera.orthographicSize > zoomDelta)
             {
-                ActiveCamera.orthographicSize = 0;
+                ActiveCamera.orthographicSize -= zoomDelta;
             }
 
             if (Input.GetMouseButtonDown(2))

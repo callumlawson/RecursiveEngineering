@@ -1,7 +1,7 @@
-﻿using Assets.Scrips.Datastructures;
+﻿using Assets.Framework.States;
+using Assets.Scrips.Datastructures;
 using Assets.Scrips.Modules;
 using Assets.Scrips.States;
-using Assets.Scrips.Systems.Substance;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -31,7 +31,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         [UsedImplicitly]
         public void Update()
         {
-            var activeEnity = GameRunner.Instance.ActiveEntity;
+            var activeEntity = StaticStates.Get<ActiveEntityState>().ActiveEntity;
 
             for (var x = 0; x < GlobalConstants.MaxWidth; x++)
             {
@@ -41,7 +41,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 }
             }
 
-            foreach (var entity in activeEnity.GetState<PhysicalState>().ChildEntities)
+            foreach (var entity in activeEntity.GetState<PhysicalState>().ChildEntities)
             {
                 var substanceState = entity.GetState<SubstanceNetworkState>();
                 var gridForSubstance = entity.GetState<PhysicalState>().BottomLeftCoordinate;

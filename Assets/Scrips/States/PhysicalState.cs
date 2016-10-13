@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Assets.Framework.States;
 using Assets.Scrips.Datastructures;
 using Assets.Scrips.Modules;
-using Entity = Assets.Scrips.Entities.Entity;
+using UnityEngine;
+using Entity = Assets.Framework.Entities.Entity;
 
 namespace Assets.Scrips.States
 {
@@ -40,6 +42,11 @@ namespace Assets.Scrips.States
         public bool IsRoot()
         {
             return ParentEntity == null;
+        }
+
+        public bool GridIsFull(GridCoordinate grid)
+        {
+            return !GridIsEmpty(grid);
         }
 
         public bool GridIsEmpty(GridCoordinate grid)

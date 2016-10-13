@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
-using Assets.Scrips.Entities;
+using Assets.Framework.Entities;
+using Assets.Framework.States;
 using Assets.Scrips.States;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -26,7 +27,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         [UsedImplicitly]
         public void Update()
         {
-            var currentlySelectedEntity = GameRunner.Instance.CurrentlySelectedEntity();
+            var currentlySelectedEntity = StaticStates.Get<SelectedState>().Entity;
 
             if (currentlySelectedEntity != null && currentlySelectedEntity == lastEntitySelected)
             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using Assets.Framework.States;
 
 namespace Assets.Scrips.States
 {
@@ -6,6 +7,11 @@ namespace Assets.Scrips.States
     public class EngineState : IState
     {
         public float CurrentRpm;
+
+        public EngineState()
+        {
+            CurrentRpm = 0;
+        }
 
         public EngineState(float currentRpm)
         {

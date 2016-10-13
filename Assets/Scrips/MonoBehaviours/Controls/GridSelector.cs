@@ -1,5 +1,7 @@
-﻿using Assets.Scrips.Datastructures;
+﻿using Assets.Framework.States;
+using Assets.Scrips.Datastructures;
 using Assets.Scrips.Modules;
+using Assets.Scrips.States;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -21,23 +23,33 @@ namespace Assets.Scrips.MonoBehaviours.Controls
         [UsedImplicitly]
         public void Update()
         {
-            var mousePosition = CameraController.ActiveCamera.ScreenToWorldPoint(Input.mousePosition);
-            var gridx = Mathf.Round(mousePosition.x / GlobalConstants.TileSizeInMeters) * GlobalConstants.TileSizeInMeters;
-            var gridy = Mathf.Round(mousePosition.y / GlobalConstants.TileSizeInMeters) * GlobalConstants.TileSizeInMeters;
-            selectedGridIndicator.transform.position = new Vector3(gridx, gridy, 0);
+            UpdateCurrentlySelectedGrid();
+            UpdateSelectedGridIndicator();
         }
 
-        public static GridCoordinate CurrentlySelectedGrid()
+        private void UpdateCurrentlySelectedGrid()
         {
             var gridOffset = new GridCoordinate(0, 0);
-//            if (activeEntity != null)
-//            {
-//                gridOffset = GlobalConstants.GetGridOffset(activeEntity);
-//            }
+            //            if (activeEntity != null)
+            //            {
+            //                gridOffset = GlobalConstants.GetGridOffset(activeEntity);
+            //            }
             var mousePosition = CameraController.ActiveCamera.ScreenToWorldPoint(Input.mousePosition);
             var gridx = Mathf.RoundToInt(mousePosition.x / GlobalConstants.TileSizeInMeters) - gridOffset.X;
             var gridy = Mathf.RoundToInt(mousePosition.y / GlobalConstants.TileSizeInMeters) - gridOffset.Y;
-            return new GridCoordinate(gridx, gridy);
+
+            var selectedGrid = new GridCoordinate(gridx, gridy);
+            var physicalState = StaticStates.Get<ActiveEntityState>().ActiveEntity.GetState<PhysicalState>();
+            StaticStates.Get<SelectedState>().Grid = selectedGrid;
+            StaticStates.Get<SelectedState>().Entity = physicalState.GetEntityAtGrid(selectedGrid);
+        }
+
+        private void UpdateSelectedGridIndicator()
+        {
+            var mousePosition = CameraController.ActiveCamera.ScreenToWorldPoint(Input.mousePosition);
+            var gridx = Mathf.Round(mousePosition.x/GlobalConstants.TileSizeInMeters)*GlobalConstants.TileSizeInMeters;
+            var gridy = Mathf.Round(mousePosition.y/GlobalConstants.TileSizeInMeters)*GlobalConstants.TileSizeInMeters;
+            selectedGridIndicator.transform.position = new Vector3(gridx, gridy, 0);
         }
     }
 }

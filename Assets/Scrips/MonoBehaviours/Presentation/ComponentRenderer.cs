@@ -1,8 +1,9 @@
-﻿using Assets.Scrips.Datastructures;
+﻿using Assets.Framework.States;
+using Assets.Scrips.Datastructures;
 using Assets.Scrips.States;
 using JetBrains.Annotations;
 using UnityEngine;
-using Entity = Assets.Scrips.Entities.Entity;
+using Entity = Assets.Framework.Entities.Entity;
 
 namespace Assets.Scrips.MonoBehaviours.Presentation
 {
@@ -39,7 +40,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         {
             Clear();
 
-            var activeEntity = GameRunner.Instance.ActiveEntity;
+            var activeEntity = StaticStates.Get<ActiveEntityState>().ActiveEntity;
 
             RenderOuterComponent(activeEntity);
             RenderInnerComponents(activeEntity);

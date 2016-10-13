@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Assets.Scrips.Systems.Substance;
+using Assets.Framework.States;
+using Assets.Scrips.Datastructures;
 
 namespace Assets.Scrips.States
 {

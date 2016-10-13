@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Assets.Framework.Entities;
 using Assets.Scrips.Datastructures;
-using Assets.Scrips.Entities;
 using Assets.Scrips.States;
 using Newtonsoft.Json;
 

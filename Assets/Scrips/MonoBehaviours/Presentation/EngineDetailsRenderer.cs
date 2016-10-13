@@ -1,6 +1,4 @@
-﻿using Assets.Scrips.Entities;
-using Assets.Scrips.States;
-using Assets.Scrips.Systems;
+﻿using Assets.Scrips.States;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,7 +15,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             EngineState engineState = null;
 //            if (EngineSystem.Instance.EngineEntity.HasValue)
 //            {
-//                engineState = Entity.GetState<EngineState>(EngineSystem.Instance.EngineEntity.Value);
+//                engineState = Entity.Get<EngineState>(EngineSystem.Instance.EngineEntity.Value);
 //            }
 
             Rpm.text = engineState != null ? engineState.CurrentRpm.ToString() : "0";

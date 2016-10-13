@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Assets.Framework.Entities;
+using Assets.Framework.States;
+using Assets.Framework.Systems;
 using Assets.Scrips.Datastructures;
-using Assets.Scrips.Entities;
 using Assets.Scrips.Modules;
-using Assets.Scrips.MonoBehaviours.Controls;
 using Assets.Scrips.States;
 using Assets.Scrips.Systems;
-using Assets.Scrips.Systems.Substance;
 using Assets.Scrips.Util;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -16,32 +16,30 @@ namespace Assets.Scrips
     //TODO: Extract input handler from game runner.
     public class GameRunner : MonoBehaviour
     {
-        public static GameRunner Instance;
-
-        public Entity ActiveEntity { get; private set; }
-
-        private bool acceptingInput = true;
-
         private EntityManager entityManager;
 
         [UsedImplicitly]
         public void Start()
         {
             entityManager = new EntityManager();
-            ActiveEntity = entityManager.BuildEntity(new List<IState>
+
+            var activeEntity = entityManager.BuildEntity(
+                new List<IState>
                 {
                     new NameState("Sub Pen"),
                     new PhysicalState(null, new List<Entity>(), new GridCoordinate(0, 0), 1, 1, 28, 13)
-                });
+                }
+            );
 
-            Instance = this;
-
-            //EntityLibrary.Instance.UpdateModulesFromDisk();
+            StaticStates.Add(new GameModeState(GameMode.Design));
+            StaticStates.Add(new EntityLibraryState(InitialBuildableEntities.BuildableEntityLibrary));
+            StaticStates.Add(new ActiveEntityState(activeEntity));
+            StaticStates.Add(new SelectedState());
 
             SystemManager.AddSystem(new EngineSystem());
             SystemManager.AddSystem(new SubstanceNetworkSystem());
-
-            //LoadModule("Start");
+            SystemManager.AddSystem(new EntityLibrarySystem());
+            SystemManager.AddSystem(new SaveLoadSystem());
 
             StartCoroutine(InputListener());
             StartCoroutine(Ticker());
@@ -50,76 +48,18 @@ namespace Assets.Scrips
         [UsedImplicitly]
         public void Update()
         {
-            if (!acceptingInput)
-            {
-                return;
-            }
+            SystemManager.Update();
 
             if (Input.GetKeyDown(KeyCode.T))
             {
-                if (CurrentlySelectedEntity() != null && CurrentlySelectedEntity().HasState<SubstanceNetworkState>())
+                var selectedEntity = StaticStates.Get<SelectedState>().Entity;
+                if (selectedEntity != null && selectedEntity.HasState<SubstanceNetworkState>())
                 {
-                    var substanceState = CurrentlySelectedEntity().GetState<SubstanceNetworkState>();
-                    substanceState.UpdateSubstance(SubstanceType.Diesel, substanceState.GetSubstance(SubstanceType.Diesel) + 10);
+                    var substanceState = selectedEntity.GetState<SubstanceNetworkState>();
+                    substanceState.UpdateSubstance(SubstanceType.Diesel,
+                        substanceState.GetSubstance(SubstanceType.Diesel) + 10);
                 }
             }
-
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                EntityLibrary.Instance.DecrementSelectedComponent();
-            }
-
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                EntityLibrary.Instance.IncrementSelectedComponent();
-            }
-
-//            if (Input.GetKeyDown(KeyCode.O))
-//            {
-//                acceptingInput = false;
-//                UserTextQuery.Instance.GetTextResponse("Entity to load...", LoadModule);
-//            }
-//
-//            if (Input.GetKeyDown(KeyCode.P))
-//            {
-//                acceptingInput = false;
-//                UserTextQuery.Instance.GetTextResponse("Part to save...", SaveModule);
-//            }
-        }
-
-//        //TODO: Actual error handling.
-//        private void LoadModule(string moduleName)
-//        {
-//            acceptingInput = true;
-//            var module = Entity.FromJson(DiskOperations.ReadText(moduleName));
-//            ActiveEntity = entityManager.BuildEntity(module.Components);
-//            ActiveModule = module;
-//        }
-//
-//        private void SaveModule(string moduleName)
-//        {
-//            acceptingInput = true;
-//            DiskOperations.SaveText(moduleName, Entity.ToJson(ActiveModule));
-//            EntityLibrary.Instance.UpdateModulesFromDisk();
-//        }
-
-        public IEnumerable<Entity> CurrentHeirarchy()
-        {
-            var heirarchy = new List<Entity>();
-            var current = ActiveEntity;
-            do
-            {
-                heirarchy.Add(current);
-                current = current.GetState<PhysicalState>().ParentEntity;
-            } while (current != null);
-            return heirarchy;
-        }
-
-        public Entity CurrentlySelectedEntity()
-        {
-            var selectedGrid = GridSelector.CurrentlySelectedGrid();
-            var physicalState = ActiveEntity.GetState<PhysicalState>();
-            return !physicalState.GridIsEmpty(selectedGrid) ? physicalState.GetEntityAtGrid(selectedGrid) : null;
         }
 
         private static IEnumerator Ticker()
@@ -135,25 +75,27 @@ namespace Assets.Scrips
         {
             if (button == 0)
             {
-                AddEntity(EntityLibrary.Instance.GetSelectedModule(), ActiveEntity, currentlySelectedGrid);
+                AddEntity(StaticStates.Get<EntityLibraryState>().GetSelectedEntity(), StaticStates.Get<ActiveEntityState>().ActiveEntity, currentlySelectedGrid);
             }
 
             if (button == 1)
             {
-                RemoveEntity(CurrentlySelectedEntity());
+                RemoveEntity(StaticStates.Get<SelectedState>().Entity);
             }
         }
 
         private void DoubleClick(int button, GridCoordinate currentlySelectedGrid)
         {
-            if (button == 1 && !ActiveEntity.GetState<PhysicalState>().IsRoot())
+            var activeEntity = StaticStates.Get<ActiveEntityState>().ActiveEntity;
+            if (button == 1 && !activeEntity.GetState<PhysicalState>().IsRoot())
             {
-                ActiveEntity = ActiveEntity.GetState<PhysicalState>().ParentEntity;
+                StaticStates.Get<ActiveEntityState>().ActiveEntity = activeEntity.GetState<PhysicalState>().ParentEntity;
             }
 
-            if (CurrentlySelectedEntity() != null && button == 0 && !CurrentlySelectedEntity().GetState<PhysicalState>().IsRoot())
+            var selectedEntity = StaticStates.Get<SelectedState>().Entity;
+            if (selectedEntity != null && button == 0 && !selectedEntity.GetState<PhysicalState>().IsRoot())
             {
-                ActiveEntity = CurrentlySelectedEntity();
+                StaticStates.Get<ActiveEntityState>().ActiveEntity = selectedEntity;
             }
         }
 
@@ -168,7 +110,7 @@ namespace Assets.Scrips
         private void RemoveEntity(Entity entityToRemove)
         {
             if (entityToRemove != null &&
-                entityToRemove.HasState<PhysicalState>() 
+                entityToRemove.HasState<PhysicalState>()
                 && !entityToRemove.GetState<PhysicalState>().IsRoot())
             {
                 SystemManager.EntityRemoved(entityToRemove);
@@ -184,11 +126,13 @@ namespace Assets.Scrips
         {
             while (enabled)
             {
-                if (Input.GetMouseButtonDown(0) && acceptingInput)
-                    yield return ClickEvent(0, GridSelector.CurrentlySelectedGrid());
+                var selectedGrid = StaticStates.Get<SelectedState>().Grid;
 
-                if (Input.GetMouseButtonDown(1) && acceptingInput)
-                    yield return ClickEvent(1, GridSelector.CurrentlySelectedGrid());
+                if (Input.GetMouseButtonDown(0))
+                    yield return ClickEvent(0, selectedGrid);
+
+                if (Input.GetMouseButtonDown(1))
+                    yield return ClickEvent(1, selectedGrid);
 
                 yield return null;
             }
@@ -211,6 +155,7 @@ namespace Assets.Scrips
             }
             SingleClick(button, selectedGrid);
         }
+
         #endregion
     }
 }

@@ -1,60 +1,48 @@
-﻿using System.Collections.Generic;
-using Assets.Scrips.Entities;
+﻿using System;
+using System.Collections.Generic;
+using Assets.Framework.Entities;
+using Assets.Framework.Systems;
+using Assets.Scrips.Datastructures;
 using Assets.Scrips.Modules;
 using Assets.Scrips.States;
-using Assets.Scrips.Systems.Substance;
+using UnityEngine;
 
 namespace Assets.Scrips.Systems
 {
-    public class EngineSystem : ISystem
+    public class EngineSystem : ITickEntitySystem
     {
-        private readonly List<Entity> activeEntities;
-
-        private const float FuelPerSecond = 3 * GlobalConstants.TickPeriodInSeconds;
+        private const float FuelRequiredPerSecond = 3 * GlobalConstants.TickPeriodInSeconds;
         private const float RmpDeltaPerSecond = 10 * GlobalConstants.TickPeriodInSeconds;
         private const float MaxRpm = 1200;
 
-        public EngineSystem()
+        public List<Type> RequiredStates()
         {
-            activeEntities = new List<Entity>();
+            return new List<Type> {typeof(EngineState)};
         }
 
-        public void OnEntityAdded(Entity entity)
+        public void Tick(List<Entity> matchingEntities)
         {
-            if (entity.HasState<EngineState>())
-            {
-                activeEntities.Add(entity);
-            }
-        }
-
-        public void Tick()
-        {
-            foreach (var entity in activeEntities)
+            Profiler.BeginSample("EngineSystem");
+            foreach (var entity in matchingEntities)
             {
                 var substanceState = entity.GetState<SubstanceNetworkState>();
-                var diesel = substanceState.GetSubstance(SubstanceType.Diesel);
                 var engineState = entity.GetState<EngineState>();
-                if (diesel >= FuelPerSecond)
+                var currentDieselAmount = substanceState.GetSubstance(SubstanceType.Diesel);
+
+                if (currentDieselAmount >= FuelRequiredPerSecond)
                 {
-                    substanceState.UpdateSubstance(SubstanceType.Diesel, diesel - FuelPerSecond);
+                    substanceState.UpdateSubstance(SubstanceType.Diesel, currentDieselAmount - FuelRequiredPerSecond);
                     if (engineState.CurrentRpm < MaxRpm)
                     {
                         engineState.CurrentRpm += RmpDeltaPerSecond;
                     }
                 }
-                else if(engineState.CurrentRpm > 0)
+                else if (engineState.CurrentRpm > 0)
                 {
                     engineState.CurrentRpm -= RmpDeltaPerSecond;
                 }
             }
-        }
-
-        public void OnEntityRemoved(Entity entity)
-        {
-            if (entity.HasState<EngineState>())
-            {
-                activeEntities.Remove(entity);
-            }
+            Profiler.EndSample();
         }
     }
 }
