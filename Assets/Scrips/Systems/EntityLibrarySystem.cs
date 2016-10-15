@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Assets.Framework.Entities;
 using Assets.Framework.States;
 using Assets.Framework.Systems;
@@ -15,12 +14,6 @@ namespace Assets.Scrips.Systems
         public EntityLibrarySystem()
         {
             libraryState = StaticStates.Get<EntityLibraryState>();
-        }
-
-        //TODO: Make this unneeded.
-        public List<Type> RequiredStates()
-        {
-            return new List<Type>();
         }
 
         public void Update()

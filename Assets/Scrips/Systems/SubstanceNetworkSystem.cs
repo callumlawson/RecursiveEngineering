@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Framework.Entities;
+using Assets.Framework.States;
 using Assets.Framework.Systems;
 using Assets.Scrips.Datastructures;
 using Assets.Scrips.Datastructures.Graph;
@@ -11,7 +12,7 @@ using UnityEngine;
 
 namespace Assets.Scrips.Systems
 {
-    public class SubstanceNetworkSystem : IReactiveEntitySystem, ITickEntitySystem
+    public class SubstanceNetworkSystem : IReactiveEntitySystem, ITickEntitySystem, IUpdateSystem
     {
         //TODO: Make singlton evil not be a thing.
         public static SubstanceNetworkSystem Instance;
@@ -47,6 +48,20 @@ namespace Assets.Scrips.Systems
                 }
             }
             Profiler.EndSample();
+        }
+
+        public void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                var selectedEntity = StaticStates.Get<SelectedState>().Entity;
+                if (selectedEntity != null && selectedEntity.HasState<SubstanceNetworkState>())
+                {
+                    var substanceState = selectedEntity.GetState<SubstanceNetworkState>();
+                    substanceState.UpdateSubstance(SubstanceType.Diesel,
+                        substanceState.GetSubstance(SubstanceType.Diesel) + 10);
+                }
+            }
         }
 
         public void OnEntityRemoved(Entity entity)
@@ -157,5 +172,6 @@ namespace Assets.Scrips.Systems
             network.AddEdge(destination, source);
             network.AddEdge(source, destination);
         }
+
     }
 }

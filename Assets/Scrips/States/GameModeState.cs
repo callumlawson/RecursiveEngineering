@@ -11,7 +11,7 @@ namespace Assets.Scrips.States
 
     class GameModeState : IState
     {
-        public Action GameModeChanged;
+        public Action<GameMode> GameModeChanged;
         public GameMode GameMode { get; private set; }
 
         public GameModeState(GameMode gameMode)
@@ -21,10 +21,14 @@ namespace Assets.Scrips.States
 
         public void SetGameMode(GameMode gameMode)
         {
+            if (gameMode == GameMode)
+            {
+                return;
+            }
             GameMode = gameMode;
             if (GameModeChanged != null)
             {
-                GameModeChanged.Invoke();
+                GameModeChanged.Invoke(GameMode);
             }
         }
     }

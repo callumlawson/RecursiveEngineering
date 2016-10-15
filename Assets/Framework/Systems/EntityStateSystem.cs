@@ -1,21 +1,35 @@
 ﻿using System.Collections.Generic;
 using Assets.Framework.Entities;
+using Assets.Framework.States;
 
 namespace Assets.Framework.Systems
 {
-    public static class SystemManager
+    public class EntityStateSystem
     {
         private static readonly Dictionary<IFilteredSystem, List<Entity>> ActiveEntitiesPerSystem = new Dictionary<IFilteredSystem, List<Entity>>();
         private static readonly List<ITickEntitySystem> TickSystems = new List<ITickEntitySystem>();
         private static readonly List<IUpdateEntitySystem> UpdateEntitySystems = new List<IUpdateEntitySystem>();
         private static readonly List<IUpdateSystem> UpdateSytems = new List<IUpdateSystem>();
 
-        public static void AddSystem(ISystem system)
+        private readonly EntityManager entityManager;
+
+        public EntityStateSystem()
+        {
+            entityManager = new EntityManager();
+        }
+
+        public void AddSystem(ISystem system)
         {
             var tickSystem = system as ITickEntitySystem;
             var updateEntitySystem = system as IUpdateEntitySystem;
             var updateSystem = system as IUpdateSystem;
             var fiteredSystem = system as IFilteredSystem;
+            var entityManagerSystem = system as IEntityManager;
+
+            if (entityManagerSystem != null)
+            {
+                entityManagerSystem.SetEntitySystem(this);
+            }
 
             if (tickSystem != null)
             {
@@ -38,7 +52,7 @@ namespace Assets.Framework.Systems
             }
         }
 
-        public static void Update()
+        public void Update()
         {
             foreach (var system in UpdateEntitySystems)
             {
@@ -51,7 +65,7 @@ namespace Assets.Framework.Systems
             }
         }
 
-        public static void Tick()
+        public void Tick()
         {
             foreach (var system in TickSystems)
             {
@@ -59,7 +73,12 @@ namespace Assets.Framework.Systems
             }
         }
 
-        public static void EntityAdded(Entity entity)
+        public Entity BuildEntity(List<IState> states)
+        {
+            return entityManager.BuildEntity(states);
+        }
+
+        public void EntityAdded(Entity entity)
         {
             foreach (var system in ActiveEntitiesPerSystem.Keys)
             {
@@ -77,7 +96,7 @@ namespace Assets.Framework.Systems
             }
         }
 
-        public static void EntityRemoved(Entity entity)
+        public void EntityRemoved(Entity entity)
         {
             foreach (var system in ActiveEntitiesPerSystem.Keys)
             {

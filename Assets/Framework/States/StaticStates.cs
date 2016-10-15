@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Assets.Framework.States
 {
-    //TODO: This isn't a great patern but can be replaced with injection later.
+    //TODO: This isn't a great patern but can be replaced later.
     //This is also a special case when saving... which is a disadvantage. 
     public static class StaticStates
     {

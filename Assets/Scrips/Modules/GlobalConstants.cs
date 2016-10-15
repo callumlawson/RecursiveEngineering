@@ -1,5 +1,4 @@
-﻿using Assets.Scrips.Datastructures;
-namespace Assets.Scrips.Modules
+﻿namespace Assets.Scrips.Modules
 {
     public static class GlobalConstants
     {

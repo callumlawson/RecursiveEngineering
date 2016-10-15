@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Assets.Framework.States;
-using Assets.Scrips.Datastructures;
-using Assets.Scrips.States;
 using Newtonsoft.Json;
 
 //TODO: Delete this. Not needed as an actual object! 
@@ -15,39 +13,6 @@ namespace Assets.Scrips.Modules
         private readonly GridOperations gridOperations;
         [JsonProperty]
         public readonly List<IState> Components;
-        [JsonIgnore]
-        public Module ParentModule;
-
-        [JsonIgnore]
-        public bool IsTerminalModule
-        {
-            get { return GetState<PhysicalState>().IsTerminal(); }
-        }
-
-        [JsonIgnore]
-        public bool IsTopLevelModule
-        {
-            get { return ParentModule == null; }
-        }
-
-        [JsonConstructor]
-        public Module()
-        {
-            
-        }
-
-        public Module(List<IState> components)
-        {
-            Components = components;
-            gridOperations = new GridOperations(GlobalConstants.MediumToLargeRatio, GlobalConstants.MediumToLargeRatio);
-        }
-
-        public Module(Module parentModule, List<IState> components)
-        {
-            Components = components;
-            ParentModule = parentModule;
-            gridOperations = new GridOperations(GlobalConstants.MediumToLargeRatio, GlobalConstants.MediumToLargeRatio);
-        }
 
 //        public void AddModule(Module module, GridCoordinate grid)
 //        {
@@ -103,11 +68,6 @@ namespace Assets.Scrips.Modules
 //        {
 //            return gridOperations.GetGridForModule(module);
 //        }
-
-        public bool GridIsEmpty(GridCoordinate grid)
-        {
-            return gridOperations.GridIsEmpty(grid);
-        }
 
 //        public static string ToJson(Module module)
 //        {
