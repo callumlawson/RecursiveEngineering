@@ -74,15 +74,18 @@ namespace Assets.Scrips.Systems
 
         private IEnumerator InputListener()
         {
-            var selectedGrid = StaticStates.Get<SelectedState>().Grid;
+            while (true)
+            {
+                var selectedGrid = StaticStates.Get<SelectedState>().Grid;
 
-            if (Input.GetMouseButtonDown(0))
-                yield return ClickEvent(0, selectedGrid);
+                if (Input.GetMouseButtonDown(0))
+                    yield return ClickEvent(0, selectedGrid);
 
-            if (Input.GetMouseButtonDown(1))
-                yield return ClickEvent(1, selectedGrid);
+                if (Input.GetMouseButtonDown(1))
+                    yield return ClickEvent(1, selectedGrid);
 
-            yield return null;
+                yield return null;
+            }
         }
 
         private IEnumerator ClickEvent(int button, GridCoordinate selectedGrid)

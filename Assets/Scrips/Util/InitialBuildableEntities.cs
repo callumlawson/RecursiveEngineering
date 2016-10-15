@@ -15,6 +15,11 @@ namespace Assets.Scrips.Util
             },
             new List<IState>
             {
+                new NameState("Crewman"),
+                new PhysicalState()
+            },
+            new List<IState>
+            {
                 new NameState("Engine"),
                 new PhysicalState()
             },

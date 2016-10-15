@@ -16,7 +16,7 @@ namespace Assets.Scrips.States
 
         public GameModeState(GameMode gameMode)
         {
-            GameMode = gameMode;
+            SetGameMode(gameMode);
         }
 
         public void SetGameMode(GameMode gameMode)

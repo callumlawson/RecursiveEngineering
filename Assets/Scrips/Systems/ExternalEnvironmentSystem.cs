@@ -1,5 +1,4 @@
-﻿using System;
-using Assets.Framework.States;
+﻿using Assets.Framework.States;
 using Assets.Framework.Systems;
 using Assets.Scrips.States;
 

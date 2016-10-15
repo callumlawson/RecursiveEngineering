@@ -19,7 +19,7 @@ namespace Assets.Scrips
         private EntityStateSystem entitySystem;
 
         [UsedImplicitly]
-        public void Start()
+        public void Awake()
         {
             entitySystem = new EntityStateSystem();
 
@@ -37,6 +37,7 @@ namespace Assets.Scrips
             StaticStates.Add(new EntityLibraryState(InitialBuildableEntities.BuildableEntityLibrary));
             StaticStates.Add(new SelectedState());
 
+            entitySystem.AddSystem(new GlobalControlsSystem());
             entitySystem.AddSystem(new PlayerEntityModificationSystem());
             entitySystem.AddSystem(new EngineSystem());
             entitySystem.AddSystem(new SubstanceNetworkSystem());
