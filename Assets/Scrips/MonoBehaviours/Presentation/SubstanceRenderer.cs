@@ -1,6 +1,6 @@
 ﻿using Assets.Framework.States;
+using Assets.Framework.Util;
 using Assets.Scrips.Datastructures;
-using Assets.Scrips.Modules;
 using Assets.Scrips.States;
 using Assets.Scrips.Util;
 using JetBrains.Annotations;
@@ -18,6 +18,8 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         [UsedImplicitly]
         private void Start()
         {
+            SimplePool.Preload(SubstanceTile, 200);
+
             tileGrid = new SpriteRenderer[GlobalConstants.MaxWidth, GlobalConstants.MaxHeight];
             substanceRenderRoot = new GameObject();
             if (substanceRenderRoot != null)
@@ -63,7 +65,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         {
             foreach (Transform child in substanceRenderRoot.transform)
             {
-                Destroy(child.gameObject);
+                SimplePool.Despawn(child.gameObject);
             }
 
             for (var x = 0; x < GlobalConstants.MaxWidth; x++)
@@ -71,7 +73,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 for (var y = 0; y < GlobalConstants.MaxHeight; y++)
                 {
                     var grid = new GridCoordinate(x, y);
-                    var tile = Instantiate(SubstanceTile);
+                    var tile = SimplePool.Spawn(SubstanceTile);
                     var spriteRenderer = tile.GetComponent<SpriteRenderer>();
                     spriteRenderer.enabled = false;
                     tileGrid[x, y] = spriteRenderer;

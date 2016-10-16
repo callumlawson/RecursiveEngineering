@@ -65,7 +65,7 @@ namespace Assets.Scrips.Datastructures
 
             // If parameter cannot be cast to Point return false.
             var otherGrid = obj as GridCoordinate;
-            return otherGrid != null && Equals(otherGrid);
+            return otherGrid != null && Equals(this, otherGrid);
         }
 
         private static bool Equals(GridCoordinate firstGrid, GridCoordinate otherGrid)

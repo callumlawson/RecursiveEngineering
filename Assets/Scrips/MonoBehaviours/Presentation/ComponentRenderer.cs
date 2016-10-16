@@ -1,4 +1,5 @@
 ﻿using Assets.Framework.States;
+using Assets.Framework.Util;
 using Assets.Scrips.Datastructures;
 using Assets.Scrips.States;
 using JetBrains.Annotations;
@@ -18,6 +19,8 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         [UsedImplicitly]
         public void Start()
         {
+            SimplePool.Preload(Tile, 200);
+
             outerRendererRoot = new GameObject();
             if (outerRendererRoot != null)
             {
@@ -38,12 +41,18 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         [UsedImplicitly]
         public void Update()
         {
+            
             Clear();
 
             var activeEntity = StaticStates.Get<ActiveEntityState>().ActiveEntity;
 
+            Profiler.BeginSample("Component Renderer outer");
             RenderOuterComponent(activeEntity);
+            Profiler.EndSample();
+
+            Profiler.BeginSample("Component Renderer inner");
             RenderInnerComponents(activeEntity);
+            Profiler.EndSample();
 
             if (!activeEntity.GetState<PhysicalState>().IsRoot())
             {
@@ -61,6 +70,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             }
 
             lastRenderedEntity = activeEntity;
+            
         }
 
         private void CenterCamera(Entity entity)
@@ -82,12 +92,12 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         {
             foreach (Transform child in innerRendererRoot.transform)
             {
-                Destroy(child.gameObject);
+                SimplePool.Despawn(child.gameObject);
             }
 
             foreach (Transform child in outerRendererRoot.transform)
             {
-                Destroy(child.gameObject);
+                SimplePool.Despawn(child.gameObject);
             }
         }
 
@@ -98,15 +108,23 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 for (var y = 0; y < entityToRender.GetState<PhysicalState>().InternalHeight; y++)
                 {
                     var grid = new GridCoordinate(x, y);
+
+                    Profiler.BeginSample("Get entities at grid");
                     var innerEntities = entityToRender.GetState<PhysicalState>().GetEntitiesAtGrid(grid);
+                    Profiler.EndSample();
+
                     foreach (var innerEntity in innerEntities)
                     {
+                        Profiler.BeginSample("Resources Loading");
                         var innerModuleAsset = Resources.Load<GameObject>(innerEntity.GetState<NameState>().Name);
+                        Profiler.EndSample();
+
                         if (innerModuleAsset == null)
                         {
                             UnityEngine.Debug.LogError(innerEntity.GetState<NameState>().Name);
                         }
-                        var moduleGameObject = Instantiate(innerModuleAsset);
+
+                        var moduleGameObject = SimplePool.Spawn(innerModuleAsset);
                         //SetOpacity(moduleGameObject, opacity);
                         moduleGameObject.transform.parent = innerRendererRoot.transform;
                         moduleGameObject.transform.position = GridCoordinate.GridToPosition(grid);
@@ -122,7 +140,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 for (var y = 0; y < module.GetState<PhysicalState>().InternalHeight; y++)
                 {
                     var grid = new GridCoordinate(x, y);
-                    var tile = Instantiate(Tile);
+                    var tile = SimplePool.Spawn(Tile);
                     //SetOpacity(tile, opacity);
                     tile.transform.parent = outerRendererRoot.transform;
                     tile.transform.position = GridCoordinate.GridToPosition(grid);

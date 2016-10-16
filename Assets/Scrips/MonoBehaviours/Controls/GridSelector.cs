@@ -1,4 +1,5 @@
 ﻿using Assets.Framework.States;
+using Assets.Framework.Util;
 using Assets.Scrips.Datastructures;
 using Assets.Scrips.Modules;
 using Assets.Scrips.States;
@@ -17,7 +18,7 @@ namespace Assets.Scrips.MonoBehaviours.Controls
         [UsedImplicitly]
         public void Start()
         {
-            selectedGridIndicator = Instantiate(Selector);
+            selectedGridIndicator = SimplePool.Spawn(Selector);
             selectedGridIndicator.transform.parent = transform;
         }
 

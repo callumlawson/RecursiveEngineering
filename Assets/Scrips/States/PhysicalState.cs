@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Assets.Framework.States;
 using Assets.Scrips.Datastructures;
 using Assets.Scrips.Modules;
@@ -12,7 +13,11 @@ namespace Assets.Scrips.States
     public class PhysicalState : IState
     {
         public Entity ParentEntity;
-        public List<Entity> ChildEntities;
+        public readonly List<Entity> ChildEntities;
+
+        //Used as a performance optimisation on entity lookup.
+        private readonly Dictionary<GridCoordinate, List<Entity>> childEntityLookup = new Dictionary<GridCoordinate, List<Entity>>();
+   
         public GridCoordinate BottomLeftCoordinate;
         public int ExternalWidth;
         public int ExternalHeight;
@@ -72,7 +77,7 @@ namespace Assets.Scrips.States
             return true;
         }
 
-        public List<Entity> GetNeighbouringEntities()
+        public IEnumerable<Entity> GetNeighbouringEntities()
         {
             if (IsRoot())
             {
@@ -97,27 +102,20 @@ namespace Assets.Scrips.States
 
         public Entity GetEntityAtGrid(GridCoordinate grid)
         {
-            foreach (var entity in ChildEntities)
+            if (childEntityLookup.ContainsKey(grid) && childEntityLookup[grid].Count > 0)
             {
-                if (entity.GetState<PhysicalState>().BottomLeftCoordinate == grid)
-                {
-                    return entity;
-                }
+                return childEntityLookup[grid].ElementAt(0);
             }
             return null;
         }
 
-        public List<Entity> GetEntitiesAtGrid(GridCoordinate grid)
+        public IEnumerable<Entity> GetEntitiesAtGrid(GridCoordinate grid)
         {
-            var results = new List<Entity>();
-            foreach (var entity in ChildEntities)
+            if (childEntityLookup.ContainsKey(grid))
             {
-                if (entity.GetState<PhysicalState>().BottomLeftCoordinate == grid)
-                {
-                    results.Add(entity);
-                }
+                return childEntityLookup[grid];
             }
-            return results;
+            return Enumerable.Empty<Entity>();
         }
 
         public static void AddEntityToEntity(Entity entityToAdd, Entity entityToAddItTo, GridCoordinate locationToAddIt)
@@ -128,6 +126,12 @@ namespace Assets.Scrips.States
             if (entityToAddItTo != null)
             {
                 entityToAddItTo.GetState<PhysicalState>().ChildEntities.Add(entityToAdd);
+
+                if (!entityToAddItTo.GetState<PhysicalState>().childEntityLookup.ContainsKey(locationToAddIt))
+                {
+                    entityToAddItTo.GetState<PhysicalState>().childEntityLookup.Add(locationToAddIt, new List<Entity>());
+                }
+                entityToAddItTo.GetState<PhysicalState>().childEntityLookup[locationToAddIt].Add(entityToAdd);
             }
         }
 
@@ -136,6 +140,7 @@ namespace Assets.Scrips.States
             ChildEntities.ForEach(entity => {
                 if (entity == entityToRemove)
                 {
+                    childEntityLookup[entityToRemove.GetState<PhysicalState>().BottomLeftCoordinate].Remove(entityToRemove);
                     ChildEntities.Remove(entityToRemove);
                 }
             });
