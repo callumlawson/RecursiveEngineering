@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Assets.Framework.Systems
+﻿namespace Assets.Framework.Systems
 {
     public interface ISystem
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Assets.Framework.States;
 using Assets.Scrips.Datastructures;
 using Assets.Scrips.Modules;
-using UnityEngine;
+using Assets.Scrips.Util;
 using Entity = Assets.Framework.Entities.Entity;
 
 namespace Assets.Scrips.States
@@ -47,6 +47,17 @@ namespace Assets.Scrips.States
         public bool GridIsFull(GridCoordinate grid)
         {
             return !GridIsEmpty(grid);
+        }
+
+        public void ForEachGrid(Action<GridCoordinate> actionToApply)
+        {
+            for (int x = 0; x < InternalWidth; x++)
+            {
+                for (int y = 0; y < InternalHeight; y++)
+                {
+                    actionToApply.Invoke(new GridCoordinate(x, y));
+                }
+            }
         }
 
         public bool GridIsEmpty(GridCoordinate grid)
@@ -96,12 +107,28 @@ namespace Assets.Scrips.States
             return null;
         }
 
+        public List<Entity> GetEntitiesAtGrid(GridCoordinate grid)
+        {
+            var results = new List<Entity>();
+            foreach (var entity in ChildEntities)
+            {
+                if (entity.GetState<PhysicalState>().BottomLeftCoordinate == grid)
+                {
+                    results.Add(entity);
+                }
+            }
+            return results;
+        }
+
         public static void AddEntityToEntity(Entity entityToAdd, Entity entityToAddItTo, GridCoordinate locationToAddIt)
         {
             var physicalState = entityToAdd.GetState<PhysicalState>();
             physicalState.ParentEntity = entityToAddItTo;
             physicalState.BottomLeftCoordinate = locationToAddIt;
-            entityToAddItTo.GetState<PhysicalState>().ChildEntities.Add(entityToAdd);
+            if (entityToAddItTo != null)
+            {
+                entityToAddItTo.GetState<PhysicalState>().ChildEntities.Add(entityToAdd);
+            }
         }
 
         public void RemoveEntityFromEntity(Entity entityToRemove)

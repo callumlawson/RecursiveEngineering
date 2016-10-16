@@ -1,4 +1,4 @@
-﻿namespace Assets.Scrips.Modules
+﻿namespace Assets.Scrips.Util
 {
     public static class GlobalConstants
     {

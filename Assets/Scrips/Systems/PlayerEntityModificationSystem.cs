@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace Assets.Scrips.Systems
 {
-    public class PlayerEntityModificationSystem : IEntityManager
+    public class PlayerEntityModificationSystem : IEntityManager, IInitSystem
     {
         private EntityStateSystem entitySystem;
 
@@ -20,6 +20,20 @@ namespace Assets.Scrips.Systems
         {
             entitySystem = manager;
             StaticGameObject.Instance.StartCoroutine(InputListener());
+        }
+
+        public void OnInit()
+        {
+            StaticStates.Get<ActiveEntityState>().ActiveEntity =
+                AddEntity(
+                    new List<IState>
+                    {
+                        new NameState("Sub Pen"),
+                        new PhysicalState(null, new List<Entity>(), new GridCoordinate(0, 0), 1, 1, 28, 13)
+                    },
+                    null,
+                    new GridCoordinate(0, 0)
+                );
         }
 
         private void SingleClick(int button, GridCoordinate currentlySelectedGrid)
@@ -51,12 +65,20 @@ namespace Assets.Scrips.Systems
             }
         }
 
-        private void AddEntity(List<IState> states, Entity entityToAddItTo, GridCoordinate locationToAddIt)
+        private Entity AddEntity(List<IState> states, Entity entityToAddItTo, GridCoordinate locationToAddIt)
         {
             var newStates = states.DeepClone();
             var entity = entitySystem.BuildEntity(newStates);
+            InitEnvironmentEntities(entity);
             PhysicalState.AddEntityToEntity(entity, entityToAddItTo, locationToAddIt);
             entitySystem.EntityAdded(entity);
+            return entity;
+        }
+
+        private void InitEnvironmentEntities(Entity entity)
+        {
+            entity.GetState<PhysicalState>()
+                .ForEachGrid(grid => AddEntity(InitialBuildableEntities.Environment, entity, grid));
         }
 
         private void RemoveEntity(Entity entityToRemove)

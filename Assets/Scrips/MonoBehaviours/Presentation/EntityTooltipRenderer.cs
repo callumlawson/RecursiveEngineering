@@ -2,6 +2,7 @@
 using System.Text;
 using Assets.Framework.Entities;
 using Assets.Framework.States;
+using Assets.Scrips.Datastructures;
 using Assets.Scrips.States;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -9,14 +10,16 @@ using UnityEngine.UI;
 
 namespace Assets.Scrips.MonoBehaviours.Presentation
 {
+    //TODO: This code is horrible and I am sorry.
     public class EntityTooltipRenderer : MonoBehaviour
     {
-        [UsedImplicitly] public GameObject TooltipWindow;
+        [UsedImplicitly] public GameObject TooltipRoot;
         [UsedImplicitly] public Text TooltipTextField;
+        [UsedImplicitly] public GameObject TooltipWindow;
 
         private const float TooltipTime = 0.3f;
         private float hoverTime;
-        private Entity lastEntitySelected;
+        private GridCoordinate lastSelectedGrid;
 
         [UsedImplicitly]
         public void Start()
@@ -27,27 +30,31 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         [UsedImplicitly]
         public void Update()
         {
-            var currentlySelectedEntity = StaticStates.Get<SelectedState>().Entity;
+            var activeEntity = StaticStates.Get<ActiveEntityState>().ActiveEntity;
+            var selectedGrid = StaticStates.Get<SelectedState>().Grid;
+            var hoveredEntities = activeEntity.GetState<PhysicalState>().GetEntitiesAtGrid(selectedGrid);
 
-            if (currentlySelectedEntity != null && currentlySelectedEntity == lastEntitySelected)
-            {
-                hoverTime += Time.deltaTime;
-            }
-            else
-            {
-                hoverTime = 0;
-            }
-            lastEntitySelected = currentlySelectedEntity;
+            UpdateHoverTime(selectedGrid);
+            CleanPreviousTooltips();
 
             if (hoverTime > TooltipTime)
             {
-                TooltipTextField.text = TooltipMessage(currentlySelectedEntity);
-                TooltipWindow.GetComponent<RectTransform>().transform.position = Input.mousePosition;
-                TooltipWindow.SetActive(true);
-            }
-            else
-            {
-                TooltipWindow.SetActive(false);
+                TooltipRoot.GetComponent<RectTransform>().transform.position = Input.mousePosition;
+
+                foreach (var entity in hoveredEntities)
+                {
+                    var tooltip = Instantiate(TooltipWindow);
+                    tooltip.GetComponent<RectTransform>().SetParent(TooltipRoot.transform);
+                    var textComponent = tooltip.GetComponentInChildren<Text>();
+                    textComponent.text = TooltipMessage(entity);
+                }
+
+                MatchWidths();
+
+                foreach (Transform child in TooltipRoot.transform)
+                {
+                    child.gameObject.SetActive(true);
+                }
             }
         }
 
@@ -55,13 +62,57 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         private static string TooltipMessage(Entity entity)
         {
             var message = new StringBuilder();
-            message.Append(string.Format("Name: {0}", entity.GetState<NameState>().Name));
+            message.Append(string.Format("> {0}", entity.GetState<NameState>().Name));
+            if (entity.HasState<SubstanceNetworkState>())
+            {
+                message.Append(Environment.NewLine);
+                message.Append(entity.GetState<SubstanceNetworkState>());
+            }
             if (entity.HasState<EngineState>())
             {
                 message.Append(Environment.NewLine);
-                message.Append(string.Format("RPM: {0}", entity.GetState<EngineState>().CurrentRpm));
+                message.Append(entity.GetState<EngineState>());
             }
             return message.ToString();
+        }
+
+        private void UpdateHoverTime(GridCoordinate grid)
+        {
+            if (grid == lastSelectedGrid)
+            {
+                hoverTime += Time.deltaTime;
+            }
+            else
+            {
+                hoverTime = 0;
+            }
+            lastSelectedGrid = grid;
+        }
+
+        private void CleanPreviousTooltips()
+        {
+            foreach (Transform child in TooltipRoot.transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
+        private void MatchWidths()
+        {
+            var largestWidth = 0.0f;
+            foreach (Transform child in TooltipRoot.transform)
+            {
+                var width = child.GetComponent<RectTransform>().rect.width;
+                if (width > largestWidth)
+                {
+                    largestWidth = width;
+                }
+            }
+
+            foreach (Transform child in TooltipRoot.transform)
+            {
+                child.GetComponent<LayoutElement>().minWidth = largestWidth;
+            }
         }
     }
 }

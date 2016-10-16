@@ -1,10 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Assets.Framework.Entities;
 using Assets.Framework.States;
 using Assets.Framework.Systems;
-using Assets.Scrips.Datastructures;
-using Assets.Scrips.Modules;
 using Assets.Scrips.States;
 using Assets.Scrips.Systems;
 using Assets.Scrips.Util;
@@ -23,16 +20,8 @@ namespace Assets.Scrips
         {
             entitySystem = new EntityStateSystem();
 
-            var activeEntity = entitySystem.BuildEntity(
-                new List<IState>
-                {
-                    new NameState("Sub Pen"),
-                    new PhysicalState(null, new List<Entity>(), new GridCoordinate(0, 0), 1, 1, 28, 13)
-                }
-            );
-
             //TODO: this should be via entity System
-            StaticStates.Add(new ActiveEntityState(activeEntity));
+            StaticStates.Add(new ActiveEntityState(entitySystem.BuildEntity(new List<IState>())));
             StaticStates.Add(new GameModeState(GameMode.Design));
             StaticStates.Add(new EntityLibraryState(InitialBuildableEntities.BuildableEntityLibrary));
             StaticStates.Add(new SelectedState());
@@ -43,6 +32,7 @@ namespace Assets.Scrips
             entitySystem.AddSystem(new SubstanceNetworkSystem());
             entitySystem.AddSystem(new EntityLibrarySystem());
             entitySystem.AddSystem(new SaveLoadSystem());
+            entitySystem.AddSystem(new CrewMovementSystem());
 
             StartCoroutine(Ticker());
         }

@@ -37,6 +37,12 @@ namespace Assets.Scrips.Systems
 
         public void Tick(List<Entity> matchingEntities)
         {
+            //TODO: Build into system predicates.
+            if (StaticStates.Get<GameModeState>().GameMode == GameMode.Design)
+            {
+                return;
+            }
+
             Profiler.BeginSample("SubstanceSystem");
             foreach (var graphEntity in matchingEntities)
             {

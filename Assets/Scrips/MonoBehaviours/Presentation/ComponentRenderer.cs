@@ -98,8 +98,8 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 for (var y = 0; y < entityToRender.GetState<PhysicalState>().InternalHeight; y++)
                 {
                     var grid = new GridCoordinate(x, y);
-                    var innerEntity = entityToRender.GetState<PhysicalState>().GetEntityAtGrid(grid);
-                    if (innerEntity != null)
+                    var innerEntities = entityToRender.GetState<PhysicalState>().GetEntitiesAtGrid(grid);
+                    foreach (var innerEntity in innerEntities)
                     {
                         var innerModuleAsset = Resources.Load<GameObject>(innerEntity.GetState<NameState>().Name);
                         if (innerModuleAsset == null)
@@ -107,7 +107,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                             UnityEngine.Debug.LogError(innerEntity.GetState<NameState>().Name);
                         }
                         var moduleGameObject = Instantiate(innerModuleAsset);
-                        SetOpacity(moduleGameObject, opacity);
+                        //SetOpacity(moduleGameObject, opacity);
                         moduleGameObject.transform.parent = innerRendererRoot.transform;
                         moduleGameObject.transform.position = GridCoordinate.GridToPosition(grid);
                     }
@@ -123,14 +123,14 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 {
                     var grid = new GridCoordinate(x, y);
                     var tile = Instantiate(Tile);
-                    SetOpacity(tile, opacity);
+                    //SetOpacity(tile, opacity);
                     tile.transform.parent = outerRendererRoot.transform;
                     tile.transform.position = GridCoordinate.GridToPosition(grid);
                 }
             }
         }
 
-        private void SetOpacity(GameObject go, float opacity)
+        private static void SetOpacity(GameObject go, float opacity)
         {
             var spriteRenderer = go.GetComponent<SpriteRenderer>();
             spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, opacity);

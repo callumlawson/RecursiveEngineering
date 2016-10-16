@@ -25,6 +25,7 @@ namespace Assets.Framework.Systems
             var updateSystem = system as IUpdateSystem;
             var fiteredSystem = system as IFilteredSystem;
             var entityManagerSystem = system as IEntityManager;
+            var initSystem = system as IInitSystem;
 
             if (entityManagerSystem != null)
             {
@@ -49,6 +50,11 @@ namespace Assets.Framework.Systems
             if (fiteredSystem != null)
             {
                 ActiveEntitiesPerSystem.Add(fiteredSystem, new List<Entity>());
+            }
+
+            if (initSystem != null)
+            {
+                initSystem.OnInit();
             }
         }
 

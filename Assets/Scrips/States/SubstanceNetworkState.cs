@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using Assets.Framework.States;
 using Assets.Scrips.Datastructures;
 
@@ -28,6 +30,16 @@ namespace Assets.Scrips.States
         public int CompareTo(SubstanceNetworkState other)
         {
             throw new NotImplementedException();
+        }
+
+        public override string ToString()
+        {
+            if (substances.Values.Any())
+            {
+                var lines = substances.Select(kvp => kvp.Key + ": " + kvp.Value.ToString(CultureInfo.InvariantCulture)).ToArray();
+                return string.Join(Environment.NewLine, lines);
+            }
+            return "No Substances Detected";
         }
     }
 }

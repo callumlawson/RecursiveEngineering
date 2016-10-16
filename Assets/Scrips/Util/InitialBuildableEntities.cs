@@ -6,7 +6,21 @@ namespace Assets.Scrips.Util
 {
     public static class InitialBuildableEntities
     {
-        public static List<List<IState>> BuildableEntityLibrary = new List<List<IState>>
+        public static readonly List<IState> Environment = new List<IState>
+        {
+            new NameState("Environment"),
+            new PhysicalState(0, 0),
+            new SubstanceConnectorState(new List<Direction>
+            {
+                Direction.Left,
+                Direction.Right,
+                Direction.Up,
+                Direction.Down
+            }),
+            new SubstanceNetworkState()
+        };
+
+        public static readonly List<List<IState>> BuildableEntityLibrary = new List<List<IState>>
         {
             new List<IState>
             {
@@ -16,7 +30,8 @@ namespace Assets.Scrips.Util
             new List<IState>
             {
                 new NameState("Crewman"),
-                new PhysicalState()
+                new PhysicalState(),
+                new CrewState()
             },
             new List<IState>
             {
@@ -85,19 +100,6 @@ namespace Assets.Scrips.Util
                     Direction.Down
                 }),
                 new EngineState(0),
-                new SubstanceNetworkState()
-            },
-            new List<IState>
-            {
-                new NameState("Environment"),
-                new PhysicalState(0, 0),
-                new SubstanceConnectorState(new List<Direction>
-                {
-                    Direction.Left,
-                    Direction.Right,
-                    Direction.Up,
-                    Direction.Down
-                }),
                 new SubstanceNetworkState()
             }
         };

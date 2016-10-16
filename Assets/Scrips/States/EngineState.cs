@@ -17,5 +17,10 @@ namespace Assets.Scrips.States
         {
             CurrentRpm = currentRpm;
         }
+
+        public override string ToString()
+        {
+            return string.Format("RPM: {0}", CurrentRpm);
+        }
     }
 }
