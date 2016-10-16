@@ -1,1 +1,2 @@
-﻿You can place multiple entities on one spot.
+﻿You can place multiple entities on one spot - Need constraints.
+New Environment messes up substance flow.
