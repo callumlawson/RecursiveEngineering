@@ -50,13 +50,17 @@ namespace Assets.Scrips.Systems
                 {
                     foreach (SubstanceType substance in Enum.GetValues(typeof(SubstanceType)))
                     {
+                        Profiler.BeginSample("SubstanceSystem-GetNeigbours");
                         var neighbours = network.NeighboursInclusive(substanceEntity);
                         var validNeighbours = neighbours.Where(IsUnobstructed).ToList();
+                        Profiler.EndSample();
+                        Profiler.BeginSample("SubstanceSystem-CalcNewValuesAndApply");
                         var averageValue = validNeighbours.Sum(entity => entity.GetState<SubstanceNetworkState>().GetSubstance(substance)) / validNeighbours.Count;
                         foreach (var neighbour in validNeighbours)
                         {
                             neighbour.GetState<SubstanceNetworkState>().UpdateSubstance(substance, averageValue);
                         }
+                        Profiler.EndSample();
                     }
                 }
             }
