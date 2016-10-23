@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Assets.Framework.States;
 using Assets.Framework.Systems;
-using Assets.Framework.Util;
 using Assets.Scrips.States;
 using Assets.Scrips.Systems;
 using Assets.Scrips.Util;
@@ -21,12 +20,14 @@ namespace Assets.Scrips
         {
             entitySystem = new EntityStateSystem();
 
-            //TODO: this should be via entity System
+            //TODO: this should be via the entity System. Fix this before save load.
+            StaticStates.Add(new WorldEntityState(entitySystem.BuildEntity(new List<IState>())));
             StaticStates.Add(new ActiveEntityState(entitySystem.BuildEntity(new List<IState>())));
             StaticStates.Add(new GameModeState(GameMode.Design));
             StaticStates.Add(new EntityLibraryState(InitialBuildableEntities.BuildableEntityLibrary));
             StaticStates.Add(new SelectedState());
 
+            entitySystem.AddSystem(new WorldInitSystem());
             entitySystem.AddSystem(new GlobalControlsSystem());
             entitySystem.AddSystem(new PlayerEntityModificationSystem());
             entitySystem.AddSystem(new EngineSystem());
@@ -34,7 +35,10 @@ namespace Assets.Scrips
             entitySystem.AddSystem(new EntityLibrarySystem());
             entitySystem.AddSystem(new SaveLoadSystem());
             entitySystem.AddSystem(new CrewMovementSystem());
+            entitySystem.AddSystem(new CrewHealthSystem());
+            entitySystem.AddSystem(new SeaSystem());
 
+            entitySystem.Init();
             StartCoroutine(Ticker());
         }
 

@@ -8,8 +8,8 @@ namespace Assets.Scrips.Util
     {
         public static readonly List<IState> Environment = new List<IState>
         {
-            new NameState("Environment"),
-            new PhysicalState(0, 0),
+            new EntityTypeState("Environment"),
+            new PhysicalState(0, 0, false),
             new SubstanceConnectorState(new List<Direction>
             {
                 Direction.Left,
@@ -24,33 +24,35 @@ namespace Assets.Scrips.Util
         {
             new List<IState>
             {
-                new NameState("Box"),
+                new EntityTypeState("Box"),
                 new PhysicalState()
             },
             new List<IState>
             {
-                new NameState("Crewman"),
+                new EntityTypeState("Crew"),
+                new NameState("Jess"),
+                new HealthState(100.0f),
                 new PhysicalState(),
                 new CrewState()
             },
             new List<IState>
             {
-                new NameState("Engine"),
+                new EntityTypeState("Engine"),
                 new PhysicalState()
             },
             new List<IState>
             {
-                new NameState("VerticalWall"),
+                new EntityTypeState("VerticalWall"),
                 new PhysicalState()
             },
             new List<IState>
             {
-                new NameState("HorizontalWall"),
+                new EntityTypeState("HorizontalWall"),
                 new PhysicalState()
             },
             new List<IState>
             {
-                new NameState("Tank"),
+                new EntityTypeState("Tank"),
                 new PhysicalState(),
                 new SubstanceNetworkState(),
                 new SubstanceConnectorState(new List<Direction>
@@ -63,21 +65,21 @@ namespace Assets.Scrips.Util
             },
             new List<IState>
             {
-                new NameState("HorizontalPipe"),
+                new EntityTypeState("HorizontalPipe"),
                 new PhysicalState(),
                 new SubstanceConnectorState(new List<Direction> {Direction.Left, Direction.Right}),
                 new SubstanceNetworkState()
             },
             new List<IState>
             {
-                new NameState("VerticalPipe"),
+                new EntityTypeState("VerticalPipe"),
                 new PhysicalState(),
                 new SubstanceConnectorState(new List<Direction> {Direction.Up, Direction.Down}),
                 new SubstanceNetworkState()
             },
             new List<IState>
             {
-                new NameState("CrossPipe"),
+                new EntityTypeState("CrossPipe"),
                 new PhysicalState(),
                 new SubstanceConnectorState(new List<Direction>
                 {
@@ -90,7 +92,7 @@ namespace Assets.Scrips.Util
             },
             new List<IState>
             {
-                new NameState("EngineInternals"),
+                new EntityTypeState("EngineInternals"),
                 new PhysicalState(),
                 new SubstanceConnectorState(new List<Direction>
                 {

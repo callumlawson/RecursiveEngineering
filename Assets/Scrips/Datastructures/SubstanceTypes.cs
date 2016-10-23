@@ -2,7 +2,7 @@
 {
     public enum SubstanceType
     {
-        Water,
+        SeaWater,
         Diesel
     }
 }

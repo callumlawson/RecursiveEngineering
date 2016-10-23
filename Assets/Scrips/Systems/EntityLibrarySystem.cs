@@ -45,7 +45,7 @@ namespace Assets.Scrips.Systems
             //            //Foreach support modification while iterating. 
             //            buildableEntityLibrary.ForEach(module =>
             //            {
-            //                if (entityToAdd.Get<NameState>().Name == module.Get<NameState>().Name)
+            //                if (entityToAdd.Get<EntityTypeState>().EntityType == module.Get<EntityTypeState>().EntityType)
             //                {
             //                    buildableEntityLibrary.Remove(module);
             //                }

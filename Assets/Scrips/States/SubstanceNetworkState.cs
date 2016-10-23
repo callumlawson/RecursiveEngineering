@@ -12,9 +12,18 @@ namespace Assets.Scrips.States
     {
         private readonly Dictionary<SubstanceType, float> substances;
 
-        public SubstanceNetworkState(Dictionary<SubstanceType, float> substances = null)
+        public SubstanceNetworkState()
         {
-            this.substances = substances ?? new Dictionary<SubstanceType, float>();
+            substances = new Dictionary<SubstanceType, float>();
+            foreach (SubstanceType substance in Enum.GetValues(typeof(SubstanceType)))
+            {
+                substances.Add(substance, 0.0f);
+            }
+        }
+
+        public void AddSubstance(SubstanceType substance, float amount)
+        {
+            substances[substance] += amount;
         }
 
         public void UpdateSubstance(SubstanceType substance, float amount)
@@ -22,9 +31,14 @@ namespace Assets.Scrips.States
             substances[substance] = amount;
         }
 
+        public void ClearSubstance(SubstanceType substance)
+        {
+            substances[substance] = 0;
+        }
+
         public float GetSubstance(SubstanceType substance)
         {
-            return substances.ContainsKey(substance) ? substances[substance] : 0.0f;
+            return substances[substance];
         }
 
         public int CompareTo(SubstanceNetworkState other)

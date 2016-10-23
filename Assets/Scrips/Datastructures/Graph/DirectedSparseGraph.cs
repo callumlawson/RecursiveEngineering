@@ -164,7 +164,7 @@ namespace Assets.Scrips.Datastructures.Graph
 
         public LinkedList<TVertex> NeighboursInclusive(TVertex vertex)
         {
-            var result =  new LinkedList<TVertex>(Neighbours(vertex));
+            var result = new LinkedList<TVertex>(Neighbours(vertex));
             result.AddFirst(vertex);
             return result;
         }

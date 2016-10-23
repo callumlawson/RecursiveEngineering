@@ -116,12 +116,12 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                     foreach (var innerEntity in innerEntities)
                     {
                         Profiler.BeginSample("Resources Loading");
-                        var innerModuleAsset = Resources.Load<GameObject>(innerEntity.GetState<NameState>().Name);
+                        var innerModuleAsset = Resources.Load<GameObject>(innerEntity.GetState<EntityTypeState>().EntityType);
                         Profiler.EndSample();
 
                         if (innerModuleAsset == null)
                         {
-                            UnityEngine.Debug.LogError(innerEntity.GetState<NameState>().Name);
+                            UnityEngine.Debug.LogError(innerEntity.GetState<EntityTypeState>().EntityType);
                         }
 
                         var moduleGameObject = SimplePool.Spawn(innerModuleAsset);

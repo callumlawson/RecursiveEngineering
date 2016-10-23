@@ -10,10 +10,12 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
 {
     public class SubstanceRenderer : MonoBehaviour
     {
-        [UsedImplicitly] public GameObject SubstanceTile;
+        private Color dieselColor = new Color(1.0f, 0.6f, 0.3f);
 
         private GameObject substanceRenderRoot;
+        [UsedImplicitly] public GameObject SubstanceTile;
         private SpriteRenderer[,] tileGrid;
+        private Color waterColor = new Color(0f, 0f, 1f);
 
         [UsedImplicitly]
         private void Start()
@@ -44,18 +46,29 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 }
             }
 
+            //TODO: Make this not rubbish
             foreach (var entity in activeEntity.GetState<PhysicalState>().ChildEntities)
             {
                 var substanceState = entity.GetState<SubstanceNetworkState>();
                 var gridForSubstance = entity.GetState<PhysicalState>().BottomLeftCoordinate;
                 if (substanceState != null)
                 {
-                    var water = substanceState.GetSubstance(SubstanceType.Diesel);
+                    var diesel = substanceState.GetSubstance(SubstanceType.Diesel);
+                    if (diesel > 0.0f)
+                    {
+                        var tile = tileGrid[gridForSubstance.X, gridForSubstance.Y];
+                        tile.enabled = true;
+                        dieselColor.a = Mathf.Clamp(diesel / 100.0f - 0.3f, 0, 1);
+                        tile.color = dieselColor;
+                    }
+
+                    var water = substanceState.GetSubstance(SubstanceType.SeaWater);
                     if (water > 0.0f)
                     {
                         var tile = tileGrid[gridForSubstance.X, gridForSubstance.Y];
                         tile.enabled = true;
-                        tile.color = new Color(1, 1, 1, Mathf.Clamp(water/100.0f, 0, 1));
+                        waterColor.a = Mathf.Clamp(water / 100.0f - 0.3f, 0, 1);
+                        tile.color = waterColor;
                     }
                 }
             }

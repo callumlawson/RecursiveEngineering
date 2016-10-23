@@ -34,17 +34,17 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             var entityLibrary = StaticStates.Get<EntityLibraryState>();
             SelectedComponent.sprite =
                 Resources.Load<GameObject>(
-                    GetState<NameState>(entityLibrary.GetSelectedEntity()).Name)
+                    GetState<EntityTypeState>(entityLibrary.GetSelectedEntity()).EntityType)
                     .GetComponent<SpriteRenderer>()
                     .sprite;
             PreviousComponent.sprite =
                 Resources.Load<GameObject>(
-                    GetState<NameState>(entityLibrary.GetPreviousEntity()).Name)
+                    GetState<EntityTypeState>(entityLibrary.GetPreviousEntity()).EntityType)
                     .GetComponent<SpriteRenderer>()
                     .sprite;
             NextComponent.sprite =
                 Resources.Load<GameObject>(
-                    GetState<NameState>(entityLibrary.GetNextEntity()).Name)
+                    GetState<EntityTypeState>(entityLibrary.GetNextEntity()).EntityType)
                     .GetComponent<SpriteRenderer>()
                     .sprite;
         }
@@ -75,7 +75,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             var breadcrumb = "";
             foreach (var component in CurrentHeirarchy())
             {
-                breadcrumb = ">" + component.GetState<NameState>().Name + breadcrumb;
+                breadcrumb = ">" + component.GetState<EntityTypeState>().EntityType + breadcrumb;
             }
             Breadcrumb.text = breadcrumb;
         }

@@ -1,18 +1,19 @@
 ﻿Game:
 
-Add environment entities where there are no other entities. Remove environment entity when adding new entities.
 Add Exauhst for the engine.
-Add Sea water (different to drinking water) to right edge of the screen when you press Play.
-Add Crewman. 
 Make Crewman die from the fumes/flooding. 
 
 Framework:
 
+Generalise the entity tooltip renderer.
 Fix the way entity added and entity removed are triggered.
 Remove static states in favour of a by convention entity (e.g. entity -1)
 
 Done:
 
-Finish repairing the system manager framework. DONE.
-Make systems specify components they require. DONE.
+Add environment entities where there are no other entities. Remove environment entity when adding new entities.
+Finish repairing the system manager framework.
+Make systems specify components they require.
 Check artemis for OnComponentUpdated - how is it done? Could I do it. Done.
+Add Sea water (different to drinking water) to right edge of the screen when you press Play.
+Add Crewman. 

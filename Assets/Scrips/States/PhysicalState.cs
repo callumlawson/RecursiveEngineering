@@ -5,6 +5,7 @@ using Assets.Framework.States;
 using Assets.Scrips.Datastructures;
 using Assets.Scrips.Modules;
 using Assets.Scrips.Util;
+using JetBrains.Annotations;
 using Entity = Assets.Framework.Entities.Entity;
 
 namespace Assets.Scrips.States
@@ -14,21 +15,21 @@ namespace Assets.Scrips.States
     {
         public Entity ParentEntity;
         public readonly List<Entity> ChildEntities;
-
-        //Used as a performance optimisation on entity lookup.
-        private readonly Dictionary<GridCoordinate, List<Entity>> childEntityLookup = new Dictionary<GridCoordinate, List<Entity>>();
-   
         public GridCoordinate BottomLeftCoordinate;
         public int ExternalWidth;
         public int ExternalHeight;
         public int InternalWidth;
         public int InternalHeight;
+        public bool IsTangible;
 
-        public PhysicalState(int width, int height) : this(null, new List<Entity>(), new GridCoordinate(0, 0), 1, 1, width, height) { }
+        //Used as a performance optimisation on entity lookup.
+        private readonly Dictionary<GridCoordinate, List<Entity>> childEntityLookup = new Dictionary<GridCoordinate, List<Entity>>();
 
-        public PhysicalState() : this (null, new List<Entity>(), new GridCoordinate(0, 0), 1, 1, GlobalConstants.MediumToLargeRatio, GlobalConstants.MediumToLargeRatio) { }
+        public PhysicalState(int width, int height, bool isTangible) : this(null, new List<Entity>(), new GridCoordinate(0, 0), 1, 1, width, height, isTangible) { }
 
-        public PhysicalState(Entity parentEntity, List<Entity> childEntities, GridCoordinate bottomLeftCoordinate, int externalWidth, int externalHeight, int internalWidth, int internalHeight)
+        public PhysicalState() : this (null, new List<Entity>(), new GridCoordinate(0, 0), 1, 1, GlobalConstants.MediumToLargeRatio, GlobalConstants.MediumToLargeRatio, true) { }
+
+        public PhysicalState(Entity parentEntity, List<Entity> childEntities, GridCoordinate bottomLeftCoordinate, int externalWidth, int externalHeight, int internalWidth, int internalHeight, bool isTangible)
         {
             ParentEntity = parentEntity;
             ChildEntities = childEntities;
@@ -37,6 +38,7 @@ namespace Assets.Scrips.States
             ExternalHeight = externalHeight;
             InternalWidth = internalWidth;
             InternalHeight = internalHeight;
+            IsTangible = isTangible;
         }
 
         public bool IsTerminal()
@@ -118,21 +120,21 @@ namespace Assets.Scrips.States
             return Enumerable.Empty<Entity>();
         }
 
-        public static void AddEntityToEntity(Entity entityToAdd, Entity entityToAddItTo, GridCoordinate locationToAddIt)
+        public static bool AddEntityToEntity([NotNull] Entity entityToAdd, [NotNull] GridCoordinate locationToAddIt, [NotNull] Entity entityToAddItTo)
         {
             var physicalState = entityToAdd.GetState<PhysicalState>();
             physicalState.ParentEntity = entityToAddItTo;
             physicalState.BottomLeftCoordinate = locationToAddIt;
-            if (entityToAddItTo != null)
-            {
-                entityToAddItTo.GetState<PhysicalState>().ChildEntities.Add(entityToAdd);
+            var targetEntityPhysicalState = entityToAddItTo.GetState<PhysicalState>();
+            var entitiesAtTargetLocation = targetEntityPhysicalState.GetEntitiesAtGrid(locationToAddIt).ToList();
 
-                if (!entityToAddItTo.GetState<PhysicalState>().childEntityLookup.ContainsKey(locationToAddIt))
-                {
-                    entityToAddItTo.GetState<PhysicalState>().childEntityLookup.Add(locationToAddIt, new List<Entity>());
-                }
-                entityToAddItTo.GetState<PhysicalState>().childEntityLookup[locationToAddIt].Add(entityToAdd);
+            if (!entitiesAtTargetLocation.Any() || entitiesAtTargetLocation.All(entity => !entity.GetState<PhysicalState>().IsTangible))
+            {
+                targetEntityPhysicalState.ChildEntities.Add(entityToAdd);
+                UpdateLocationLookup(entityToAdd, locationToAddIt, targetEntityPhysicalState);
+                return true;
             }
+            return false;
         }
 
         public void RemoveEntityFromEntity(Entity entityToRemove)
@@ -144,6 +146,15 @@ namespace Assets.Scrips.States
                     ChildEntities.Remove(entityToRemove);
                 }
             });
+        }
+
+        private static void UpdateLocationLookup(Entity entityToAdd, GridCoordinate locationToAddIt, PhysicalState targetEntityPhysicalState)
+        {
+            if (!targetEntityPhysicalState.childEntityLookup.ContainsKey(locationToAddIt))
+            {
+                targetEntityPhysicalState.childEntityLookup.Add(locationToAddIt, new List<Entity>());
+            }
+            targetEntityPhysicalState.childEntityLookup[locationToAddIt].Add(entityToAdd);
         }
     }
 }

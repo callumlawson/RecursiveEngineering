@@ -26,7 +26,7 @@ namespace Assets.Scrips.Systems
 
         public List<Type> RequiredStates()
         {
-            return new List<Type> {typeof(SubstanceConnectorState), typeof(SubstanceNetworkState) };
+            return new List<Type> {typeof(SubstanceConnectorState), typeof(SubstanceNetworkState), typeof(PhysicalState)};
         }
 
         public void OnEntityAdded(Entity entity)
@@ -44,16 +44,34 @@ namespace Assets.Scrips.Systems
             }
 
             Profiler.BeginSample("SubstanceSystem");
-            foreach (var graphEntity in matchingEntities)
+            foreach (var substanceEntity in matchingEntities)
             {
-                var neighbours = network.NeighboursInclusive(graphEntity);
-                var averageValue = neighbours.Sum(entity => entity.GetState<SubstanceNetworkState>().GetSubstance(SubstanceType.Diesel)) / neighbours.Count;
-                foreach (var neighbour in neighbours)
+                if (IsUnobstructed(substanceEntity))
                 {
-                    neighbour.GetState<SubstanceNetworkState>().UpdateSubstance(SubstanceType.Diesel, averageValue);
+                    foreach (SubstanceType substance in Enum.GetValues(typeof(SubstanceType)))
+                    {
+                        var neighbours = network.NeighboursInclusive(substanceEntity);
+                        var validNeighbours = neighbours.Where(IsUnobstructed).ToList();
+                        var averageValue = validNeighbours.Sum(entity => entity.GetState<SubstanceNetworkState>().GetSubstance(substance)) / validNeighbours.Count;
+                        foreach (var neighbour in validNeighbours)
+                        {
+                            neighbour.GetState<SubstanceNetworkState>().UpdateSubstance(substance, averageValue);
+                        }
+                    }
                 }
             }
             Profiler.EndSample();
+        }
+
+        private static bool IsUnobstructed(Entity entity)
+        {
+            var entityPhysicalState = entity.GetState<PhysicalState>();
+            var entityGrid = entityPhysicalState.BottomLeftCoordinate;
+            var entityParent = entityPhysicalState.ParentEntity;
+            return
+                !entityParent.GetState<PhysicalState>()
+                    .GetEntitiesAtGrid(entityGrid)
+                    .Any(entityOnSameGrid => entityOnSameGrid.GetState<PhysicalState>().IsTangible);
         }
 
         public void Update()

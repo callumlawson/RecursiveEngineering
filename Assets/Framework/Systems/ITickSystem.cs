@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-using Assets.Framework.Entities;
-
-namespace Assets.Framework.Systems
+﻿namespace Assets.Framework.Systems
 {
-    public interface ITickEntitySystem : IFilteredSystem
+    public interface ITickSystem : ISystem
     {
-        void Tick(List<Entity> matchingEntities);
+        void Tick();
     }
 }

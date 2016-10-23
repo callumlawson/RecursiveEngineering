@@ -62,7 +62,12 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         private static string TooltipMessage(Entity entity)
         {
             var message = new StringBuilder();
-            message.Append(string.Format("> {0}", entity.GetState<NameState>().Name));
+            message.Append(string.Format("> {0}", entity.GetState<EntityTypeState>().EntityType));
+            if (entity.HasState<NameState>())
+            {
+                message.Append(Environment.NewLine);
+                message.Append(entity.GetState<NameState>());
+            }
             if (entity.HasState<SubstanceNetworkState>())
             {
                 message.Append(Environment.NewLine);
@@ -72,6 +77,11 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             {
                 message.Append(Environment.NewLine);
                 message.Append(entity.GetState<EngineState>());
+            }
+            if (entity.HasState<HealthState>())
+            {
+                message.Append(Environment.NewLine);
+                message.Append(entity.GetState<HealthState>());
             }
             return message.ToString();
         }

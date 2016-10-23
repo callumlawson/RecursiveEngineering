@@ -1,15 +1,21 @@
 ﻿using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using Assets.Framework.Entities;
 using Assets.Framework.States;
+using Assets.Scrips.Datastructures;
+using Assets.Scrips.States;
+using Assets.Scrips.Util;
 
 namespace Assets.Framework.Systems
 {
     public class EntityStateSystem
     {
-        private static readonly Dictionary<IFilteredSystem, List<Entity>> ActiveEntitiesPerSystem = new Dictionary<IFilteredSystem, List<Entity>>();
-        private static readonly List<ITickEntitySystem> TickSystems = new List<ITickEntitySystem>();
-        private static readonly List<IUpdateEntitySystem> UpdateEntitySystems = new List<IUpdateEntitySystem>();
-        private static readonly List<IUpdateSystem> UpdateSytems = new List<IUpdateSystem>();
+        private readonly Dictionary<IFilteredSystem, List<Entity>> activeEntitiesPerSystem = new Dictionary<IFilteredSystem, List<Entity>>();
+        private readonly List<ITickEntitySystem> tickEntitySystems = new List<ITickEntitySystem>();
+        private readonly List<ITickSystem> tickSystems = new List<ITickSystem>();
+        private readonly List<IUpdateEntitySystem> updateEntitySystems = new List<IUpdateEntitySystem>();
+        private readonly List<IUpdateSystem> updateSytems = new List<IUpdateSystem>();
+        private readonly List<IInitSystem> initSystems = new List<IInitSystem>();
 
         private readonly EntityManager entityManager;
 
@@ -20,9 +26,10 @@ namespace Assets.Framework.Systems
 
         public void AddSystem(ISystem system)
         {
-            var tickSystem = system as ITickEntitySystem;
+            var tickEntitySystem = system as ITickEntitySystem;
             var updateEntitySystem = system as IUpdateEntitySystem;
             var updateSystem = system as IUpdateSystem;
+            var tickSystem = system as ITickSystem;
             var fiteredSystem = system as IFilteredSystem;
             var entityManagerSystem = system as IEntityManager;
             var initSystem = system as IInitSystem;
@@ -32,40 +39,52 @@ namespace Assets.Framework.Systems
                 entityManagerSystem.SetEntitySystem(this);
             }
 
-            if (tickSystem != null)
+            if (tickEntitySystem != null)
             {
-              TickSystems.Add(tickSystem);  
+              tickEntitySystems.Add(tickEntitySystem);  
             }
 
             if (updateEntitySystem != null)
             {
-                UpdateEntitySystems.Add(updateEntitySystem);
+                updateEntitySystems.Add(updateEntitySystem);
             }
 
             if (updateSystem != null)
             {
-                UpdateSytems.Add(updateSystem);
+                updateSytems.Add(updateSystem);
+            }
+
+            if (tickSystem != null)
+            {
+                tickSystems.Add(tickSystem);
             }
 
             if (fiteredSystem != null)
             {
-                ActiveEntitiesPerSystem.Add(fiteredSystem, new List<Entity>());
+                activeEntitiesPerSystem.Add(fiteredSystem, new List<Entity>());
             }
 
             if (initSystem != null)
             {
-                initSystem.OnInit();
+                initSystems.Add(initSystem);
+            }
+        }
+
+        public void Init()
+        {
+            foreach (var system in initSystems)
+            {
+                system.OnInit();
             }
         }
 
         public void Update()
         {
-            foreach (var system in UpdateEntitySystems)
+            foreach (var system in updateEntitySystems)
             {
-                system.Update(ActiveEntitiesPerSystem[system]);
+                system.Update(activeEntitiesPerSystem[system]);
             }
-
-            foreach (var system in UpdateSytems)
+            foreach (var system in updateSytems)
             {
                 system.Update();
             }
@@ -73,10 +92,33 @@ namespace Assets.Framework.Systems
 
         public void Tick()
         {
-            foreach (var system in TickSystems)
+            foreach (var system in tickEntitySystems)
             {
-                system.Tick(ActiveEntitiesPerSystem[system]);
+                system.Tick(activeEntitiesPerSystem[system]);
             }
+            foreach (var system in tickSystems)
+            {
+                system.Tick();
+            }
+        }
+
+        public Entity CreateEntity(List<IState> states, Entity entityToAddItTo, GridCoordinate locationToAddIt)
+        {
+            var newStates = states.DeepClone();
+            var entity = BuildEntity(newStates);
+            InitEnvironmentEntities(entity);
+
+            if (entityToAddItTo != null && PhysicalState.AddEntityToEntity(entity, locationToAddIt, entityToAddItTo))
+            {
+                EntityAdded(entity);
+                return entity;
+            }
+            if (entityToAddItTo == null)
+            {
+                EntityAdded(entity);
+                return entity;
+            }
+            return null;
         }
 
         public Entity BuildEntity(List<IState> states)
@@ -84,15 +126,34 @@ namespace Assets.Framework.Systems
             return entityManager.BuildEntity(states);
         }
 
-        public void EntityAdded(Entity entity)
+        public void RemoveEntity(Entity entityToRemove)
         {
-            foreach (var system in ActiveEntitiesPerSystem.Keys)
+            if (entityToRemove != null &&
+                entityToRemove.HasState<PhysicalState>() &&
+                entityToRemove.GetState<PhysicalState>().IsTangible &&
+                !entityToRemove.GetState<PhysicalState>().IsRoot())
+            {
+                EntityRemoved(entityToRemove);
+                var parentEntity = entityToRemove.GetState<PhysicalState>().ParentEntity;
+                parentEntity.GetState<PhysicalState>().RemoveEntityFromEntity(entityToRemove);
+                entityToRemove.Delete();
+            }
+        }
+
+        private void InitEnvironmentEntities(Entity entity)
+        {
+            entity.GetState<PhysicalState>().ForEachGrid(grid => CreateEntity(InitialBuildableEntities.Environment, entity, grid));
+        }
+
+        private void EntityAdded(Entity entity)
+        {
+            foreach (var system in activeEntitiesPerSystem.Keys)
             {
                 //TODO: Cache required states to avoid unneeded alocation.
                 var entityHasAllStates = system.RequiredStates().TrueForAll(entity.HasState);
                 if (entityHasAllStates)
                 {
-                    ActiveEntitiesPerSystem[system].Add(entity);
+                    activeEntitiesPerSystem[system].Add(entity);
                     if (system is IReactiveEntitySystem)
                     {
                         var reactiveSystem = system as IReactiveEntitySystem;
@@ -102,9 +163,9 @@ namespace Assets.Framework.Systems
             }
         }
 
-        public void EntityRemoved(Entity entity)
+        private void EntityRemoved(Entity entity)
         {
-            foreach (var system in ActiveEntitiesPerSystem.Keys)
+            foreach (var system in activeEntitiesPerSystem.Keys)
             {
                 //TODO: Cache required states to avoid unneeded alocation.
                 var entityHasAllStates = system.RequiredStates().TrueForAll(entity.HasState);
@@ -115,7 +176,7 @@ namespace Assets.Framework.Systems
                         var reactiveSystem = system as IReactiveEntitySystem;
                         reactiveSystem.OnEntityRemoved(entity);
                     }
-                    ActiveEntitiesPerSystem[system].Remove(entity);
+                    activeEntitiesPerSystem[system].Remove(entity);
                 }
             }
         }
