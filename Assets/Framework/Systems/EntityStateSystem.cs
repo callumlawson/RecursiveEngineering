@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Net.NetworkInformation;
 using Assets.Framework.Entities;
 using Assets.Framework.States;
 using Assets.Scrips.Datastructures;
@@ -131,7 +130,8 @@ namespace Assets.Framework.Systems
             if (entityToRemove != null &&
                 entityToRemove.HasState<PhysicalState>() &&
                 entityToRemove.GetState<PhysicalState>().IsTangible &&
-                !entityToRemove.GetState<PhysicalState>().IsRoot())
+                !entityToRemove.GetState<PhysicalState>().IsRoot()
+                )
             {
                 EntityRemoved(entityToRemove);
                 var parentEntity = entityToRemove.GetState<PhysicalState>().ParentEntity;

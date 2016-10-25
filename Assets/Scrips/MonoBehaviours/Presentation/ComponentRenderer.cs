@@ -128,6 +128,11 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                         //SetOpacity(moduleGameObject, opacity);
                         moduleGameObject.transform.parent = innerRendererRoot.transform;
                         moduleGameObject.transform.position = GridCoordinate.GridToPosition(grid);
+                        var possibleRenderer = moduleGameObject.GetComponent<IEntityRenderer>();
+                        if (possibleRenderer != null)
+                        {
+                            possibleRenderer.OnRenderEntity(innerEntity);       
+                        }
                     }
                 }
             }

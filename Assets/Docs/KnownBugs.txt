@@ -1,3 +1,4 @@
 ﻿Removing an entity happens instantly - it needs to be delayed until the end of frame.
 Adding an entity happens instantly - it needs to be delayed until the start of the next frame. 
 Deleting objects is messed up generally.
+Adding new crew in while sim is running throws an error. 

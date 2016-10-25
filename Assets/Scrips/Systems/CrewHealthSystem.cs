@@ -11,8 +11,8 @@ namespace Assets.Scrips.Systems
 {
     public class CrewHealthSystem : ITickEntitySystem
     {
-        private const float DrowningThreshold = 80.0f;
-        private const float DrowningDamagePerTick = 10.0f * GlobalConstants.TickPeriodInSeconds;
+        private const float DrowningThreshold = 50.0f;
+        private const float DrowningDamagePerTick = 20.0f * GlobalConstants.TickPeriodInSeconds;
 
         public List<Type> RequiredStates()
         {

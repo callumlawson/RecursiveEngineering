@@ -10,7 +10,6 @@ namespace Assets.Framework.Entities
     public class EntityManager
     {
         private readonly Bag<Entity> entities;
-
         private readonly Dictionary<Type, Bag<IState>> statesByType;
 
         private int nextAvailableId;
