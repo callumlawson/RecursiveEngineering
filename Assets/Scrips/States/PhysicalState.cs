@@ -21,15 +21,16 @@ namespace Assets.Scrips.States
         public int InternalWidth;
         public int InternalHeight;
         public bool IsTangible;
+        public bool IsPermeable;
 
         //Used as a performance optimisation on entity lookup.
         private readonly Dictionary<GridCoordinate, List<Entity>> childEntityLookup = new Dictionary<GridCoordinate, List<Entity>>();
 
-        public PhysicalState(int width, int height, bool isTangible) : this(null, new List<Entity>(), new GridCoordinate(0, 0), 1, 1, width, height, isTangible) { }
+        public PhysicalState(int width, int height, bool isTangible, bool isPermeable) : this(null, new List<Entity>(), new GridCoordinate(0, 0), 1, 1, width, height, isTangible, isPermeable) { }
 
-        public PhysicalState() : this (null, new List<Entity>(), new GridCoordinate(0, 0), 1, 1, GlobalConstants.MediumToLargeRatio, GlobalConstants.MediumToLargeRatio, true) { }
+        public PhysicalState() : this (null, new List<Entity>(), new GridCoordinate(0, 0), 1, 1, GlobalConstants.MediumToLargeRatio, GlobalConstants.MediumToLargeRatio, true, true) { }
 
-        public PhysicalState(Entity parentEntity, List<Entity> childEntities, GridCoordinate bottomLeftCoordinate, int externalWidth, int externalHeight, int internalWidth, int internalHeight, bool isTangible)
+        public PhysicalState(Entity parentEntity, List<Entity> childEntities, GridCoordinate bottomLeftCoordinate, int externalWidth, int externalHeight, int internalWidth, int internalHeight, bool isTangible, bool isPermeable)
         {
             ParentEntity = parentEntity;
             ChildEntities = childEntities;
@@ -39,6 +40,7 @@ namespace Assets.Scrips.States
             InternalWidth = internalWidth;
             InternalHeight = internalHeight;
             IsTangible = isTangible;
+            IsPermeable = isPermeable;
         }
 
         public bool IsTerminal()

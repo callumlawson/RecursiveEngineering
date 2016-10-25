@@ -2,24 +2,23 @@
 using Assets.Framework.Entities;
 using Assets.Framework.States;
 using Assets.Scrips.States;
-using Assets.Scrips.Systems;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
 
 //TODO: Replace this with reactive binds
+
 namespace Assets.Scrips.MonoBehaviours.Presentation
 {
     //TODO: Split into separate renderers
     public class ModuleDetailsRenderer : MonoBehaviour
     {
-        [UsedImplicitly] public GameRunner GameRunner;
         [UsedImplicitly] public Text Breadcrumb;
-        [UsedImplicitly] public Text SelectedComponentName;
-
-        [UsedImplicitly] public Image SelectedComponent;
-        [UsedImplicitly] public Image PreviousComponent;
+        [UsedImplicitly] public GameRunner GameRunner;
         [UsedImplicitly] public Image NextComponent;
+        [UsedImplicitly] public Image PreviousComponent;
+        [UsedImplicitly] public Image SelectedComponent;
+        [UsedImplicitly] public Text SelectedComponentName;
 
         [UsedImplicitly]
         public void Update()
@@ -53,27 +52,17 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         private void UpdateComponentDetails()
         {
             var selectedState = StaticStates.Get<SelectedState>();
-            if (selectedState.Entity != null)
-            {
-                SelectedComponentName.text = string.Format(
-                    "Selected Grid: {0} Diesel: {1}",
-                    selectedState.Grid,
-                    SubstanceNetworkSystem.Instance.GetDiesel(selectedState.Entity)
+
+            SelectedComponentName.text = string.Format(
+                "Selected Grid: {0}",
+                selectedState.Grid
                 );
-            }
-            else
-            {
-                SelectedComponentName.text = string.Format(
-                    "Selected Grid: {0}",
-                    selectedState.Grid
-                );
-            }
         }
 
         private void UpdateBreadcrumb()
         {
-            var breadcrumb = "";
-            foreach (var component in CurrentHeirarchy())
+            string breadcrumb = "";
+            foreach (Entity component in CurrentHeirarchy())
             {
                 breadcrumb = ">" + component.GetState<EntityTypeState>().EntityType + breadcrumb;
             }
@@ -83,7 +72,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         private static IEnumerable<Entity> CurrentHeirarchy()
         {
             var heirarchy = new List<Entity>();
-            var current = StaticStates.Get<ActiveEntityState>().ActiveEntity;
+            Entity current = StaticStates.Get<ActiveEntityState>().ActiveEntity;
             do
             {
                 heirarchy.Add(current);
@@ -94,11 +83,11 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
 
         private static T GetState<T>(IEnumerable<IState> states) where T : IState
         {
-            foreach (var state in states)
+            foreach (IState state in states)
             {
-                if (state.GetType() == typeof(T))
+                if (state.GetType() == typeof (T))
                 {
-                    return (T)state;
+                    return (T) state;
                 }
             }
             return default(T);

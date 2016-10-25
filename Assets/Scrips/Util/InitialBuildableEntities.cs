@@ -9,7 +9,7 @@ namespace Assets.Scrips.Util
         public static readonly List<IState> Environment = new List<IState>
         {
             new EntityTypeState("Environment"),
-            new PhysicalState(0, 0, false),
+            new PhysicalState(0, 0, false, true),
             new SubstanceConnectorState(new List<Direction>
             {
                 Direction.Left,
@@ -25,7 +25,7 @@ namespace Assets.Scrips.Util
             new List<IState>
             {
                 new EntityTypeState("Box"),
-                new PhysicalState()
+                new PhysicalState(1, 1, true, false)
             },
             new List<IState>
             {
@@ -43,12 +43,12 @@ namespace Assets.Scrips.Util
             new List<IState>
             {
                 new EntityTypeState("VerticalWall"),
-                new PhysicalState()
+                new PhysicalState(1, 1, true, false)
             },
             new List<IState>
             {
                 new EntityTypeState("HorizontalWall"),
-                new PhysicalState()
+                new PhysicalState(1, 1, true, false)
             },
             new List<IState>
             {

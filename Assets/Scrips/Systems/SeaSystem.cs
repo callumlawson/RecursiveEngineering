@@ -67,10 +67,7 @@ namespace Assets.Scrips.Systems
 
         private void Drain()
         {
-            worldEnvironments.ForEach(environment =>
-            {
-                environment.ClearSubstance(SubstanceType.SeaWater);
-            });
+            worldEnvironments.ForEach(environment => environment.ClearSubstance(SubstanceType.SeaWater));
         }
 
         private bool GridIsOnEdge(GridCoordinate grid, int width, int height)

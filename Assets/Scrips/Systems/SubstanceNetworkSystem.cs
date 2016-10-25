@@ -73,9 +73,9 @@ namespace Assets.Scrips.Systems
             var entityGrid = entityPhysicalState.BottomLeftCoordinate;
             var entityParent = entityPhysicalState.ParentEntity;
             return
-                !entityParent.GetState<PhysicalState>()
+                entityParent.GetState<PhysicalState>()
                     .GetEntitiesAtGrid(entityGrid)
-                    .Any(entityOnSameGrid => entityOnSameGrid.GetState<PhysicalState>().IsTangible);
+                    .All(entityOnSameGrid => entityOnSameGrid.GetState<PhysicalState>().IsPermeable);
         }
 
         public void Update()
