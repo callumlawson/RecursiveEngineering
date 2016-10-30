@@ -41,7 +41,6 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         [UsedImplicitly]
         public void Update()
         {
-            
             Clear();
 
             var activeEntity = StaticStates.Get<ActiveEntityState>().ActiveEntity;

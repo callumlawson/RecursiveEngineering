@@ -9,23 +9,15 @@ namespace Assets.Framework.Entities
 {
     public class EntityManager
     {
-        private readonly Bag<Entity> entities;
-        private readonly Dictionary<Type, Bag<IState>> statesByType;
-
+        private readonly Bag<Entity> entities = new Bag<Entity>();
+        private readonly Dictionary<Type, Bag<IState>> statesByType = new Dictionary<Type, Bag<IState>>();
         private int nextAvailableId;
 
         //Premature optimisation is the devil's work... This to be replaced by init time refelection.
         private readonly MethodInfo addStateMethod = typeof(EntityManager).GetMethod("AddState");
         private readonly MethodInfo getStateMethod = typeof(EntityManager).GetMethod("GetState", new[] { typeof(Entity) });
 
-        public EntityManager()
-        {
-            entities = new Bag<Entity>();
-            statesByType = new Dictionary<Type, Bag<IState>>();
-            nextAvailableId = 0;
-        }
-
-        public Entity BuildEntity(List<IState> states)
+        public Entity BuildEntity(IEnumerable<IState> states)
         {
             var entity = CreateEmptyEntity();
             foreach (var state in states)
@@ -41,9 +33,8 @@ namespace Assets.Framework.Entities
             return entities[entityId];
         }
 
-        public void DeleteEntity([NotNull] Entity entity)
+        public void DeleteEntity(Entity entity)
         {
-
             RemoveStatesForEntity(entity);
             entities[entity.EntityId] = null;
         }

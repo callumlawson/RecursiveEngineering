@@ -12,5 +12,10 @@ namespace Assets.Scrips.States
         {
             EntityType = entityType;
         }
+
+        public override string ToString()
+        {
+            return string.Format("Entity Type: {0}", EntityType);
+        }
     }
 }

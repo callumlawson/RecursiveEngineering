@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Assets.Scrips.MonoBehaviours.Presentation
 {
     [RequireComponent(typeof(SpriteRenderer))]
-    class CrewRenderer : MonoBehaviour, IEntityRenderer
+    public class CrewRenderer : MonoBehaviour, IEntityRenderer
     {
         [UsedImplicitly] public Sprite AliveCrew;
         [UsedImplicitly] public Sprite DeadCrew;
@@ -14,7 +14,7 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
         private SpriteRenderer spriteRenderer;
 
         [UsedImplicitly]
-        public void Start()
+        public void Awake()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
         }

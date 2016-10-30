@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Assets.Framework.States;
 
 namespace Assets.Framework.Entities
@@ -11,7 +13,7 @@ namespace Assets.Framework.Entities
         public int EntityId { get; private set; }
 
         //For debugging only!
-        public List<IState> DebugStates
+        public IEnumerable<IState> DebugStates
         {
             get { return States(); }
         }
@@ -22,14 +24,14 @@ namespace Assets.Framework.Entities
             EntityId = entityId;
         }
 
-        public void AddState<T>(IState state) where T : IState
-        {
-            entityManager.AddState<T>(this, state);
-        }
-
         public T GetState<T>() where T : IState
         {
-            return entityManager.GetState<T>(this);
+            var state =  entityManager.GetState<T>(this);
+            if (state == null)
+            {
+                UnityEngine.Debug.LogError(string.Format("State {0} missing for entity \n {1}", typeof(T), this));
+            }
+            return state;
         }
 
         public bool HasState(Type stateType)
@@ -39,15 +41,10 @@ namespace Assets.Framework.Entities
 
         public bool HasState<T>() where T : IState
         {
-            return GetState<T>() != null;
+            return entityManager.GetState<T>(this) != null;
         }
 
-        public void Delete()
-        {
-            entityManager.DeleteEntity(this);
-        }
-
-        private List<IState> States()
+        private IEnumerable<IState> States()
         {
            return entityManager.GetStates(this);
         }
@@ -55,6 +52,44 @@ namespace Assets.Framework.Entities
         public string ToJson()
         {
             throw new NotImplementedException();
+        }
+
+        public override string ToString()
+        {
+            var message = new StringBuilder();
+            message.AppendLine("EntityID: " + EntityId);
+            if (DebugStates.ToList().Count == 0)
+            {
+                message.AppendLine("An entity with no states.");
+            }
+            foreach (var state in DebugStates)
+            {
+                message.AppendLine(state.ToString());
+            }
+            return message.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            // If parameter is null return false.
+            if (obj == null)
+            {
+                return false;
+            }
+
+            // If parameter cannot be cast to Point return false.
+            var otherEntity = obj as Entity;
+            return otherEntity != null && Equals(otherEntity);
+        }
+
+        private bool Equals(Entity other)
+        {
+            return EntityId == other.EntityId;
+        }
+
+        public override int GetHashCode()
+        {
+            return EntityId;
         }
 
         public int CompareTo(Entity other)

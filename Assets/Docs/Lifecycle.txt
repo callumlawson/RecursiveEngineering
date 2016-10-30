@@ -1,0 +1,4 @@
+﻿
+Init -> (Tick -> DeleteEntities) -> (Update -> DeleteEntities)* -> (Tick...
+
+* = repeats arbitary number of times. 

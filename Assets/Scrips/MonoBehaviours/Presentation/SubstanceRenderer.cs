@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace Assets.Scrips.MonoBehaviours.Presentation
 {
+    //TODO: Make this into a system.
     public class SubstanceRenderer : MonoBehaviour
     {
         private Color dieselColor = new Color(1.0f, 0.6f, 0.3f);
@@ -46,9 +47,13 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
                 }
             }
 
-            //TODO: Make this not rubbish
             foreach (var entity in activeEntity.GetState<PhysicalState>().ChildEntities)
             {
+                if (!entity.HasState<SubstanceNetworkState>())
+                {
+                    return;
+                }
+
                 var substanceState = entity.GetState<SubstanceNetworkState>();
                 var gridForSubstance = entity.GetState<PhysicalState>().BottomLeftCoordinate;
                 if (substanceState != null)

@@ -15,7 +15,7 @@ namespace Assets.Framework.Systems
         private readonly List<IUpdateEntitySystem> updateEntitySystems = new List<IUpdateEntitySystem>();
         private readonly List<IUpdateSystem> updateSytems = new List<IUpdateSystem>();
         private readonly List<IInitSystem> initSystems = new List<IInitSystem>();
-
+        private readonly List<Entity> entitiesToRemove = new List<Entity>();
         private readonly EntityManager entityManager;
 
         public EntityStateSystem()
@@ -87,6 +87,7 @@ namespace Assets.Framework.Systems
             {
                 system.Update();
             }
+            //DeleteMarkedEntities();
         }
 
         public void Tick()
@@ -99,6 +100,7 @@ namespace Assets.Framework.Systems
             {
                 system.Tick();
             }
+            DeleteMarkedEntities();
         }
 
         public Entity CreateEntity(List<IState> states, Entity entityToAddItTo, GridCoordinate locationToAddIt)
@@ -133,11 +135,23 @@ namespace Assets.Framework.Systems
                 !entityToRemove.GetState<PhysicalState>().IsRoot()
                 )
             {
-                EntityRemoved(entityToRemove);
-                var parentEntity = entityToRemove.GetState<PhysicalState>().ParentEntity;
-                parentEntity.GetState<PhysicalState>().RemoveEntityFromEntity(entityToRemove);
-                entityToRemove.Delete();
+                entitiesToRemove.Add(entityToRemove);
             }
+        }
+
+        private void DeleteMarkedEntities()
+        {
+            entitiesToRemove.ForEach(entityToRemove =>
+            {
+                if (entityToRemove.HasState<PhysicalState>() && entityToRemove.GetState<PhysicalState>().ParentEntity != null)
+                {
+                    var parentEntity = entityToRemove.GetState<PhysicalState>().ParentEntity;
+                    parentEntity.GetState<PhysicalState>().RemoveEntityFromEntity(entityToRemove);
+                }
+                EntityRemoved(entityToRemove);
+                entityManager.DeleteEntity(entityToRemove);
+                entitiesToRemove.Remove(entityToRemove);
+            });
         }
 
         private void InitEnvironmentEntities(Entity entity)

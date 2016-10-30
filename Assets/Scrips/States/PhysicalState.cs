@@ -122,6 +122,17 @@ namespace Assets.Scrips.States
             return Enumerable.Empty<Entity>();
         }
 
+        public IEnumerable<Entity> GetEntitiesAtGridWithState<T>(GridCoordinate grid) where T : IState
+        {
+            if (childEntityLookup.ContainsKey(grid))
+            {
+                var childEntities = childEntityLookup[grid];
+                return childEntities.Where(entity => entity.HasState<T>());
+            }
+            return Enumerable.Empty<Entity>();
+        }
+
+
         public static bool AddEntityToEntity([NotNull] Entity entityToAdd, [NotNull] GridCoordinate locationToAddIt, [NotNull] Entity entityToAddItTo)
         {
             var physicalState = entityToAdd.GetState<PhysicalState>();
@@ -157,6 +168,11 @@ namespace Assets.Scrips.States
                 targetEntityPhysicalState.childEntityLookup.Add(locationToAddIt, new List<Entity>());
             }
             targetEntityPhysicalState.childEntityLookup[locationToAddIt].Add(entityToAdd);
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Physical State - Parent: {0}", ParentEntity.EntityId);
         }
     }
 }

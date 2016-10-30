@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Assets.Framework.Entities;
 using Assets.Framework.Systems;
 using Assets.Scrips.Datastructures;
-using Assets.Scrips.Modules;
 using Assets.Scrips.States;
 using Assets.Scrips.Util;
 using UnityEngine;

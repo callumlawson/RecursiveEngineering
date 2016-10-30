@@ -70,7 +70,7 @@ namespace Assets.Scrips.Systems
             worldEnvironments.ForEach(environment => environment.ClearSubstance(SubstanceType.SeaWater));
         }
 
-        private bool GridIsOnEdge(GridCoordinate grid, int width, int height)
+        private static bool GridIsOnEdge(GridCoordinate grid, int width, int height)
         {
             return grid.X == 0 || grid.Y == 0 || grid.X == width - 1 || grid.Y == height - 1;
         }
