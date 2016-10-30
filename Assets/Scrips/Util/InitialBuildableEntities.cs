@@ -25,7 +25,7 @@ namespace Assets.Scrips.Util
             new List<IState>
             {
                 new EntityTypeState("Box"),
-                new PhysicalState(1, 1, true, false)
+                new PhysicalState(GlobalConstants.MediumToLargeRatio, GlobalConstants.MediumToLargeRatio, true, false)
             },
             new List<IState>
             {
@@ -43,12 +43,12 @@ namespace Assets.Scrips.Util
             new List<IState>
             {
                 new EntityTypeState("VerticalWall"),
-                new PhysicalState(1, 1, true, false)
+                new PhysicalState(0, 0, true, false)
             },
             new List<IState>
             {
                 new EntityTypeState("HorizontalWall"),
-                new PhysicalState(1, 1, true, false)
+                new PhysicalState(0, 0, true, false)
             },
             new List<IState>
             {

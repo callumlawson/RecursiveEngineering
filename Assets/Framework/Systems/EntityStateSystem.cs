@@ -132,11 +132,16 @@ namespace Assets.Framework.Systems
             if (entityToRemove != null &&
                 entityToRemove.HasState<PhysicalState>() &&
                 entityToRemove.GetState<PhysicalState>().IsTangible &&
-                !entityToRemove.GetState<PhysicalState>().IsRoot()
-                )
+                !entityToRemove.GetState<PhysicalState>().IsRoot())
             {
                 entitiesToRemove.Add(entityToRemove);
             }
+        }
+
+        public string DebugEntity(int entityId)
+        {
+            var entity = entityManager.GetEntity(entityId);
+            return entity.ToString();
         }
 
         private void DeleteMarkedEntities()
@@ -148,6 +153,17 @@ namespace Assets.Framework.Systems
                     var parentEntity = entityToRemove.GetState<PhysicalState>().ParentEntity;
                     parentEntity.GetState<PhysicalState>().RemoveEntityFromEntity(entityToRemove);
                 }
+
+                if (entityToRemove.HasState<PhysicalState>())
+                {
+                    var children = entityToRemove.GetState<PhysicalState>().ChildEntities;
+                    foreach (var child in children)
+                    {
+                        EntityRemoved(child);
+                        entityManager.DeleteEntity(child);
+                    }
+                }
+
                 EntityRemoved(entityToRemove);
                 entityManager.DeleteEntity(entityToRemove);
                 entitiesToRemove.Remove(entityToRemove);

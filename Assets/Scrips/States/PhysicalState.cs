@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Assets.Framework.States;
 using Assets.Scrips.Datastructures;
 using Assets.Scrips.Modules;
-using Assets.Scrips.Util;
 using JetBrains.Annotations;
 using Entity = Assets.Framework.Entities.Entity;
 
@@ -16,27 +16,23 @@ namespace Assets.Scrips.States
         public Entity ParentEntity;
         public readonly List<Entity> ChildEntities;
         public GridCoordinate BottomLeftCoordinate;
-        public int ExternalWidth;
-        public int ExternalHeight;
-        public int InternalWidth;
-        public int InternalHeight;
-        public bool IsTangible;
-        public bool IsPermeable;
+        public readonly int InternalWidth;
+        public readonly int InternalHeight;
+        public readonly bool IsTangible;
+        public readonly bool IsPermeable;
 
         //Used as a performance optimisation on entity lookup.
         private readonly Dictionary<GridCoordinate, List<Entity>> childEntityLookup = new Dictionary<GridCoordinate, List<Entity>>();
 
-        public PhysicalState(int width, int height, bool isTangible, bool isPermeable) : this(null, new List<Entity>(), new GridCoordinate(0, 0), 1, 1, width, height, isTangible, isPermeable) { }
+        public PhysicalState(int internalWidth, int internalHeight, bool isTangible, bool isPermeable) : this(null, new List<Entity>(), new GridCoordinate(0, 0), internalWidth, internalHeight, isTangible, isPermeable) { }
 
-        public PhysicalState() : this (null, new List<Entity>(), new GridCoordinate(0, 0), 1, 1, GlobalConstants.MediumToLargeRatio, GlobalConstants.MediumToLargeRatio, true, true) { }
+        public PhysicalState() : this (null, new List<Entity>(), new GridCoordinate(0, 0), 0, 0, true, true) { }
 
-        public PhysicalState(Entity parentEntity, List<Entity> childEntities, GridCoordinate bottomLeftCoordinate, int externalWidth, int externalHeight, int internalWidth, int internalHeight, bool isTangible, bool isPermeable)
+        public PhysicalState(Entity parentEntity, List<Entity> childEntities, GridCoordinate bottomLeftCoordinate, int internalWidth, int internalHeight, bool isTangible, bool isPermeable)
         {
             ParentEntity = parentEntity;
             ChildEntities = childEntities;
             BottomLeftCoordinate = bottomLeftCoordinate;
-            ExternalWidth = externalWidth;
-            ExternalHeight = externalHeight;
             InternalWidth = internalWidth;
             InternalHeight = internalHeight;
             IsTangible = isTangible;
@@ -60,9 +56,9 @@ namespace Assets.Scrips.States
 
         public void ForEachGrid(Action<GridCoordinate> actionToApply)
         {
-            for (int x = 0; x < InternalWidth; x++)
+            for (var x = 0; x < InternalWidth; x++)
             {
-                for (int y = 0; y < InternalHeight; y++)
+                for (var y = 0; y < InternalHeight; y++)
                 {
                     actionToApply.Invoke(new GridCoordinate(x, y));
                 }
@@ -94,23 +90,14 @@ namespace Assets.Scrips.States
             foreach (Direction direction in Enum.GetValues(typeof(Direction)))
             {
                 var neighbourGrid = GridOperations.GetGridInDirection(BottomLeftCoordinate, direction);
-                var neighbour = parentGrid.GetEntityAtGrid(neighbourGrid);
+                var neighbour = parentGrid.GetEntitiesAtGrid(neighbourGrid);
                 if (neighbour != null)
                 {
-                    results.Add(neighbour);
+                    results.AddRange(neighbour);
                 }    
             }
 
             return results;
-        }
-
-        public Entity GetEntityAtGrid(GridCoordinate grid)
-        {
-            if (childEntityLookup.ContainsKey(grid) && childEntityLookup[grid].Count > 0)
-            {
-                return childEntityLookup[grid].ElementAt(0);
-            }
-            return null;
         }
 
         public IEnumerable<Entity> GetEntitiesAtGrid(GridCoordinate grid)
@@ -132,7 +119,6 @@ namespace Assets.Scrips.States
             return Enumerable.Empty<Entity>();
         }
 
-
         public static bool AddEntityToEntity([NotNull] Entity entityToAdd, [NotNull] GridCoordinate locationToAddIt, [NotNull] Entity entityToAddItTo)
         {
             var physicalState = entityToAdd.GetState<PhysicalState>();
@@ -153,7 +139,7 @@ namespace Assets.Scrips.States
         public void RemoveEntityFromEntity(Entity entityToRemove)
         {
             ChildEntities.ForEach(entity => {
-                if (entity == entityToRemove)
+                if (Equals(entity, entityToRemove))
                 {
                     childEntityLookup[entityToRemove.GetState<PhysicalState>().BottomLeftCoordinate].Remove(entityToRemove);
                     ChildEntities.Remove(entityToRemove);
@@ -172,7 +158,10 @@ namespace Assets.Scrips.States
 
         public override string ToString()
         {
-            return string.Format("Physical State - Parent: {0}", ParentEntity.EntityId);
+            var stringBuilder = new StringBuilder();
+            stringBuilder.Append(ParentEntity != null ? string.Format("Parent: {0}", ParentEntity.EntityId) : "Parent: None");
+            stringBuilder.Append(string.Format(" Width: {0} Height: {1}", InternalWidth, InternalHeight));
+            return stringBuilder.ToString();
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿using Assets.Framework.States;
+﻿using System.Linq;
+using Assets.Framework.States;
 using Assets.Framework.Util;
 using Assets.Scrips.Datastructures;
-using Assets.Scrips.Modules;
 using Assets.Scrips.States;
 using Assets.Scrips.Util;
 using JetBrains.Annotations;
@@ -29,13 +29,9 @@ namespace Assets.Scrips.MonoBehaviours.Controls
             UpdateSelectedGridIndicator();
         }
 
-        private void UpdateCurrentlySelectedGrid()
+        private static void UpdateCurrentlySelectedGrid()
         {
             var gridOffset = new GridCoordinate(0, 0);
-            //            if (activeEntity != null)
-            //            {
-            //                gridOffset = GlobalConstants.GetGridOffset(activeEntity);
-            //            }
             var mousePosition = CameraController.ActiveCamera.ScreenToWorldPoint(Input.mousePosition);
             var gridx = Mathf.RoundToInt(mousePosition.x / GlobalConstants.TileSizeInMeters) - gridOffset.X;
             var gridy = Mathf.RoundToInt(mousePosition.y / GlobalConstants.TileSizeInMeters) - gridOffset.Y;
@@ -43,7 +39,13 @@ namespace Assets.Scrips.MonoBehaviours.Controls
             var selectedGrid = new GridCoordinate(gridx, gridy);
             var physicalState = StaticStates.Get<ActiveEntityState>().ActiveEntity.GetState<PhysicalState>();
             StaticStates.Get<SelectedState>().Grid = selectedGrid;
-            StaticStates.Get<SelectedState>().Entity = physicalState.GetEntityAtGrid(selectedGrid);
+            var entitiesAtGrid = physicalState.GetEntitiesAtGrid(selectedGrid);
+            var tangableEntities = entitiesAtGrid.Where(entity => entity.HasState<PhysicalState>() && entity.GetState<PhysicalState>().IsTangible).ToList();
+            if (tangableEntities.Count > 1)
+            {
+                UnityEngine.Debug.LogError("More than one tangable entity in a grid! This is not supported.");
+            }
+            StaticStates.Get<SelectedState>().Entity = tangableEntities.FirstOrDefault();
         }
 
         private void UpdateSelectedGridIndicator()

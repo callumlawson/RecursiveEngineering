@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using Assets.Framework.States;
 using Assets.Scrips.Datastructures;
 
@@ -48,12 +49,16 @@ namespace Assets.Scrips.States
 
         public override string ToString()
         {
+            var stringBuilder = new StringBuilder();
             if (substances.Values.Any())
             {
-                var lines = substances.Select(kvp => kvp.Key + ": " + kvp.Value.ToString(CultureInfo.InvariantCulture)).ToArray();
-                return string.Join(Environment.NewLine, lines);
+                var lines = substances.Select(kvp => kvp.Key + ": " + kvp.Value.ToString(CultureInfo.InvariantCulture)).ToList();
+                foreach (var line in lines)
+                {
+                    stringBuilder.Append(line + " ");
+                }
             }
-            return "No Substances Detected";
+            return stringBuilder.ToString();
         }
     }
 }

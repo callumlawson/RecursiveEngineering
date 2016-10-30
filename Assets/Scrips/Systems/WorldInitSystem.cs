@@ -22,7 +22,7 @@ namespace Assets.Scrips.Systems
                     new List<IState>
                     {
                         new EntityTypeState("The World"),
-                        new PhysicalState(null, new List<Entity>(), new GridCoordinate(0, 0), 1, 1, 28, 13, true, true)
+                        new PhysicalState(null, new List<Entity>(), new GridCoordinate(0, 0), 28, 13, true, true)
                     },
                     null,
                     new GridCoordinate(0, 0)

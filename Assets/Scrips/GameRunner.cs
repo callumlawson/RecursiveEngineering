@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Assets.Framework.States;
 using Assets.Framework.Systems;
@@ -7,6 +8,7 @@ using Assets.Scrips.Systems;
 using Assets.Scrips.Util;
 using JetBrains.Annotations;
 using UnityEngine;
+using Console = Assets.SmartConsole.Code.Console;
 
 namespace Assets.Scrips
 {
@@ -19,6 +21,15 @@ namespace Assets.Scrips
         public void Awake()
         {
             entitySystem = new EntityStateSystem();
+
+            Console.RegisterCommand("showEntity", "showEntity 1337", "returns all states for an entity",
+                command =>
+                {
+                    var args = Console.SplitParameters(command);
+                    var debug = entitySystem.DebugEntity(Convert.ToInt32(args[1]));
+                    Console.WriteLine(debug);
+                }
+            );
 
             //TODO: this should be via the entity System. Fix this before save load.
             StaticStates.Add(new WorldEntityState(entitySystem.BuildEntity(new List<IState>())));

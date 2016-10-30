@@ -47,7 +47,9 @@ namespace Assets.Scrips.Systems
             }
 
             var selectedEntity = StaticStates.Get<SelectedState>().Entity;
-            if (selectedEntity != null && button == 0 && !selectedEntity.GetState<PhysicalState>().IsRoot())
+            if (selectedEntity != null && 
+                button == 0 && 
+                !selectedEntity.GetState<PhysicalState>().IsTerminal())
             {
                 StaticStates.Get<ActiveEntityState>().ActiveEntity = selectedEntity;
             }

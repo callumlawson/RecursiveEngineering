@@ -14,14 +14,11 @@ namespace Assets.Scrips.Systems
 {
     public class SubstanceNetworkSystem : IReactiveEntitySystem, ITickEntitySystem, IUpdateSystem
     {
-        //TODO: Make singlton evil not be a thing.
-        public static SubstanceNetworkSystem Instance;
         private readonly DirectedSparseGraph<Entity> network;
 
         public SubstanceNetworkSystem()
         {
             network = new DirectedSparseGraph<Entity>();
-            Instance = this;
         }
 
         public List<Type> RequiredStates()
@@ -71,11 +68,18 @@ namespace Assets.Scrips.Systems
         {
             var entityPhysicalState = entity.GetState<PhysicalState>();
             var entityGrid = entityPhysicalState.BottomLeftCoordinate;
+
             var entityParent = entityPhysicalState.ParentEntity;
-            return
-                entityParent.GetState<PhysicalState>()
-                    .GetEntitiesAtGrid(entityGrid)
-                    .All(entityOnSameGrid => entityOnSameGrid.GetState<PhysicalState>().IsPermeable);
+            var entityParentPhysicalState = entityParent.GetState<PhysicalState>();
+            if (entityParentPhysicalState == null)
+            {
+                UnityEngine.Debug.Log("Entity: " + entity);
+                UnityEngine.Debug.Log("Parent: " + entityParent);
+            }
+
+           
+            var allEntitiesAtGrid = entityParentPhysicalState.GetEntitiesAtGridWithState<PhysicalState>(entityGrid);
+            return allEntitiesAtGrid.All(entityOnSameGrid => entityOnSameGrid.GetState<PhysicalState>().IsPermeable);
         }
 
         public void Update()
@@ -200,6 +204,5 @@ namespace Assets.Scrips.Systems
             network.AddEdge(destination, source);
             network.AddEdge(source, destination);
         }
-
     }
 }

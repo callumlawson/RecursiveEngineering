@@ -10,7 +10,6 @@ using UnityEngine.UI;
 
 namespace Assets.Scrips.MonoBehaviours.Presentation
 {
-    //TODO: This code is horrible and I am sorry.
     public class EntityTooltipRenderer : MonoBehaviour
     {
         [UsedImplicitly] public GameObject TooltipRoot;
@@ -58,30 +57,14 @@ namespace Assets.Scrips.MonoBehaviours.Presentation
             }
         }
 
-        //TODO: Replace with automatic builder based on state metadata. Use Annotations.
         private static string TooltipMessage(Entity entity)
         {
             var message = new StringBuilder();
-            message.Append(string.Format("> {0}", entity.GetState<EntityTypeState>().EntityType));
-            if (entity.HasState<NameState>())
+            message.Append(string.Format("> {0} ID: {1}", entity.GetState<EntityTypeState>().EntityType, entity.EntityId));
+            foreach (var state in entity.DebugStates)
             {
                 message.Append(Environment.NewLine);
-                message.Append(entity.GetState<NameState>());
-            }
-            if (entity.HasState<SubstanceNetworkState>())
-            {
-                message.Append(Environment.NewLine);
-                message.Append(entity.GetState<SubstanceNetworkState>());
-            }
-            if (entity.HasState<EngineState>())
-            {
-                message.Append(Environment.NewLine);
-                message.Append(entity.GetState<EngineState>());
-            }
-            if (entity.HasState<HealthState>())
-            {
-                message.Append(Environment.NewLine);
-                message.Append(entity.GetState<HealthState>());
+                message.Append(state);
             }
             return message.ToString();
         }

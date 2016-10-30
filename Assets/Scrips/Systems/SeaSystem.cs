@@ -23,17 +23,20 @@ namespace Assets.Scrips.Systems
 
             worldPhysicalState.ForEachGrid(grid =>
             {
-                var entity = worldPhysicalState.GetEntityAtGrid(grid);
-                if (!entity.HasState<SubstanceNetworkState>())
+                var entities = worldPhysicalState.GetEntitiesAtGrid(grid);
+                foreach (var entity in entities)
                 {
-                    return;
+                    if (!entity.HasState<SubstanceNetworkState>())
+                    {
+                        return;
+                    }
+                    var entitySubstanceState = entity.GetState<SubstanceNetworkState>();
+                    if (GridIsOnEdge(grid, worldPhysicalState.InternalWidth, worldPhysicalState.InternalHeight))
+                    {
+                        worldEdgeEnvironments.Add(entitySubstanceState);
+                    }
+                    worldEnvironments.Add(entitySubstanceState);
                 }
-                var entitySubstanceState = entity.GetState<SubstanceNetworkState>();
-                if (GridIsOnEdge(grid, worldPhysicalState.InternalWidth, worldPhysicalState.InternalHeight))
-                {
-                    worldEdgeEnvironments.Add(entitySubstanceState);
-                } 
-                worldEnvironments.Add(entitySubstanceState);
             });
         }
 

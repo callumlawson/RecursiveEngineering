@@ -3,10 +3,10 @@
 Add debug toggle bar. Seawater/No seawater first button. Try to make pixel art button.
 Add Exauhst for the engine.
 Make Crewman die from the fumes/flooding. 
+Turn Renderers into update systems.
 
 Framework:
 
-Fix the way entity added and entity removed are triggered.
 Remove static states in favour of a by convention entity (e.g. entity -1)
 
 Done:
@@ -19,3 +19,4 @@ Check artemis for OnComponentUpdated - how is it done? Could I do it. Done.
 Add Sea water (different to drinking water) to right edge of the screen when you press Play.
 Add Crewman.
 Make Crewman die from the flooding.  
+Entities are down delted at the end of an upadate.
